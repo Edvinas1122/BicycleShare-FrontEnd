@@ -1,11 +1,9 @@
-import Image from 'next/image'
-import styles from './page.module.css'
-import InfoPage from '@/components/infoPage'
+import {Button} from '@nextui-org/button';
+import {Card, CardBody, CardFooter, CardHeader} from '@nextui-org/card';
 
-export default async function Home() {
+export default function Page() {
   return (
-    <main className={styles.main}>
-      <InfoPage />
-    </main>
+    <div>
+    </div>
   )
 }
