@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import {LoginButton} from "./LoginButton";
-import {LoginInformation} from "./LoginInformation";
+import {LoginInformation, UserInfo} from "./LoginInformation";
 import {useRouter, useSearchParams} from "next/navigation";
 import {AuthContext} from "@/app/components/authContext";
 import {appLoginConfig, authCredentials} from "@/conf/organisation.conf";
@@ -21,7 +21,7 @@ const AuthInterface: React.FC = ({
 		router.replace(authCredentials.oAuth2.link);
 	};
 	const [loading, setLoading] = React.useState<boolean>(auth_code ? true : false);
-	const [info, setInfo] = React.useState<string>("");
+	const [info, setInfo] = React.useState<string | UserInfo>("");
 
 	const responseEffect = (data: any) => {
 		setInfo(data.message);

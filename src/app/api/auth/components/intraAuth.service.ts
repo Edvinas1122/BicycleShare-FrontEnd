@@ -71,6 +71,7 @@ interface IntraInfo { // partial user info just what we need
 		link: string,
 		versions: {
 			medium: string,
+			small: string,
 			micro: string,
 		}
 	};

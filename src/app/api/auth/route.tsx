@@ -17,7 +17,7 @@ async function routeHandler(code: string) {
 	const intra_token = await oAuth.getAccessToken(code);
 	const user = await oAuth.getUserInfo(intra_token.access_token);
 	const token = generateToken(user);
-	return respondSetCookies({message: `Welcome: ${user.login}`}, token, 200);
+	return respondSetCookies({message: user}, token, 200);
 }
 
 export const GET = QueryParameter('code', routeHandler);
