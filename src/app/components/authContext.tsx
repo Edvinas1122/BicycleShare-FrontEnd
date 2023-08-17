@@ -1,75 +1,51 @@
 "use client";
 import React from 'react';
-import { cookies } from 'next-cookies';
 
-interface Auth {
-	isAuthenticated: boolean;
-	error: string;
-	user: any;
-	token: string;
-	fetchLoginAPI: (code: string) => void;
+class Auth {
+	private path = `${process.env.NEXT_PUBLIC_HOSTNAME}/api/auth`;
+	private setAuthorized: React.Dispatch<React.SetStateAction<boolean>>;
+	private lastSuccessfull: boolean = false;
+	constructor(
+		setAuthorized: React.Dispatch<React.SetStateAction<boolean>>
+	) {
+		this.setAuthorized = setAuthorized;
+	}
+
+	async login(code: string): Promise<any> {
+		const res = await fetch(`${this.path}/?code=${code}`, {});
+		if (res.status === 200) {
+			this.lastSuccessfull = true;
+		}
+		return res;
+	}
+
+	public closeAuthorization(): void {
+		if (this.lastSuccessfull) {
+			this.setAuthorized(true);
+		}
+	}
 }
 
-interface AuthContext {
-	auth: Auth;
-}
+export const AuthContext = React.createContext<{
+		auth: Auth;
+		authorized: boolean
+	} | null>(null);
 
-export const AuthContext = React.createContext<AuthContext>({
-	auth: {
-		isAuthenticated: false,
-		error: null,
-		user: null,
-		token: null,
-		fetchLoginAPI: (code: string) => {},
-	},
-});
-
-export const AuthProvider = ({
-	children
+export const AuthProvider: React.FC<React.ReactNode> = ({
+	children,
+	hasValidToken
 }: {
-	children: React.ReactNode
+	children: React.ReactNode;
+	hasValidToken: boolean;
 }) => {
-	const [auth, setAuth] = React.useState<Auth>({
-		isAuthenticated: false,
-		error: null,
-		user: null,
-		token: null,
-		fetchLoginAPI: (code: string) => {
-		   fetch(`/api/auth?code=${code}`).then((res) => {
-				const data = res.json();
-				data.then((data) => {
-					console.log(data);
-					console.log("here");
-				   if (data.sucess === false)
-				   {
-					   setAuth({
-						   isAuthenticated: false,
-						   error: data.error,
-						   user: null,
-						   token: null,
-						   fetchLoginAPI: (code: string) => {},
-						});
-					} else
-					{
-						console.log("here");
-						setAuth({
-							isAuthenticated: true,
-							error: null,
-							user: data.login,
-							token: data.token,
-							fetchLoginAPI: (code: string) => {},
-						});
-					}
-				});
-			});
-		},
-	});
-
-
+	const [authorized, setAuthorized] = React.useState<boolean>(hasValidToken);
+	const auth = new Auth(
+		setAuthorized
+	);
 
 	return (
-		<AuthContext.Provider value={{ auth }}>
+		<AuthContext.Provider value={{auth, authorized}}>
 			{children}
 		</AuthContext.Provider>
-	)
-}
+	);
+};

@@ -1,3 +1,5 @@
+"use client";
+
 import {
 	Card,
 	CardHeader,
@@ -8,26 +10,29 @@ import {
 	Image,
 	Button,
 } from "@nextui-org/react";
+import {
+	QuoteCollection
+} from "./QuoteCollection";
 
 export interface LoginCardProps {
 	icon: string;
 	title: string;
 	organization: string;
 	description: string;
+	descriptionCollection?: string[];
 	subtitle?: string;
 	buttonText: string;
 	devLink?: string;
 	devLinkText?: string;
 }
 
-
 const LoginCard: Function = ({
 	props,
-	handleLogin,
+	pop_appear,
 	children
 } : {
-	props: LoginCardProps
-	handleLogin: Function
+	props: LoginCardProps,
+	pop_appear?: boolean,
 	children?: React.ReactNode
 }) => {
 	const { icon,
@@ -39,8 +44,14 @@ const LoginCard: Function = ({
 		devLinkText
 	} = props;
 
+	const cardClass = "max-w-[400px] mx-auto loading h-[300px]" +
+		(pop_appear ? " pop-appear" : "");
+
+	const descriptionClass = "mb-4 italic text-gray-600 " +
+		(pop_appear ? "opacity-0 delayed-fade-in" : "");
+
 	return (
-		<Card className="max-w-[400px] mx-auto loading h-[300px]">
+		<Card className={cardClass}>
 			<CardHeader className="flex gap-3">
 				<Image
 					src={icon}
@@ -56,7 +67,9 @@ const LoginCard: Function = ({
 			</CardHeader>
 			<Divider/>
 			<CardBody>
-				<p className="mb-4 italic text-gray-600">{`" ${description}..."`}</p>
+				<QuoteCollection
+					quotes={props.descriptionCollection ? props.descriptionCollection : props.description}
+				/>
 				<div className="flex flex-col justify-center items-center h-full">
 					{children}
 				</div>

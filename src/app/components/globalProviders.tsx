@@ -1,18 +1,22 @@
 'use client'
 
 import {NextUIProvider} from '@nextui-org/react'
-import { AuthProvider } from './authContext'
+import {AuthProvider} from './authContext'
 
 export function AppGlobalProviders({
-	children
+	children,
+	hasValidToken
 }: {
-	children: React.ReactNode
+	children: React.ReactNode,
+	hasValidToken: boolean
 }) {
 	return (
 		<NextUIProvider>
-				<AuthProvider>
-				{children}
-				</AuthProvider>
+			<AuthProvider
+				hasValidToken={hasValidToken}
+			>
+			{children}
+			</AuthProvider>
 		</NextUIProvider>
 	);
 }
