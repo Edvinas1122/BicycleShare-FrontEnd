@@ -7,7 +7,7 @@ interface OAuthInfo {
 export class IntraAuth {
 	private readonly oauthInfo: OAuthInfo;
 	private userInfoEndpoint: string = 'https://api.intra.42.fr/v2/me';
-	private url: string = 'https://api.intra.42.fr/oauth/token';
+	private authUrl: string = 'https://api.intra.42.fr/oauth/token';
 	constructor({
 		client_id,
 		client_secret,
@@ -27,7 +27,7 @@ export class IntraAuth {
 			headers: { 'Content-Type': "application/json" },
 			body: JSON.stringify(this.requestBody(code)),
 		}
-		const response = await fetch(this.url, options);
+		const response = await fetch(this.authUrl, options);
 		if (response.status !== 200) {
 			throw new Error("We had some issues regarding intra authorising us");
 		}

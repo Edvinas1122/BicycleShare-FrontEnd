@@ -10,9 +10,34 @@ body {
 }
 
 .log_button {
-
-  @apply text-white shadow-lg w-10/12 mx-auto py-2 px-4 font-bold text-lg;
+  @apply text-white shadow-lg w-10/12 py-2 px-8 font-bold text-lg;
   @apply bg-gradient-to-r from-orange-400 to-purple-500;
   @apply hover:from-orange-300 hover:to-purple-500 hover:shadow-md hover:scale-105;
   @apply transform transition-all duration-300 ease-in-out mb-4;
 }
+/* @media print {
+  body, html {
+    height: 100vh;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+  }
+} */
+
+.term h1 {
+  @apply text-2xl font-bold mb-2;
+}
+
+.term h2 {
+  @apply text-xl font-bold mb-2 mt-4 text-center;
+  font-size: large;
+}
+
+.term h3 {
+  @apply text-lg font-bold mb-2;
+}
+
+.terms ol {
+  @apply list-decimal pl-4;
+}
+

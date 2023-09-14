@@ -9,7 +9,7 @@ import { useSearchParams } from 'next/navigation';
 
 
 const Login = () => {
-	const { auth, authorized } = React.useContext(AuthContext);
+	const { authorized } = React.useContext(AuthContext);
 	
 	if (authorized) {
 		return null;

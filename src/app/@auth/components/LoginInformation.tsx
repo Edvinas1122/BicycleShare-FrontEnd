@@ -26,8 +26,11 @@ export const LoginInformation = ({
 }) => {
 	if (loading) return <Spinner size="lg" />;
 
-	console.log(info);
-	return info?.login ? (
+	const isUserInfo = (info: string | UserInfo): info is UserInfo => {
+		return (info as UserInfo).login !== undefined;
+	};
+
+	return isUserInfo(info) ? (
 		<AuthProfile user={info as UserInfo} />
 		) : (
 		<AuthResult info={info} />
@@ -52,7 +55,6 @@ const AuthProfile = ({
 	user: UserInfo,
 }) => {
 
-	console.log(user);
 	return (
 		<div className={"text-center pop-appear"}>
 			<User
@@ -60,6 +62,7 @@ const AuthProfile = ({
 				description={user.login}
 				avatarProps={{
 					src: user.image.versions.small,
+					isBordered: true,
 				}}
 			/>
 		</div>

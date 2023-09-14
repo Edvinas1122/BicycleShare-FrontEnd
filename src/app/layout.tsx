@@ -3,9 +3,9 @@ import "./animations.css"
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { AppGlobalProviders } from "./components/globalProviders"
-import { validateToken } from "./components/token.service"
+import { hasAVaildToken } from "@/components/next-api-utils/validation"
 import {appLoginConfig} from "@/conf/organisation.conf";
-import { cookies } from 'next/headers'
+import LockedDisplay from "@/components/reactiveDisplay/lockedComponent";
 
 /*
 	use 
@@ -24,12 +24,11 @@ export const metadata: Metadata = {
 	description: appLoginConfig.description,
 }
 
-export default async function RootLayout(
+export default function RootLayout(
 	props: RootLayoutProps
 ) {
-	const cookieStore = cookies();
-	const token = cookieStore.get('token');
-	const hasValidToken = token ? validateToken(token.value): false;
+	const hasValidToken = hasAVaildToken();
+	// const hasValidToken = true;
 	return (
 		<html lang="en" className={"fixed inset-0 flex items-center justify-center"}>
 			<body>
@@ -38,7 +37,9 @@ export default async function RootLayout(
 			>
 				<main className={inter.className}>
 					{!hasValidToken ? props.auth: null}
+					<LockedDisplay>
 					{props.children}
+					</LockedDisplay>
 				</main>
 			</AppGlobalProviders>
 			</body>

@@ -7,7 +7,7 @@ import {AuthContext} from "@/app/components/authContext";
 import {appLoginConfig, authCredentials} from "@/conf/organisation.conf";
 
 
-const AuthInterface: React.FC = ({
+const AuthInterface: React.FC<{buttonText: string}> = ({
 	buttonText
 }:{
 	buttonText?: string
@@ -36,9 +36,9 @@ const AuthInterface: React.FC = ({
 		if (auth_code) {
 			setLoading(true);
 			auth.login(auth_code).then((response) => {
-				response.json().then((data) => {
+				response.json().then((data: any) => {
 					responseEffect(data);
-				}).catch((err) => {
+				}).catch((err: any) => {
 					responseEffect(err);
 				});
 			});

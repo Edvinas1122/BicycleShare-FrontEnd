@@ -6,7 +6,7 @@ import {
 } from './components/intraAuth.service';
 import {
 	generateToken
-} from '@/app/components/token.service';
+} from '@/components/next-api-utils/validation';
 import {
 	QueryParameter,
 	respondSetCookies

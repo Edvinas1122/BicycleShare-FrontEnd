@@ -1,31 +1,19 @@
-"use client";
-import {Button} from '@nextui-org/button';
-import {Card, CardBody, CardFooter, CardHeader} from '@nextui-org/card';
-import { AuthContext } from './components/authContext';
-import React from 'react';
+import BicycleCard from "./components/BicycleCard";
+import constructBicycleService from "@/components/bicycle-api/bicycle.module";
 
-export default function Page() {
+export default async function Page() {
 
-	const {auth, authorized} = React.useContext(AuthContext);
+	const bicycleService = constructBicycleService({next: {tags: ["bicycle"]}});
+	const bicycles = await bicycleService.getBicycles();
 
-	if (!authorized) {
-		return null;
-	}
-
+	console.log(bicycles);
 	return (
-	<div className="pop-appear">
-		<Card>
-		<CardHeader>
-			<h4>Card Title</h4>
-		</CardHeader>
-		<CardBody>
-			<p>Card Body</p>
-			<p>{authorized ? "is Authorized": "is not Authorized"}</p>
-		</CardBody>
-		<CardFooter>
-			<Button>Card Footer</Button>
-		</CardFooter>
-		</Card>
-	</div>
-	)
+		<div className="pop-appear">
+			{bicycles.map((bicycle) => (
+				<BicycleCard
+					props={bicycle}
+				/>
+			))}
+		</div>
+	);
 }

@@ -5,10 +5,9 @@ export const QuoteCollection: React.FC<{
 }> = ({ 
 	quotes 
 }) => {
-	const quoteClass = "text-center text-gray-600 italic flex justify-center items-center";
+	const quoteClass = "text-center max-w-[300px] text-gray-600 italic flex justify-center items-center";
 	const textStyle = {
-		maxWidth: '400px',
-		overflowWrap: 'break-word',
+		overflowWrap: 'break-word' as const,
 	};
 	const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
 	const [quoteStyle, setQuoteStyle] = useState(quoteClass + "opacity-0 delayed-fade-in");
@@ -16,7 +15,7 @@ export const QuoteCollection: React.FC<{
 	useEffect(() => {
 		const interval = setInterval(() => {
 			setCurrentQuoteIndex((prevIndex) => (prevIndex + 1) % quotes.length);
-			setQuoteStyle("opacity-0");
+			setQuoteStyle("max-w-[300px] opacity-0");
 			setTimeout(() => {
 				setQuoteStyle(quoteClass + "opacity-0 delayed-fade-in");
 			}, 300);

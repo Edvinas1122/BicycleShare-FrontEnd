@@ -1,6 +1,7 @@
+"use client";
 import { Button } from "@nextui-org/react";
 
-export const LoginButton = ({
+const AcceptButton = ({
 	handleLogin,
 	buttonText,
 }: {
@@ -18,3 +19,5 @@ export const LoginButton = ({
 		</Button>
 	);
 };
+
+export default AcceptButton;

@@ -8,7 +8,7 @@ import {
 	Divider,
 	Link,
 	Image,
-	Button,
+	Skeleton
 } from "@nextui-org/react";
 import {
 	QuoteCollection
@@ -19,14 +19,20 @@ export interface LoginCardProps {
 	title: string;
 	organization: string;
 	description: string;
-	descriptionCollection?: string[];
+	descriptionCollection: string[];
 	subtitle?: string;
 	buttonText: string;
 	devLink?: string;
 	devLinkText?: string;
 }
 
-const LoginCard: Function = ({
+const LoginCard: React.FC<
+	{
+		props: LoginCardProps;
+		pop_appear?: boolean;
+		children?: React.ReactNode;
+	}
+> = ({
 	props,
 	pop_appear,
 	children
@@ -59,7 +65,7 @@ const LoginCard: Function = ({
 					height={50}
 					width={50}
 					radius="sm"
-				/>
+					/>
 				<div className="flex flex-col">
 					<p className="text-md">{title}</p>
 					<p className="text-small text-default-500 italic">{organization}</p>
@@ -68,8 +74,8 @@ const LoginCard: Function = ({
 			<Divider/>
 			<CardBody>
 				<QuoteCollection
-					quotes={props.descriptionCollection ? props.descriptionCollection : props.description}
-				/>
+					quotes={props.descriptionCollection}
+					/>
 				<div className="flex flex-col justify-center items-center h-full">
 					{children}
 				</div>
@@ -81,7 +87,7 @@ const LoginCard: Function = ({
 					isExternal
 					showAnchorIcon
 					href={devLink ? devLink : ""}
-				>
+					>
 					{devLinkText ? devLinkText : ""}
 				</Link>
 			</CardFooter>

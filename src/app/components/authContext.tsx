@@ -24,14 +24,24 @@ class Auth {
 			this.setAuthorized(true);
 		}
 	}
+
+	async hasAcceptedTerms(): Promise<boolean> {
+		return false;
+	}
 }
 
 export const AuthContext = React.createContext<{
 		auth: Auth;
 		authorized: boolean
-	} | null>(null);
+	}>({
+		auth: new Auth(() => {}),
+		authorized: false,
+	});
 
-export const AuthProvider: React.FC<React.ReactNode> = ({
+export const AuthProvider: React.FC<{
+	children: React.ReactNode,
+	hasValidToken: boolean
+}> = ({
 	children,
 	hasValidToken
 }: {
@@ -39,6 +49,7 @@ export const AuthProvider: React.FC<React.ReactNode> = ({
 	hasValidToken: boolean;
 }) => {
 	const [authorized, setAuthorized] = React.useState<boolean>(hasValidToken);
+	const [terms, setTerms] = React.useState<boolean>(false);
 	const auth = new Auth(
 		setAuthorized
 	);
