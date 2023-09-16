@@ -1,22 +1,35 @@
 "use client";
+import React from "react";
 import serverFetch from "./serverFetch";
 import NotionPageData from "./notion-views/NotionPage";
+import { Skeleton } from "@nextui-org/react";
 
 
-export default async function InfoPage({
-	apiInfo,
-}: {
-	apiInfo: any;
+export default function InfoPage({
+	
 }) {
 
-	// const apiInfo = await serverFetch("http://backend:3030/content/terms-and-conditions");
-	console.log(apiInfo);
+	const [notionPageData, setNotionPageData] = React.useState(null);
+
+	React.useEffect(() => {
+		// setLoading(false);
+		fetch("/api/app/?content=terms-and-conditions").then((data) => {
+			// setNotionPageData(data);
+			console.log(data);
+		});
+		// exampleFetch().then((data) => {
+		// 	// setNotionPageData(data);
+		// 	console.log(data);
+		// });
+	}, []);
 	return (
 		<>
-			<NotionPageData
-				list={apiInfo}
-			/>
-			<h1>here</h1>
+			{notionPageData ? 
+				<NotionPageData
+					list={notionPageData}
+				/> :
+				<h1>Loading</h1>
+			}
 		</>
 	);
 }

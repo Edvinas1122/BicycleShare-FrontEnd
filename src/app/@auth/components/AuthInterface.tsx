@@ -22,13 +22,16 @@ const AuthInterface: React.FC<{buttonText: string}> = ({
 	};
 	const [loading, setLoading] = React.useState<boolean>(auth_code ? true : false);
 	const [info, setInfo] = React.useState<string | UserInfo>("");
-
 	const responseEffect = (data: any) => {
 		setInfo(data.message);
 		setLoading(false);
 		setTimeout(() => {
-			auth.closeAuthorization();
-			router.replace("/");
+			auth.closeAuthorization(data.message.termsAccepted);
+			if (data.message.termsAccepted) {
+				router.replace("/");
+			} else {
+				router.replace("/legal");
+			}
 		}, 1500);
 	};
 
@@ -49,14 +52,14 @@ const AuthInterface: React.FC<{buttonText: string}> = ({
 
 	return (
 		auth_code ? 
-			<LoginInformation
-				loading={loading}
-				info={info} 
-			/> : 
-			<LoginButton 
-				handleLogin={handleOAuthRedirect}
-				buttonText={buttonText? buttonText : "Login"}
-			/>
+				<LoginInformation
+					loading={loading}
+					info={info} 
+					/>: 
+				<LoginButton 
+					handleLogin={handleOAuthRedirect}
+					buttonText={buttonText? buttonText : "Login"}
+				/>
 	);
 };
 

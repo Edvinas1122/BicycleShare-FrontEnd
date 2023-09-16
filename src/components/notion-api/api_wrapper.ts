@@ -71,15 +71,13 @@ class APIFetcher {
 		}
 		const filledEndpoint = this.fillEndpointParams(theEndpoint.path, endpointParams);
 		const requestBody = this.setRequestBody(theEndpoint.name, body);
-		console.log(this.headers)
-		console.log(this.apiBaseUrl)
-		console.log(filledEndpoint);
-		const response = await this.fetch(`${this.apiBaseUrl}${filledEndpoint}`, {
+		const fetchParams = {
 			method: theEndpoint.method,
 			headers: this.headers,
-			body: theEndpoint.method !== 'GET' ? JSON.stringify(requestBody): undefined,
+			body: theEndpoint.method !== 'GET' ? JSON.stringify(requestBody) : undefined,
 			...other,
-		});
+		};
+		const response = await this.fetch(`${this.apiBaseUrl}${filledEndpoint}`, fetchParams);
 		return response.json();
 	}
 
@@ -105,7 +103,7 @@ class APIFetcher {
 interface Endpoint {
 	name: string;
 	path: string;
-	method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+	method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 	body?: any;
 	params?: Record<string, string | number>; // path parameters
 }

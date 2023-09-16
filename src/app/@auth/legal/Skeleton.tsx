@@ -1,12 +1,16 @@
 "use client";
 import {
+	Card,
+	CardHeader,
+	CardBody,
+	CardFooter,
 	Skeleton
 } from "@nextui-org/react";
 
 
 export default function SkeletonLoad({ lineCount = 20 }) {
 	return (
-		<div className="flex flex-col">
+		<div className="flex flex-col justify-flex-start">
 			{Array.from({ length: lineCount }).map((_, index) => (
 				<Skeleton
 					key={index}

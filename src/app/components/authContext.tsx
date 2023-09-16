@@ -4,11 +4,14 @@ import React from 'react';
 class Auth {
 	private path = `${process.env.NEXT_PUBLIC_HOSTNAME}/api/auth`;
 	private setAuthorized: React.Dispatch<React.SetStateAction<boolean>>;
+	private setTerms: React.Dispatch<React.SetStateAction<boolean>>;
 	private lastSuccessfull: boolean = false;
 	constructor(
-		setAuthorized: React.Dispatch<React.SetStateAction<boolean>>
+		setAuthorized: React.Dispatch<React.SetStateAction<boolean>>,
+		setTerms: React.Dispatch<React.SetStateAction<boolean>>
 	) {
 		this.setAuthorized = setAuthorized;
+		this.setTerms = setTerms;
 	}
 
 	async login(code: string): Promise<any> {
@@ -19,9 +22,16 @@ class Auth {
 		return res;
 	}
 
-	public closeAuthorization(): void {
+	public displayTerms(): void {
+		
+	}
+
+	public closeAuthorization(closeTerms: boolean): void {
 		if (this.lastSuccessfull) {
 			this.setAuthorized(true);
+		}
+		if (closeTerms) { // close if accepted
+			this.setTerms(true);
 		}
 	}
 
@@ -33,29 +43,35 @@ class Auth {
 export const AuthContext = React.createContext<{
 		auth: Auth;
 		authorized: boolean
+		termsAccepted: boolean
 	}>({
 		auth: new Auth(() => {}),
 		authorized: false,
+		termsAccepted: false
 	});
 
 export const AuthProvider: React.FC<{
 	children: React.ReactNode,
-	hasValidToken: boolean
+	hasValidToken: boolean,
+	hasTheAcceptedTerms: boolean
 }> = ({
 	children,
-	hasValidToken
+	hasValidToken,
+	hasTheAcceptedTerms
 }: {
 	children: React.ReactNode;
 	hasValidToken: boolean;
+	hasTheAcceptedTerms: boolean;
 }) => {
 	const [authorized, setAuthorized] = React.useState<boolean>(hasValidToken);
-	const [terms, setTerms] = React.useState<boolean>(false);
+	const [termsAccepted, setTerms] = React.useState<boolean>(hasTheAcceptedTerms);
 	const auth = new Auth(
-		setAuthorized
+		setAuthorized,
+		setTerms,
 	);
 
 	return (
-		<AuthContext.Provider value={{auth, authorized}}>
+		<AuthContext.Provider value={{auth, authorized, termsAccepted}}>
 			{children}
 		</AuthContext.Provider>
 	);

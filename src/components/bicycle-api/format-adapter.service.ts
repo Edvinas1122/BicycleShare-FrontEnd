@@ -56,13 +56,31 @@ export default class NotionFormatterService {
 		return list;
 	}
 
-	async getPropertiesList(databeseId?: string): Promise<any[]> {
-		const list = await this.notion.queryDatabase(databeseId);
+	async getPropertiesList(databeseId: string, query?: any): Promise<any[]> {
+		const list = await this.notion.queryDatabase(databeseId, query);
 		if (!list.results) throw new BadRequestException("No results found");
 		const filteredList = list.results.map((item: any) => {
 			return item.properties;
 		});
 		return filteredList;
+	}
+
+	async getUser(userId: string): Promise<any> {
+		const user = await this.notion.getUser(userId);
+		if (!user) throw new BadRequestException("No results found");
+		return user;
+	}
+
+	async getDatabaseContent(databaseId: string, query?: any): Promise<DatabaseList> {
+		const list = await this.notion.queryDatabase(databaseId, query);
+		if (!list.results) throw new BadRequestException(list.message);
+		return new DatabaseList(list, this.notion);
+	}
+
+	async getPage(pageId: string): Promise<any> {
+		const page = await this.notion.getPage(pageId);
+		if (!page) throw new BadRequestException("No results found");
+		return new Page(page, this.notion);
 	}
 
 	private async handleSubBlocks(blocks: NotionBlock[]): Promise<NotionBlock[]> {
@@ -95,5 +113,212 @@ export default class NotionFormatterService {
 		if (!linkedPage.properties) throw new ConflictException({ message: "notion api data integrity logic failure" });
 		block.children = linkedPage;
 		return block;
+	}
+
+	public getDatabaseEntryBuilder(database_id: string): any {
+		return new DatabaseEntryBuilder(database_id, this.notion);
+	}
+
+	public getDatabaseQueryBuilder(database_id: string): any {
+		return new DatabaseQueryBuilder(database_id, this.notion);
+	}
+
+}
+
+class DatabaseEntryBuilder {
+	private properties: any = {};
+
+	constructor(
+		private database_id: string,
+		private notion: NotionService, // Make sure NotionService is properly imported and defined
+	) {}
+
+	public addTitle(name: string, content: string) {
+		this.properties[name] = {
+			title: [
+			{
+				text: {
+				content: content,
+				},
+			},
+			],
+		};
+		return this;
+	}
+
+	public addRichText(name: string, content: string) {
+		this.properties[name] = {
+			rich_text: [
+			{
+				text: {
+				content: content,
+				},
+			},
+			],
+		};
+		return this;
+	}
+
+	public addUrl(name: string, url: string) {
+		this.properties[name] = {
+			url: url,
+		};
+		return this;
+	}
+
+	public addNumber(name: string, number: number) {
+		this.properties[name] = {
+			number: number,
+		};
+		return this;
+	}
+
+	public async postEntry(): Promise<any> {
+		const formattedProperties = {
+			parent: { database_id: this.database_id },
+			properties: this.properties,
+		};
+		return await this.notion.createPage(formattedProperties);
+	}
+}
+
+enum FilterCondition {
+	equals = "equals",
+	does_not_equal = "does_not_equal",
+	greater_than = "greater_than",
+	less_than = "less_than",
+	containts = "contains",
+}
+
+enum FilteredDataType {
+	number = "number",
+	relation = "relation",
+}
+
+class DatabaseQueryBuilder {
+	private filterTokens: any[] = [];
+	private filter: any = {};
+	private sorts: any[] = [];
+	constructor(
+		private database_id: string,
+		private notion: NotionService,
+	) {
+	}
+
+	private convertFilterInfoToFilter() {
+		if (this.filterTokens.length === 1) {
+			this.filter = this.filterTokens[0];
+			return;
+		}
+		let currentNode = this.filter;
+		this.filterTokens.forEach((token) => {
+			if (token.token === "and") {
+				currentNode.and = [];
+				currentNode = currentNode.and;
+			} else if (token.token === "or") {
+				currentNode.or = [];
+				currentNode = currentNode.or;
+			} else {
+				currentNode.push(token);
+			}
+		});
+	}
+
+	public and() {
+		this.filterTokens.push({
+			token: "and",
+		});
+		return this;
+	}
+
+	public or() {
+		this.filterTokens.push({
+			token: "or",
+		});
+		return this;
+	}
+
+	public addFilter(
+		propertyName: string,
+		dataType: FilteredDataType,
+		matching: FilterCondition,
+		value: any
+	) {
+		this.filterTokens.push({
+			property: propertyName,
+			[dataType]: {
+				[matching]: value,
+			}
+		});
+		return this;
+	}
+
+	public addSort(
+		propertyName: string,
+		direction: "ascending" | "descending"
+	) {
+		this.sorts.push({
+			property: propertyName,
+			direction: direction,
+		});
+		return this;
+	}
+
+	public async execute(): Promise<any> {
+		this.convertFilterInfoToFilter();
+		const formattedQuery = {
+			filter: this.filter,
+			sorts: this.sorts,
+		};
+		const database = await this.notion.queryDatabase(
+			this.database_id,
+			formattedQuery
+		);
+		return new DatabaseList(database, this.notion);
+	}
+}
+
+
+type DatabaseListProps = {
+	object: "list";
+	results: any[];
+}
+
+export class DatabaseList {
+	constructor(
+		private list: DatabaseListProps,
+		private notion: NotionService,
+	) {}
+
+	getPropertiesList(): any[] {
+		const filteredList = this.list.results.map((item: any) => {
+			const data = item.properties;
+			data.id = item.id;
+			return data;
+		});
+		return filteredList;
+	}
+
+	async getPagesList(): Promise<any[]> {
+		const pagesIDs: string[] = this.list.results.map((item: any) => {
+			return item.id;
+		});
+		return Promise.all(pagesIDs.map(async (pageId: string) => {
+			const page = await this.notion.getPage(pageId);
+			return new Page(page, this.notion);
+		}));
+	}
+}
+
+export class Page {
+	constructor(
+		public page: any,
+		private notion: NotionService,
+	) {}
+
+	async getChildrenBlocks(): Promise<NotionBlock[]> {
+		const children = await this.notion.getBlockChildren(this.page.id);
+		if (!children.results) throw new ConflictException({ message: "notion api data integrity logic failure" });
+		return children.results;
 	}
 }

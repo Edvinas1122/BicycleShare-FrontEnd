@@ -34,18 +34,31 @@ export default class NotionService {
 		});
 	}
 
-	async queryDatabase(databaseId?: string, other?: any) {
+	async queryDatabase(databaseId: string, query: any, other?: any) {
 		return this.api.queryDatabase({
 			params: databaseId ? { databaseId: databaseId } : undefined,
+			body: query,
 			other: this.otherParams,
 		});
 	}
 
 	async search(query: string, other?: any) {
 		return this.api.search({
-			body: {
-				query: query,
-			},
+			body: query,
+			other: this.otherParams,
+		});
+	}
+
+	async getUser(userId: string, other?: any) {
+		return this.api.getUser({
+			params: userId ? { userId: userId } : undefined,
+			other: this.otherParams,
+		});
+	}
+
+	async createPage(body: any, other?: any) {
+		return this.api.createPage({
+			body: body,
 			other: this.otherParams,
 		});
 	}

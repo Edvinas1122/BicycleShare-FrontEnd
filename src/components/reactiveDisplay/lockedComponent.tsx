@@ -9,14 +9,14 @@ const LockedDisplay = ({
 	children: React.ReactNode;
 }): React.FC => {
 
-	const {auth, authorized} = React.useContext(AuthContext);
+	const {auth, authorized, termsAccepted} = React.useContext(AuthContext);
 
-	if (!authorized) {
+	if (!termsAccepted) {
 		return null;
 	}
 
 	return (
-		<section className={"pop-appear"}>
+		<section className={""}>
 			{children}
 		</section>
 	);

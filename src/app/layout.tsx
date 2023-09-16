@@ -3,20 +3,22 @@ import "./animations.css"
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { AppGlobalProviders } from "./components/globalProviders"
-import { hasAVaildToken } from "@/components/next-api-utils/validation"
+import { Token } from "@/components/next-api-utils/validation"
 import {appLoginConfig} from "@/conf/organisation.conf";
 import LockedDisplay from "@/components/reactiveDisplay/lockedComponent";
+import DashBoardFrame from "./DashBoardFrame"
 
 /*
-	use 
+	NextUI library
 	https://nextui.org/docs/guide/installation
 */ 
 
 const inter = Inter({ subsets: ['latin'] })
 
 interface RootLayoutProps {
-	children: React.ReactNode
-	auth: React.ReactNode
+	children: React.ReactNode;
+	auth: React.ReactNode;
+	bicycles: React.ReactNode;
 }
 
 export const metadata: Metadata = {
@@ -27,18 +29,22 @@ export const metadata: Metadata = {
 export default function RootLayout(
 	props: RootLayoutProps
 ) {
-	const hasValidToken = hasAVaildToken();
-	// const hasValidToken = true;
+	const token = new Token();
+	const acceptedTerms = token.hasAcceptedTerms();
 	return (
 		<html lang="en" className={"fixed inset-0 flex items-center justify-center"}>
 			<body>
 			<AppGlobalProviders
-				hasValidToken={hasValidToken}
+				hasValidToken={token.hasAVaildToken()}
+				hasTheAcceptedTerms={acceptedTerms}
 			>
 				<main className={inter.className}>
-					{!hasValidToken ? props.auth: null}
+					{!acceptedTerms ? props.auth: null}
 					<LockedDisplay>
-					{props.children}
+							{props.children}
+						<DashBoardFrame>
+							{props.bicycles}
+						</DashBoardFrame>
 					</LockedDisplay>
 				</main>
 			</AppGlobalProviders>

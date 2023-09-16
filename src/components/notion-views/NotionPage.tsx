@@ -1,12 +1,17 @@
+"use client";
+import React, {use, Suspense} from "react";
 import ParseError from "./utils/error";
 import BlocksView from "./render/blocks";
 
 
-const NotionPageData = async ({
-	list
+const NotionPageData = ({
+	data
 }: {
-	list: any
+	data: Promise<any>
 }) => {
+
+	const list = use(data);
+
 	if (!list?.object || list.object !== 'list' || list.results === undefined) {
 		return (
 			<ParseError />

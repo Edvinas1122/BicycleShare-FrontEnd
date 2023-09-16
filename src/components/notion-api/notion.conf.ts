@@ -12,6 +12,8 @@ export enum NotionEndpoints {
     queryDatabase = 'queryDatabase',
     getPagePropertyItem = 'getPagePropertyItem',
     search = 'search',
+    getUser = 'getUser',
+    createPage = 'createPage',
 }
 
 export const notionAPIConfig = (
@@ -22,6 +24,7 @@ export const notionAPIConfig = (
     headers: {
         'Notion-Version': '2022-06-28',
         'Authorization': `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
     },
     endpoints: [
         { name: NotionEndpoints.getPage, path: 'pages/:pageId', method: 'GET' },
@@ -30,7 +33,9 @@ export const notionAPIConfig = (
         { name: NotionEndpoints.getDatabase, path: 'databases/:databaseId', method: 'GET' },
         { name: NotionEndpoints.queryDatabase, path: 'databases/:databaseId/query', method: 'POST' },
         { name: NotionEndpoints.getPagePropertyItem, path: 'pages/:pageId/properties/:propertyId', method: 'GET' },
+        { name: NotionEndpoints.getUser, path: 'users/:userId', method: 'GET' },
         { name: NotionEndpoints.search, path: 'search', method: 'POST' },
+        { name: NotionEndpoints.createPage, path: 'pages', method: 'POST'},
     ],
     defaultParams: parameters(rootPageDir),
 });

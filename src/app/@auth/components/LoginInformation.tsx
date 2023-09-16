@@ -65,6 +65,7 @@ const AuthProfile = ({
 					isBordered: true,
 				}}
 			/>
+			{/* <p>{user.termsAccepted ? "yes" : "no"}</p> */}
 		</div>
 	);
 }

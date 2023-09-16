@@ -30,7 +30,60 @@ export const hasAVaildToken = (): boolean => {
 	const cookieStore = cookies();
 	const token = cookieStore.get('token');
 	const hasValidToken = token ? validateToken(token.value): false;
-	return hasValidToken ? true: false;
+	return hasValidToken;
+}
+
+export const hasAcceptedTerms = (): boolean => {
+	const cookieStore = cookies();
+	const token = cookieStore.get('token');
+	const hasValidToken = token ? validateToken(token.value): false;
+	if (!hasValidToken) {
+		return false;
+	}
+	console.log("hasValidToken", hasValidToken);
+	return hasValidToken.termsAccepted;
+}
+
+export const getUserFromToken = async (): Promise<any> => {
+	const cookieStore = cookies();
+	const token = cookieStore.get('token');
+	const decoded = validateToken(token.value);
+	return decoded;
+}
+
+export class Token {
+	private token: any;
+	constructor() {
+		const cookieStore = cookies();
+		this.token = cookieStore.get('token');
+	}
+
+	public hasAVaildToken(): boolean {
+		const hasValidToken = this.token ? validateToken(this.token.value): false;
+		return hasValidToken;
+	}
+
+	public hasAcceptedTerms(): boolean {
+		if (!this.hasAVaildToken()) {
+			return false;
+		}
+		const decoded = validateToken(this.token.value);
+		return decoded.termsAccepted;
+	}
+
+	public getUserFromToken(): any {
+		const decoded = validateToken(this.token.value);
+		return decoded;
+	}
+
+	public updateUserToken(property: string, value: any): void {
+		const decoded = validateToken(this.token.value);
+		decoded[property] = value;
+		delete decoded.exp;
+		const newToken = generateToken(decoded);
+		cookies().delete('token');
+		cookies().set('token', newToken);
+	}
 }
 
 export function ValidateToken(tokenToValidate: string, routeHandler: Function): Function
