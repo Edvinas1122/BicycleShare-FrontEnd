@@ -16,7 +16,7 @@ export default function handleNumberedListItem({
 
 	const richText = displayRichText(numbered_list_item.rich_text);
 	return (
-		<li key={numbered_list_item.rich_text.text} className={"notion-numbered_list-item"}>
+		<li key={numbered_list_item.rich_text[0].plain_text} className={"notion-numbered_list-item"}>
 			{richText}
 			{children && children}
 		</li>

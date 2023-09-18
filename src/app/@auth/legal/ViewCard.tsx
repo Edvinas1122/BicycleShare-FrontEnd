@@ -56,7 +56,7 @@ const ViewCard: React.FC<ViewCardProps> = ({
 			<CardHeader>
 				{headerContent}
 			</CardHeader>
-			<CardBody className="terms h-[90%]">
+			{bodyContent && <CardBody className="terms h-[90%]">
 				<ScrollShadow hideScrollBar isEnabled={true}>
 					<Suspense fallback={<SkeletonLoad/>}>
 						<NotionPageData
@@ -64,7 +64,7 @@ const ViewCard: React.FC<ViewCardProps> = ({
 						/>
 					</Suspense>
 				</ScrollShadow>
-			</CardBody>
+			</CardBody>}
 			<CardFooter className="h-[100px] flex flex-col justify-center">
 				<AcceptButton
 					handleLogin={handleLoginBrach}
@@ -77,7 +77,7 @@ const ViewCard: React.FC<ViewCardProps> = ({
 };
 
 export function ViewCardSceleton() {
-	// You can add any UI inside Loading, including a Skeleton.
+	const lineCount = 10;
 	return (
 		<Card className="w-[400px] mx-auto loading max-h-[800px] h-[80vh]">
 			<CardHeader>

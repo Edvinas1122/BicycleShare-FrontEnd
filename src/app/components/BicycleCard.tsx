@@ -4,12 +4,23 @@ import {Card, CardBody, CardFooter, CardHeader} from '@nextui-org/card';
 import {Image, Skeleton, User} from "@nextui-org/react";
 import React, { use, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
+import {
+	dictionaries,
+} from '@/conf/dictionary.conf';
 
 interface BicycleInfo {
 	lockerId: number;
 	name: string;
-	image: string;
 	available: boolean;
+}
+
+type UseInfo = {
+	id: string;
+	name: string;
+	fullName: string;
+	image: {url:string}
+	start: number;
+	end: number;
 }
 
 export default function BicycleCard({
@@ -18,7 +29,7 @@ export default function BicycleCard({
 	imageLink,
 }: {
 	props: BicycleInfo;
-	user: Promise<User>;
+	user: Promise<UseInfo | null>;
 	imageLink: Promise<string>;
 }) {
 
@@ -34,30 +45,27 @@ export default function BicycleCard({
 	return (
 		<div className="">
 			<Card className={"w-[350px] h-[400px]"}>
-			<CardHeader>
+			<CardHeader className={"h-[80px]"}>
 				<BicycleHeader
 					title={props.name}
 					user={user}
 					availability={props.available}
 				/>
 			</CardHeader>
-			<CardBody width={300} heigt={200} style={{
+			<CardBody className={"h-[200px]"} style={{
 				opacity: props.available ? "100%" : "35%",
 				filter: props.available ? "none" : "grayscale(50%)",
 			}}>
 				<Suspense fallback={
 					<Skeleton className="rounded-lg" style={{borderRadius: "14px"}}>
-						<div style={{
-							width: "300px",
-							height: "200px",
-							borderRadius: "40px",
-						}}></div>
+						<div className={"h-[200px] w-[320px]"}>
+						</div>
 					</Skeleton>
 				}>
 					<ImageSuspense
 						src={imageLink}
 						alt={"Bicycle_Image_"+props.name}
-						width={300}
+						width={320}
 						height={200}
 					/>
 				</Suspense>
@@ -65,10 +73,10 @@ export default function BicycleCard({
 			<CardFooter className={"flex flex-row gap-2"}>
 				<Button
 					onPress={handler}
-				>Reserve</Button>
+				>{dictionaries.en.reserve}</Button>
 				<Button
 					onPress={handlerLastUsers}
-				>Last Users</Button>
+				>{dictionaries.en.last_users}</Button>
 			</CardFooter>
 			</Card>
 		</div>
@@ -88,19 +96,17 @@ export function BicycleCardSkeleton({
 	return (
 		<div className="bicycle-card">
 			<Card style={style}>
-			<CardHeader height={100}>
+			<CardHeader className={"h-[80px]"}>
 				<Skeleton className="rounded-lg">
 					<h2 className={"text-2xl"}>title goes here</h2>
 				</Skeleton>
 			</CardHeader>
-			<CardBody width={300} heigt={200}>
+			<CardBody className={"h-[200px]"}>
 			<Skeleton className="rounded-lg">
-				<Image 
-						src={""}
-						alt={"Bicycle_Image_"}
-						width={300}
-						height={200}
-					/>
+				<div style={{
+					width: "320px",
+					height: "400px"
+				}}></div>
 			</Skeleton>
 			</CardBody>
 			<CardFooter>
@@ -120,7 +126,7 @@ const BicycleHeader = ({
 }: {
 	title: string;
 	availability: boolean;
-	user: Promise<User>;
+	user: Promise<UseInfo | null>;
 }) => {
 
 	const classNames = `
@@ -131,7 +137,9 @@ const BicycleHeader = ({
 		w-full
 	`;
 
-	const availabilityInfo = availability ?  "Returned by" : "Held by";
+	const availabilityInfo = availability ? 
+		dictionaries.en.returned_by :
+		dictionaries.en.held_by;
 
 	return (
 		<div className={classNames}>
@@ -149,6 +157,8 @@ const BicycleHeader = ({
 	);
 }
 
+import NextImage from 'next/image';
+
 const ImageSuspense = ({
 	src,
 	alt,
@@ -165,12 +175,21 @@ const ImageSuspense = ({
 
 	return (
 		<>
-			<Image
+			<NextImage
 				src={content}
-				alt={alt}
 				width={width}
 				height={height}
-				/>
+				alt={alt}
+				className={"rounded-lg"}
+				placeholder="blur"
+			/>
+			{/* <Image
+				src={content}
+				width={width}
+				isBlurred={true}
+				radius="lg"
+				disableSkeleton={true}
+				/> */}
 		</>
 	);
 }
@@ -178,20 +197,24 @@ const ImageSuspense = ({
 const UserAvatar = ({
 	user,
 }: {
-	user: Promise<User>;
+	user: Promise<UseInfo | null>;
 }) => {
 	
-	const data: User = use(user);
+	const data: UseInfo | null = use(user);
+
+	if (!data) {
+		return null;
+	}
 
 	return (
 		<>
 			<User
-				name={data?.name ? data.name : "not used"}
-				description={data?.fullName ? data.fullName : "not used"}
+				name={data.name}
+				description={data?.fullName}
 				className="loader-fade-appear"
 				avatarProps={{
-					src: data?.image?.url,
-					size: "small",
+					src: data.image.url,
+					size: "md",
 				}}
 				/>
 		</>

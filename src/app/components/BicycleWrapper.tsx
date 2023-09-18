@@ -16,17 +16,19 @@ const BicycleListWrapper = ({
 		flex-wrap 
 		justify-center 
 		gap-4
+		overflow-y-auto 
+		max-h-screen 
+		max-w-full 
 		pop-appear
 	`;
-	const style = {
-		overflowY: "auto",
-		maxHeight: "100vh", 
-		maxWidth: "100%", 
-	};
 
 
 	return (
-		<ScrollShadow hideScrollBar isEnabled={false} className={bicycleListWrapperStyle} style={style}>
+		<ScrollShadow
+			hideScrollBar
+			isEnabled={false}
+			className={bicycleListWrapperStyle}
+		>
 			<Suspense fallback={<Loading/>}>
 			{children}
 			</Suspense>

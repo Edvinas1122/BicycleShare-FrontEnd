@@ -7,54 +7,44 @@ import { BadRequestException, ConflictException, NotFoundException } from "../ne
 	also provides database interfaces for building queries or retrieving data
 */
 
-enum Content {
-	TERMS_CONDITIONS = "terms-and-conditions",
-	HOW_TO_USE = "how-to-use",
-	BICYCLES = "bicycles",
-	TIMESTAMPS = "timestamps",
-	DEV = "dev",
+export type ServiceConfig = {
+	TERMS_CONDITIONS: string | undefined;
+	BICYCLES: string | undefined;
+	TIMESTAMPS: string | undefined;
+	SIGNED_USERS_DATABASE: string | undefined;
+	// HOW_TO_USE: string | undefined;
+	// DEV: string | undefined;
 }
 
-type ServiceConfig = {
-	[key in Content]: string;
-}
+type ValidatedServiceConfig = {
+	TERMS_CONDITIONS: string;
+	BICYCLES: string;
+	TIMESTAMPS: string;
+	SIGNED_USERS_DATABASE: string;
+	// HOW_TO_USE: string | undefined;
+	// DEV: string | undefined;
+};
 
 export default class BicycleShareContentService {
+	private config: ValidatedServiceConfig;
 	constructor(
 		private notionContentService: NotionFormatterService,
-		private config: ServiceConfig,
+		config: ServiceConfig,
 	) {
-	}
-
-	async map(content: string): Promise<any> {
-		switch (content) {
-			case Content.TERMS_CONDITIONS:
-				// return this.getRootPage();
-				return this.getTermsAndConditions();
-			case Content.HOW_TO_USE:
-				return this.getHowToUse();
-			case Content.BICYCLES:
-				return this.getBicycles();
-			case Content.TIMESTAMPS:
-				return this.getTimeStamps();
-			case Content.DEV:
-			default:
-				return "No content found";
+		if (Object.values(config).some(value => value === undefined)) {
+			throw new Error('All config values must be defined');
 		}
+	  
+		this.config = config as ValidatedServiceConfig;
 	}
 
 	async getTermsAndConditions() {
 		return await this.getContent(
-			// this.config[Content.TERMS_CONDITIONS] ||
+			// this.config.TERMS_CONDITIONS ||
 			this.config.TERMS_CONDITIONS
 		);
 	}
 
-	async getHowToUse() {
-		return await this.getContent(
-			this.config.HOW_TO_USE
-		);
-	}
 
 	async getBicycles(): Promise<BicycleInfo[]> {
 		// function delay(ms) {
@@ -123,10 +113,17 @@ type TokenUser = {
 }
 
 export class UserService {
+	private config: ValidatedServiceConfig;
 	constructor(
 		private notionContentService: NotionFormatterService,
-		private config: ServiceConfig,
-	) {}
+		config: ServiceConfig
+	) {
+		if (Object.values(config).some(value => value === undefined)) {
+			throw new Error('All config values must be defined');
+		}
+	  
+		this.config = config as ValidatedServiceConfig;
+	}
 
 	async getUserByIntraID(userID: number): Promise<User | null> {
 		const query = this.notionContentService.getDatabaseQueryBuilder(
@@ -164,7 +161,7 @@ class UserInterface {
 	constructor(
 		private user: User,
 		private notionContentService: NotionFormatterService,
-		private config: ServiceConfig,
+		private config: ValidatedServiceConfig,
 	) {}
 
 	async acceptTermsAndConditions(): Promise<any> {
@@ -189,7 +186,7 @@ class UserInterface {
 
 	private async exists(): Promise<boolean> {
 		const query = this.notionContentService.getDatabaseQueryBuilder(
-			this.config.SIGNED_USERS_DATABASE,
+			this.config.SIGNED_USERS_DATABASE
 		);
 		query.addFilter("IntraID", "number", "equals", this.user.id);
 		const database = await query.execute();
@@ -202,6 +199,7 @@ type BicycleData = {
 	id: string;
 	lockerId: number;
 	name: string;
+	available: boolean;
 	disabledReason: string;
 }
 
@@ -209,17 +207,18 @@ type Use = {
 	id: string;
 	name: string;
 	fullName: string;
-	image: string;
-	start: any;
-	end: any;
+	image: {url:string};
+	start: number;
+	end: number;
 }
 
 export class BicycleInfo {
 	constructor(
-		public data: BicycleData,
+		public data: any,
 		private notionContentService: NotionFormatterService,
-		private config: ServiceConfig,
-	) {}
+		private config: ValidatedServiceConfig,
+	) {
+	}
 
 	async getLastUse(): Promise<Use | null>
 	{
@@ -250,7 +249,7 @@ export class BicycleInfo {
 
 	async getLastUses(): Promise<Use[] | null> {
 		const query = this.notionContentService.getDatabaseQueryBuilder(
-			this.config.TIMESTAMPS,
+			this.config.TIMESTAMPS
 		);
 		query.and().addFilter("Bicycles", "relation", "contains", this.data.id);
 		query.addSort("Share Started (UNIX)", "descending");
@@ -259,13 +258,13 @@ export class BicycleInfo {
 			return null;
 		}
 		const lastTimestamps = database.getPropertiesList();
-		const uses = await lastTimestamps.map(async (timestamp, index) => {
+		const uses = await lastTimestamps.map(async (timestamp: any, index: number) => {
 			const lastUser  = timestamp?.Holder.relation[0]?.id;
 			const userData = await this.notionContentService.getPage(lastUser);
 			const user = userData.page.properties;
 			const startDate = new Date(timestamp["Share Started (UNIX)"].number);
 			const endDate = new Date(timestamp["Returned On (UNIX)"].number);
-			const options = { 
+			const options: Intl.DateTimeFormatOptions = { 
 				year: 'numeric', 
 				month: 'short', 
 				day: 'numeric', 
@@ -287,10 +286,7 @@ export class BicycleInfo {
 		return uses;
 	}
 
-	async getLastTimestamps(): Promise<Timestamp[] | null> {
-
-	}
-
+	//**  because 
 	async getImageLink(): Promise<string> {
 		return this.notionContentService.getPageContent(this.data.id).then((page: any) => {
 		  const image = page.results[0].image.file.url;

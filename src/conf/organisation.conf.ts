@@ -16,7 +16,7 @@ export const appLoginConfig: LoginCardProps = {
 	devLinkText: "About the Project"
 };
 
-export const authCredentials = {
+const authCredentials = {
 	oAuth2: {
 		link: process.env.NEXT_PUBLIC_OAUTH_LINK || "",
 		client_id: process.env.OAUTH_CLIENT_ID || "",
@@ -24,3 +24,11 @@ export const authCredentials = {
 		redirect_uri: process.env.OAUTH_REDIRECT_URI || "",
 	}
 };
+
+export const getOAuth2Config = () => {
+	return authCredentials.oAuth2;
+}
+
+export const getLoginLink = () => {
+	return process.env.NEXT_PUBLIC_OAUTH_LINK
+}

@@ -1,8 +1,9 @@
 "use client";
 import React from 'react';
+import { getHostConfig } from '@/conf/host.conf';
 
 class Auth {
-	private path = `${process.env.NEXT_PUBLIC_HOSTNAME}/api/auth`;
+	private path = `${getHostConfig().hostName}/api/auth`;
 	private setAuthorized: React.Dispatch<React.SetStateAction<boolean>>;
 	private setTerms: React.Dispatch<React.SetStateAction<boolean>>;
 	private lastSuccessfull: boolean = false;
@@ -45,7 +46,7 @@ export const AuthContext = React.createContext<{
 		authorized: boolean
 		termsAccepted: boolean
 	}>({
-		auth: new Auth(() => {}),
+		auth: new Auth(() => {}, () => {}),
 		authorized: false,
 		termsAccepted: false
 	});

@@ -1,25 +1,25 @@
 "use client";
-import React from "react";
+import React, {useContext} from "react";
 import { AuthContext } from '@/app/components/authContext';
 
-
-const LockedDisplay = ({
-	children,
-}: {
+interface LockedDisplayProps {
 	children: React.ReactNode;
-}): React.FC => {
+}
 
-	const {auth, authorized, termsAccepted} = React.useContext(AuthContext);
+const LockedDisplay: React.FC<LockedDisplayProps> = ({
+	children
+}) => {
+	const {
+		auth,
+		authorized,
+		termsAccepted
+	} = useContext(AuthContext);
 
 	if (!termsAccepted) {
 		return null;
 	}
 
-	return (
-		<section className={""}>
-			{children}
-		</section>
-	);
+	return <section>{children}</section>;
 };
 
 export default LockedDisplay;

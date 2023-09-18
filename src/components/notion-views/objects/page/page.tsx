@@ -1,6 +1,7 @@
 import { Icon } from "../block/icon";
 import CoverView from "./cover";
 import TitleIcon from "./title_icon";
+import { File } from "../block/icon";
 
 interface Page {
 	id: string;
@@ -39,9 +40,9 @@ export default function NotionPageView({
 	const title = page.properties.title.title[0].plain_text;
 	return (
 		<div className="notion-page-scroller">
-			<CoverView
+			{/* <CoverView
 				cover={cover}
-			/>
+			/> */}
 			<main className="notion-page
 				notion-page-has-cover
 				notion-page-has-icon
@@ -50,7 +51,7 @@ export default function NotionPageView({
 				index-page"
 			>
 			<TitleIcon
-				icon={icon}
+				icon={icon as File}
 				title={title}
 			/>
 			{children}

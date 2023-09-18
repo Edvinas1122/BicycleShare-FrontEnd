@@ -9,22 +9,34 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@edvinas1122/api_wrapper": "file:/modules/@edvinas1122/api_wrapper",
+    "@edvinas1122/api_wrapper": "^1.0.0-alpha.2",
     "@edvinas1122/notion-views": "file:/modules/@edvinas1122/notion-views",
+    "@fortawesome/fontawesome-svg-core": "^6.4.2",
+    "@fortawesome/free-brands-svg-icons": "^6.4.2",
+    "@fortawesome/free-solid-svg-icons": "^6.4.2",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@nextui-org/react": "^2.0.19",
+    "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "20.4.10",
-    "@types/react": "18.2.20",
+    "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
     "eslint": "8.47.0",
     "eslint-config-next": "13.4.13",
     "framer-motion": "^10.15.2",
-    "jsonwebtoken": "^9.0.1",
+    "jsonwebtoken": "^9.0.2",
     "next": "13.4.13",
+    "null-loader": "^4.0.1",
     "postcss": "8.4.27",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "sharp": "^0.32.6",
     "tailwindcss": "3.3.3",
-    "typescript": "5.1.6"
+    "typescript": "5.2.2"
+  },
+  "devDependencies": {
+    "react-to-print": "^2.14.13",
+    "@types/react": "18.2.21",
+    "typescript": "5.2.2"
   }
 }

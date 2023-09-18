@@ -1,31 +1,16 @@
 import
-	constructBicycleService
-from "@/components/bicycle-api/bicycle.module";
-import
-	SuspendedText
-from "./suspendedText";
+	{dictionaries}
+from "@/conf/dictionary.conf";
 
-export default function Page({ 
-	params 
-}: { 
-	params: { id: string } 
-}) {
-
-	const service = constructBicycleService({cache: 'no-store'});
-	const bicycle = service.getBicycleInterface(Number(params.id));
-	const bicycleName = bicycle.then((bicycle) => bicycle.data.Name.title[0].plain_text);
-
+export default function Page() {
 	return (
 		<div>
-				<p> 
-					Are you sure you want to reserve <b>{<SuspendedText
-						fallback="this bicycle"
-						promisedText={bicycleName}
-					/>}</b>?
-				</p>
-				<p>
-					As you confirm, proceeed with enstructions on the screen.
-				</p>
+			<h1 className="text-xl font-bold"> 
+				{dictionaries.en.reserve}
+			</h1>
+			<p>
+				{dictionaries.en.reserve_process_reassurance}
+			</p>
 		</div>
 	);
 }

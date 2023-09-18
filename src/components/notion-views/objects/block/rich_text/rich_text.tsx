@@ -1,8 +1,8 @@
 import handleMention from "./mention";
 import handleEquation from "./equation";
 
-export interface richText {
-	type: string;
+export type richText = {
+	type: "rich_text";
 	text: {
 		content: string;
 		link?: string;
@@ -19,26 +19,26 @@ export interface richText {
 	href: string;
 }
 
-type richTextHandler = (richText: richText) => any;
+type richTextHandler = (richText: richText) => JSX.Element | null;
 
 const richTextHandlers: { [key: string]: richTextHandler} = {
-	"text": handleText,
-	"mention": handleMention,
-	"equation": handleEquation,
+	text: handleText,
+	mention: handleMention,
+	equation: handleEquation,
 };
 
-export default function displayRichText(richTextSegments: richText[]) {
+export default function displayRichText(richTextSegments: richText[]): JSX.Element[] | null {
 	if (!richTextSegments) {
-		return;
+		return null;
 	}
 	return richTextSegments.map((richTextSegment) => {
 					const handler = richTextHandlers[richTextSegment.type];
 					if (!handler) {
 						console.warn(`No handler for rich text type ${richTextSegment.type}`);
-						return;
+						return null;
 					}
 					return handler(richTextSegment);
-				});
+				}).filter((element) => element !== null) as JSX.Element[];
 }
 
 function handleText(richText: richText) {

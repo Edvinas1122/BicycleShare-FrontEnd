@@ -1,11 +1,11 @@
-import { Icon } from "../block/icon";
+import { File } from "../block/icon";
 import Image from 'next/image';
 
 export default function TitleIcon({
 	icon,
 	title,
 }: {
-	icon: Icon,
+	icon: File,
 	title: string
 }): any
 {

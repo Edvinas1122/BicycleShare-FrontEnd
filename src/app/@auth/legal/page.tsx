@@ -10,6 +10,11 @@ from "./ViewCard";
 import
 	{getUserFromToken, Token}
 from "@/components/next-api-utils/validation";
+import
+	{
+		dictionaries
+	}
+from "@/conf/dictionary.conf";
 
 
 export default function Page() {
@@ -34,7 +39,7 @@ export default function Page() {
 		<>
 			<ViewCard
 				headerContent={
-					<h1>Terms & Conditions</h1>
+					<h1>{dictionaries.en.terms_conditions}</h1>
 				}
 				bodyContent={
 					termsAndConditions

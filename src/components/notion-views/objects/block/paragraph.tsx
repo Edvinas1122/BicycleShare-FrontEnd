@@ -10,10 +10,10 @@ export default function handleParagraph({
 }: {
 	paragraph: Paragraph,
 }): any {
-	const richText: React.element = displayRichText(paragraph.rich_text);
+	const richText: JSX.Element[] | null = displayRichText(paragraph.rich_text);
 	return (
 		<p className={"notion-paragraph"}>
-			{richText}
+			{richText && richText}
 		</p>
 	);
 }

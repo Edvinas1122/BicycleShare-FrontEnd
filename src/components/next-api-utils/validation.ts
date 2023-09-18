@@ -7,7 +7,7 @@ const secret: string = "cat";
 export const validateToken = (
 	token: string,
 	secret_param?: string
-) => {
+): any => {
 	try {
 		const decoded = jwt.verify(token, secret_param ? secret_param : secret)
 		return decoded
@@ -29,7 +29,8 @@ export const generateToken = (
 export const hasAVaildToken = (): boolean => {
 	const cookieStore = cookies();
 	const token = cookieStore.get('token');
-	const hasValidToken = token ? validateToken(token.value): false;
+	const decoded = token ? validateToken(token.value): false;
+	const hasValidToken = decoded ? true : false;
 	return hasValidToken;
 }
 
@@ -40,13 +41,15 @@ export const hasAcceptedTerms = (): boolean => {
 	if (!hasValidToken) {
 		return false;
 	}
-	console.log("hasValidToken", hasValidToken);
 	return hasValidToken.termsAccepted;
 }
 
 export const getUserFromToken = async (): Promise<any> => {
 	const cookieStore = cookies();
 	const token = cookieStore.get('token');
+	if (!token) {
+		throw new Error("Missing token");
+	}
 	const decoded = validateToken(token.value);
 	return decoded;
 }

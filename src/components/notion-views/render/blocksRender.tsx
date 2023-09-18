@@ -22,9 +22,11 @@ type BlockContent = {
 
 export type notionBlock = {
 	id: string;
-	type: BlockType | string;
+	object: "block" | "list" | "database" | "page" | "user" | "space" | "collection_view" | "collection";
+	type: BlockType;
 	has_children: boolean;
-	children?: notionBlock[];
+	results?: notionBlock[];
+	children?: notionBlock;
 } & BlockContent;
 
 
@@ -34,7 +36,7 @@ interface BlockProps {
 
 type BlockSpecifics = BlockContent & BlockProps;
 
-type BlockHandler = (content: BlockSpecifics) => any;
+type BlockHandler = (content: BlockSpecifics) => JSX.Element | null;
 
 const blockHandlers: { [key: BlockType | string]: BlockHandler } = {
 	[BlockType.callout]: handleCallout,
@@ -72,14 +74,12 @@ const blockHandlers: { [key: BlockType | string]: BlockHandler } = {
 
 import BlocksView from "./blocks";
 
-function childrenBlocks(block: notionBlock) { // recursive children blocks
-	if (!block.has_children) {
-		return [];
-	}
+function childrenBlocks(block: notionBlock): JSX.Element | null { // recursive children blocks
+	if (!block?.has_children) return null;
 	return (
 		<>
 			<BlocksView
-				blocks={block.children.results}
+				blocks={block.children!.results as notionBlock[]}
 			/>
 		</>
 	);
@@ -89,15 +89,15 @@ export default function Block({
 	block,
 }: {
 	block: notionBlock;
-}): any {
-	// console.log(block.type);
+}): JSX.Element | null {
+
 	const handler = blockHandlers[block.type];
 	if (!handler) {
 	  console.warn(`No handler for block type ${block.type}`);
-	  return;
+	  return null;
 	}
 	const childrenElements = block.has_children ? childrenBlocks(block) : undefined;
-	const content: BlockSpecifics = {
+	const content: any = {
 		[block.type]: block[block.type],
 		children: childrenElements,
 	};

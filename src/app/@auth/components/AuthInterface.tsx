@@ -4,7 +4,7 @@ import {LoginButton} from "./LoginButton";
 import {LoginInformation, UserInfo} from "./LoginInformation";
 import {useRouter, useSearchParams} from "next/navigation";
 import {AuthContext} from "@/app/components/authContext";
-import {appLoginConfig, authCredentials} from "@/conf/organisation.conf";
+import {appLoginConfig, getLoginLink} from "@/conf/organisation.conf";
 
 
 const AuthInterface: React.FC<{buttonText: string}> = ({
@@ -18,7 +18,9 @@ const AuthInterface: React.FC<{buttonText: string}> = ({
 	const {auth, authorized} = React.useContext(AuthContext);
 	const handleOAuthRedirect = () => {
 		setLoading(true);
-		router.replace(authCredentials.oAuth2.link);
+		const loginLink = getLoginLink()
+		if (!loginLink) throw new Error("Login link not found");
+		router.replace(loginLink);
 	};
 	const [loading, setLoading] = React.useState<boolean>(auth_code ? true : false);
 	const [info, setInfo] = React.useState<string | UserInfo>("");
