@@ -6,7 +6,9 @@ import React, { use, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import {
 	dictionaries,
+	Language,
 } from '@/conf/dictionary.conf';
+import { Blurhash } from "react-blurhash";
 
 interface BicycleInfo {
 	lockerId: number;
@@ -27,10 +29,12 @@ export default function BicycleCard({
 	props,
 	user,
 	imageLink,
+	language,
 }: {
 	props: BicycleInfo;
 	user: Promise<UseInfo | null>;
 	imageLink: Promise<string>;
+	language: Language;
 }) {
 
 	const router = useRouter();
@@ -43,7 +47,6 @@ export default function BicycleCard({
 	};
 
 	return (
-		<div className="">
 			<Card className={"w-[350px] h-[400px]"}>
 			<CardHeader className={"h-[80px]"}>
 				<BicycleHeader
@@ -57,29 +60,29 @@ export default function BicycleCard({
 				filter: props.available ? "none" : "grayscale(50%)",
 			}}>
 				<Suspense fallback={
-					<Skeleton className="rounded-lg" style={{borderRadius: "14px"}}>
-						<div className={"h-[200px] w-[320px]"}>
+					<Skeleton className="rounded-lg" style={{borderRadius: "7px"}}>
+						<div className={"h-[207px] w-[310px]"}>
 						</div>
 					</Skeleton>
 				}>
 					<ImageSuspense
 						src={imageLink}
+						imageHash={"L4HnpUad}t00009Z9H~C%~%24;%2"}
 						alt={"Bicycle_Image_"+props.name}
-						width={320}
-						height={200}
+						width={310}
+						height={207}
 					/>
 				</Suspense>
 			</CardBody>
 			<CardFooter className={"flex flex-row gap-2"}>
 				<Button
 					onPress={handler}
-				>{dictionaries.en.reserve}</Button>
+				>{dictionaries[language].reserve}</Button>
 				<Button
 					onPress={handlerLastUsers}
-				>{dictionaries.en.last_users}</Button>
+				>{dictionaries[language].last_users}</Button>
 			</CardFooter>
 			</Card>
-		</div>
 	)
 }
 
@@ -95,7 +98,7 @@ export function BicycleCardSkeleton({
 
 	return (
 		<div className="bicycle-card">
-			<Card style={style}>
+			<Card style={style} className={"w-[350px] h-[400px]"}>
 			<CardHeader className={"h-[80px]"}>
 				<Skeleton className="rounded-lg">
 					<h2 className={"text-2xl"}>title goes here</h2>
@@ -157,39 +160,75 @@ const BicycleHeader = ({
 	);
 }
 
-import NextImage from 'next/image';
+import NextImage from 'next/image'; // I dunno why it loads so badly
 
+
+/*
+	Resolves promise of an image link,
+	then displays blurhash until image is loaded
+
+	but when mounted, it will display skeleton until
+	blurhash is ready
+*/
 const ImageSuspense = ({
 	src,
+	imageHash,
 	alt,
 	width,
 	height,
 }: {
 	src: Promise<string>;
+	imageHash?: string;
 	alt: string;
 	width: number;
 	height: number;
 }) => {
 	
 	const content = use(src);
+	const [imageLoaded, setImageLoaded] = React.useState(false);
+	const [animation, setAnimation] = React.useState(false);
+	const [hashIsReady, setHashIsReady] = React.useState(false);
+	const swithState = () => {
+		setAnimation(true);
+		setTimeout(() => {
+			setImageLoaded(true);
+		}, 1000);
+	}
+
+	React.useEffect(() => {
+		if (content) {
+			setHashIsReady(true);
+		}
+	}, [setHashIsReady]);
+
+
+	const blurhashStyle = 
+		`absolute blurhash ${animation ? "fade-out-slow" : "fade-in-slow"}`;
 
 	return (
 		<>
+			<Skeleton className="rounded-lg" isLoaded={hashIsReady}>
 			<NextImage
 				src={content}
 				width={width}
 				height={height}
 				alt={alt}
 				className={"rounded-lg"}
-				placeholder="blur"
-			/>
-			{/* <Image
-				src={content}
-				width={width}
-				isBlurred={true}
-				radius="lg"
-				disableSkeleton={true}
-				/> */}
+				onLoadingComplete={swithState}
+				/>
+			</Skeleton>
+			{!imageLoaded && imageHash && (
+				<div className={blurhashStyle}>
+					<Blurhash
+						hash={imageHash}
+						width={width}
+						height={height}
+						resolutionX={32}
+						resolutionY={32}
+						punch={1}
+					/>
+				</div>
+			)}
 		</>
 	);
 }

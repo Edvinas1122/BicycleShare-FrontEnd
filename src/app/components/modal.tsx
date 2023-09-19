@@ -1,12 +1,13 @@
 "use client";
-import React, {createContext, useState, useContext} from "react";
+import React from "react";
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure} from "@nextui-org/react";
-import {useRouter, usePathname, useSelectedLayoutSegments} from "next/navigation";
+import {useRouter, usePathname, useSelectedLayoutSegments, useSearchParams} from "next/navigation";
 
 export type InterfaceUnit = {
 	buttonChildren: React.ReactNode;
 	route: string;
 	close: boolean;
+	back: boolean;
 	persistent?: boolean;
 	levelAppearant?: number;
 	segmentDemandant?: string;
@@ -14,12 +15,9 @@ export type InterfaceUnit = {
 		[key: string]: any;
 	};
 	serverAction?: Function;
-}
+	state?: string;
 
-// function countDepth(): number {
-// 	const segments = useSelectedLayoutSegments();
-// 	return segments.length;
-// }
+}
 
 export function ModalInterface ({
 	interfaceItems,
@@ -31,11 +29,17 @@ export function ModalInterface ({
 	router: any;
 }) {
 	if (!interfaceItems) return null;
-	const {sharedState} = useModalContext();
 	const pathname = usePathname();
 	const segments = useSelectedLayoutSegments();
 	const depth = segments.length;
 
+	const routerAction = (unitroute: string, state?: string) => {
+		const urlParams = state ? new URLSearchParams(window.location.search): null;
+		const search = state && urlParams ? urlParams.get(state) : null;
+		const route = search ? ("/" + search) : unitroute;
+		router["push"](pathname + route);
+	};
+	
 	return (
 		<>
 		{interfaceItems.map((unit: InterfaceUnit, index: number) => {
@@ -44,15 +48,15 @@ export function ModalInterface ({
 			if (unit.segmentDemandant && unit.segmentDemandant !== segments[depth - 1]) return null;
 			return (
 				<Button
-					key={index}
-					onClick={() => {
-						if (unit.serverAction) unit.serverAction();
-						else if (unit.close) onClose();
-						else {
-							const route = sharedState ? ("/" + sharedState) : unit.route;
-							router.push(pathname + route);
-
-						};
+				key={index}
+				onClick={() => {
+					if (unit.serverAction) unit.serverAction(pathname);
+					else if (unit.close) onClose();
+					else if (unit.back) router.back();
+					else {
+						console.log("unit.state", unit.state);
+						routerAction(unit.route, unit.state);
+					}
 					}}
 					{...unit.buttonProps}
 					>
@@ -64,19 +68,6 @@ export function ModalInterface ({
 	)
 }
 
-const ModalContext = createContext<{
-	sharedState: any;
-	setSharedState: React.Dispatch<React.SetStateAction<any>>;
-}>({
-	sharedState: null,
-	setSharedState: () => {},
-});
-  
-export const useModalContext = () => {
-	return useContext(ModalContext);
-};
-  
-
 export default function DisplayModal({
 	children,
 	interfaceItems,
@@ -85,7 +76,6 @@ export default function DisplayModal({
 	interfaceItems?: InterfaceUnit[];
 }) {
 	const {isOpen, onOpen, onOpenChange} = useDisclosure();
-	const [sharedState, setSharedState] = useState(null);
 	const router = useRouter();
 
 	React.useEffect(() => {
@@ -100,7 +90,6 @@ export default function DisplayModal({
 	return (
 		<>
 		<Modal isOpen={isOpen} onOpenChange={Close}>
-			<ModalContext.Provider value={{ sharedState, setSharedState }}>
 				<ModalContent>
 				{(onClose) => (
 					<>
@@ -115,7 +104,6 @@ export default function DisplayModal({
 					</>
 				)}
 				</ModalContent>
-			</ModalContext.Provider>
 		</Modal>
 		</>
 	);

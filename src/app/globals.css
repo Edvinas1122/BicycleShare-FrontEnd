@@ -41,3 +41,16 @@ body {
   @apply list-decimal pl-4;
 }
 
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.blurhash canvas {
+  border-radius: 7px;
+  /* animation: fade-in 1s ease-in-out; */
+}

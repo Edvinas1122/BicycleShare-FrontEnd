@@ -6,11 +6,18 @@ import {
 import {
 	dictionaries
 } from "@/conf/dictionary.conf";
-
 import {
 	Status
 } from "./default"
 
+
+/*
+	A component to display updates on device.
+	Lets consider following requirements:
+		1. The component should display a message
+		2. Must somehow block an parent interface
+			until the message is displayed
+*/ 
 export default function AvailabilityInfo({
 	serverMethod,
 }: {
@@ -69,3 +76,15 @@ export default function AvailabilityInfo({
 		</div>
 	);
 }
+
+// enum DeviceMessages {
+// 	AVAILABLE,
+// 	UNAVAILABLE,
+// 	IN_USE,
+// 	PAIRED,
+// 	PROCEDURE_COMPLETED,
+// }
+
+// function ConnectionMessagesDisplay({
+
+// })

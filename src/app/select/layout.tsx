@@ -9,9 +9,9 @@ export default function Layout({
 	children: React.ReactNode;
 }){
 
-	async function startLockerOpenSequence() {
+	async function startLockerOpenSequence(phrasedRequest: string) {
 		"use server";
-		console.log("startLockerOpenSequence");
+		console.log(phrasedRequest);
 	}
 
 	const modalInterface: InterfaceUnit[] = [
@@ -24,6 +24,12 @@ export default function Layout({
 				},
 			}),
 		buttonBuild(
+			dictionaries.en.back,
+			"../", { levelAppearant: 2, buttonProps: {
+				color: "primary",
+				variant: "ghost",
+			}}),
+		buttonBuild(
 			dictionaries.en.info,
 			"/info", { levelAppearant: 1, buttonProps: {
 				color: "primary",
@@ -31,12 +37,13 @@ export default function Layout({
 			}}),
 		buttonBuild(
 			dictionaries.en.proceed,
-			"/duration", { levelAppearant: 1,}),
+			"/duration", { levelAppearant: 1}),
 		buttonBuild(
 			dictionaries.en.select,
 			"/short", { 
 				levelAppearant: 2,
 				segmentDemandant: "duration",
+				state: "time",
 			}),
 		buttonBuild(
 			dictionaries.en.affirmation,
@@ -81,6 +88,7 @@ function buttonBuild(
 			[key: string]: any;
 		}
 		serverAction?: Function,
+		state?: string,
 	}
 ) {
 	const persistent = props.levelAppearant ? false : true;
@@ -88,14 +96,17 @@ function buttonBuild(
 	const buttonProps = props.buttonProps ? props.buttonProps : {
 		color: "primary"
 	};
+	const back = route === "../" ? true : false;
 	return {
 		buttonChildren: children,
 		route: route,
 		close: close,
+		back: back,
 		persistent: persistent,
 		levelAppearant: props.levelAppearant,
 		segmentDemandant: props.segmentDemandant,
 		buttonProps: buttonProps,
 		serverAction: props.serverAction,
+		state: props.state,
 	}
 }

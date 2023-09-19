@@ -28,6 +28,7 @@ type Dictionary = Readonly<{
 	available: string;
 	unavailable: string;
 	loading: string;
+	back: string;
 }>
 
 export type Term = keyof Dictionary;
@@ -68,11 +69,14 @@ const dictionary: Dictionary = {
 	available: "available",
 	unavailable: "unavailable",
 	loading: "loading...",
+	back: "Back",
 };
 
 type Dictionaries = Readonly<{
 	en: Dictionary;
 }>
+
+export type Language = keyof Dictionaries;
 
 export const dictionaries: Dictionaries = {
 	en: dictionary,

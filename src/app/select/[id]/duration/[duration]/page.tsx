@@ -2,6 +2,10 @@ import {
 	dictionaries
 } from "@/conf/dictionary.conf";
 
+// export function generateStaticParams() {
+// 	return [{ duration: 'short' }, { duration: 'hours' }, { duration: 'long' }, { duration: 'night' }]
+// }
+
 export default function Page({
 	params
 }: {
