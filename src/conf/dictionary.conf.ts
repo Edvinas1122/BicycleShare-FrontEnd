@@ -70,6 +70,7 @@ const dictionary: Dictionary = {
 	unavailable: "unavailable",
 	loading: "loading...",
 	back: "Back",
+
 };
 
 type Dictionaries = Readonly<{
