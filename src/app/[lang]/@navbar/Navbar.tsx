@@ -90,9 +90,8 @@ function DisplayAvatar({
 			isBordered
 			as="button"
 			className="transition-transform"
-			color=""
+			color="default"
 			name={data.name}
-			description={data.username}
 			size="sm"
 			src={data.image}
 		/>

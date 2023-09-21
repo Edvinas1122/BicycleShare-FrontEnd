@@ -9,7 +9,7 @@ export default function Page() {
 	const dirrect = searchParams.get("press");
 
 	React.useEffect(() => {
-		if (dirrect.length > 0) {
+		if (dirrect && dirrect.length > 0) {
 			setTimeout(() => {
 				router.replace(pathname + "/" + dirrect);
 			}, 1);

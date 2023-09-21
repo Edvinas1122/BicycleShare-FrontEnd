@@ -62,7 +62,6 @@ export const AuthProvider: React.FC<{
 	children: React.ReactNode,
 	hasValidToken: boolean,
 	hasTheAcceptedTerms: boolean,
-	userInfo: UserInfo
 }> = ({
 	children,
 	hasValidToken,

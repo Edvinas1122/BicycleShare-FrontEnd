@@ -26,7 +26,7 @@ export default function Page() {
 		"use server";
 		const service = constructUserService({cache: 'no-store'});
 		const token = new Token()
-		const user = token.getUserFromToken();
+		const user = token.getUserFromToken((any: any) => (any));
 		const userInterface = service.getUserInterface(user);
 		const res = await userInterface.acceptTermsAndConditions();
 		if (res.status == 200) {
