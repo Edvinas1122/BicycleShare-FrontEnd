@@ -4,7 +4,7 @@ import {LoginButton} from "./LoginButton";
 import {LoginInformation, UserInfo} from "./LoginInformation";
 import {useRouter, useSearchParams} from "next/navigation";
 import {AuthContext} from "@/app/components/authContext";
-import {appLoginConfig, getLoginLink} from "@/conf/organisation.conf";
+import {getLoginLink} from "@/conf/organisation.conf";
 
 
 const AuthInterface: React.FC<{buttonText: string}> = ({

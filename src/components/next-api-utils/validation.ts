@@ -74,9 +74,9 @@ export class Token {
 		return decoded.termsAccepted;
 	}
 
-	public getUserFromToken(): any {
+	public getUserFromToken(adapter: Function): any {
 		const decoded = validateToken(this.token.value);
-		return decoded;
+		return adapter(decoded);
 	}
 
 	public updateUserToken(property: string, value: any): void {

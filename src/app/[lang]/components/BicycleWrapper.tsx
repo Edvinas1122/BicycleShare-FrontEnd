@@ -16,10 +16,9 @@ const BicycleListWrapper = ({
 		flex-wrap 
 		justify-center 
 		gap-4
-		overflow-y-auto 
+		overflow-y-scroll
 		max-h-screen 
 		max-w-full 
-		pop-appear
 	`;
 
 

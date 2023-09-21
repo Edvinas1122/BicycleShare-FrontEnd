@@ -30,29 +30,29 @@ export default function BicycleCard({
 	user,
 	imageLink,
 	language,
+	buttons,
 }: {
 	props: BicycleInfo;
 	user: Promise<UseInfo | null>;
 	imageLink: Promise<string>;
 	language: Language;
+	buttons: { label: string, route: string }[];
 }) {
 
 	const router = useRouter();
-	const handler = () => {
-		router.push(`/select/${props.lockerId}`);
-	};
 
-	const handlerLastUsers = () => {
-		router.push(`/last-users/${props.lockerId}`);
+	const handler = (route: string) => {
+		router.push(`/${language}/${props.lockerId}/${route}`);
 	};
 
 	return (
-			<Card className={"w-[350px] h-[400px]"}>
+		<Card className={"w-[350px] min-h-[400px] pop-appear"}>
 			<CardHeader className={"h-[80px]"}>
 				<BicycleHeader
 					title={props.name}
 					user={user}
 					availability={props.available}
+					language={language}
 				/>
 			</CardHeader>
 			<CardBody className={"h-[200px]"} style={{
@@ -75,12 +75,11 @@ export default function BicycleCard({
 				</Suspense>
 			</CardBody>
 			<CardFooter className={"flex flex-row gap-2"}>
-				<Button
-					onPress={handler}
-				>{dictionaries[language].reserve}</Button>
-				<Button
-					onPress={handlerLastUsers}
-				>{dictionaries[language].last_users}</Button>
+				{buttons.map((button, index) => (
+					<Button key={index} onPress={() => handler(button.route)}>
+						{button.label}
+					</Button>
+				))}
 			</CardFooter>
 			</Card>
 	)
@@ -126,10 +125,12 @@ const BicycleHeader = ({
 	title,
 	availability,
 	user,
+	language,
 }: {
 	title: string;
 	availability: boolean;
 	user: Promise<UseInfo | null>;
+	language: Language;
 }) => {
 
 	const classNames = `
@@ -141,8 +142,8 @@ const BicycleHeader = ({
 	`;
 
 	const availabilityInfo = availability ? 
-		dictionaries.en.returned_by :
-		dictionaries.en.held_by;
+		dictionaries[language].returned_by :
+		dictionaries[language].held_by;
 
 	return (
 		<div className={classNames}>

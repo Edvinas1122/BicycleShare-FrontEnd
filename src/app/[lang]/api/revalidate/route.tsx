@@ -9,7 +9,6 @@ export async function POST(request: NextRequest) {
 	// if (secret !== process.env.MY_SECRET_TOKEN) {
 	// 	return NextResponse.json({ message: 'Invalid secret' }, { status: 401 })
 	// }
-	console.log("revalidate, request");
 	const body = await request.json();
 	if (!body.tag) {
 		return NextResponse.json({ message: 'Missing tag param' }, { status: 400 })

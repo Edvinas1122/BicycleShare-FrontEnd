@@ -1,10 +1,7 @@
 import { headers } from 'next/headers';
-import Login from "./Login";
+import Login from "./[lang]/Login";
 
 export default function Page() {
 
-	return (
-		<Login
-		/>
-	);
+	return null;
 }

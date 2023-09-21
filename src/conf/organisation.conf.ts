@@ -4,16 +4,24 @@ export const appLoginConfig: LoginCardProps = {
 	icon: "/bike_icon.svg",
 	title: "42 Bicycle Share",
 	organization: "42 Wolfsburg",
-	description: "An application for journaling Bicycle Share",
-	descriptionCollection: [
-		"An application for journaling Bicycle Share usage",
-		"Easily keep an eye on where the bikes are",
-		"Makes bicycles available to every student",
-		"Awarded for winning the 42 Wolfsburg Ride It Hackathon in 2022",
-	],
-	buttonText: "Login with 42 Intra",
 	devLink: "https://github.com/Edvinas1122/BicycleShare-FrontEnd",
-	devLinkText: "About the Project"
+	description: "An application for journaling Bicycle Share",
+	descriptionCollection: {
+		"en": [
+			"An application for journaling Bicycle Share usage",
+			"Easily keep an eye on where the bikes are",
+			"Makes bicycles available to every student",
+			"Awarded for winning the 42 Wolfsburg Ride It Hackathon in 2022",
+		],
+		"de": [
+			"Eine Anwendung zur Protokollierung der Nutzung von Bicycle Share",
+			"Behalten Sie leicht im Auge, wo sich die Fahrräder befinden",
+			"Stellt Fahrräder für jeden Studenten zur Verfügung",
+			"Ausgezeichnet für den Gewinn des 42 Wolfsburg Ride It Hackathon im Jahr 2022",
+		],
+	},
+	buttonText: {"en": "Login with 42 Intra", "de": "Mit 42 Intra anmelden"},
+	devLinkTexts: {"en": "About the Project", "de": "Über das Projekt"},
 };
 
 const authCredentials = {

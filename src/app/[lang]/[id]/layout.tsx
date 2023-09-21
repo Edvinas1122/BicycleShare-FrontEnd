@@ -1,12 +1,22 @@
-import DisplayModal, {InterfaceUnit} from "../components/modal";
-import
-	{dictionaries}
-from "@/conf/dictionary.conf";
+import DisplayModal, {InterfaceUnit} from "../../components/modal";
+import {
+	dictionaries,
+	Language
+} from "@/conf/dictionary.conf";
+import { 
+	ModalContentWrapper
+} from "@/app/components/modal";
 
 export default function Layout({
 	children,
+	header,
+	device,
+	params: {lang}
 }:{
 	children: React.ReactNode;
+	header: React.ReactNode;
+	device: React.ReactNode;
+	params: {lang: Language};
 }){
 
 	async function startLockerOpenSequence(phrasedRequest: string) {
@@ -16,7 +26,7 @@ export default function Layout({
 
 	const modalInterface: InterfaceUnit[] = [
 		buttonBuild(
-			dictionaries.en.cancel,
+			dictionaries[lang].cancel,
 			"/", {
 				buttonProps: {
 					color: "danger",
@@ -24,29 +34,50 @@ export default function Layout({
 				},
 			}),
 		buttonBuild(
-			dictionaries.en.back,
+			dictionaries[lang].last_users,
+			"/last-users", { levelAppearant: 0, buttonProps: {
+					color: "primary",
+					variant: "ghost",
+			}}),
+		buttonBuild(
+			dictionaries[lang].comments,
+			"/comments", { levelAppearant: 0, buttonProps: {
+					color: "primary",
+					variant: "ghost",
+			}}),
+		buttonBuild(
+			dictionaries[lang].select,
+			"/select", { levelAppearant: 0}),
+		buttonBuild(
+			dictionaries[lang].back,
 			"../", { levelAppearant: 2, buttonProps: {
 				color: "primary",
 				variant: "ghost",
 			}}),
 		buttonBuild(
-			dictionaries.en.info,
+			dictionaries[lang].info,
 			"/info", { levelAppearant: 1, buttonProps: {
 				color: "primary",
 				variant: "ghost",
 			}}),
 		buttonBuild(
-			dictionaries.en.proceed,
+			dictionaries[lang].proceed,
 			"/duration", { levelAppearant: 1}),
 		buttonBuild(
-			dictionaries.en.select,
+			dictionaries[lang].select,
 			"/short", { 
 				levelAppearant: 2,
 				segmentDemandant: "duration",
 				state: "time",
 			}),
 		buttonBuild(
-			dictionaries.en.affirmation,
+			dictionaries[lang].back,
+			"../", { levelAppearant: 3, buttonProps: {
+				color: "primary",
+				variant: "ghost",
+			}}),
+		buttonBuild(
+			dictionaries[lang].affirmation,
 			"", { 
 				levelAppearant: 3,
 				serverAction: startLockerOpenSequence
@@ -58,8 +89,16 @@ export default function Layout({
 		<>
 			<DisplayModal
 				interfaceItems={modalInterface}
+				closeRoute={"/" + lang}
 			>
-				{children}
+			<ModalContentWrapper
+				headerContent={header}
+			>
+			<>
+			{device}
+			{children}
+			</>
+			</ModalContentWrapper>
 			</DisplayModal>
 		</>
 	);
@@ -91,7 +130,7 @@ function buttonBuild(
 		state?: string,
 	}
 ) {
-	const persistent = props.levelAppearant ? false : true;
+	const persistent = (props.levelAppearant === undefined);
 	const close = route === "/" ? true : false;
 	const buttonProps = props.buttonProps ? props.buttonProps : {
 		color: "primary"

@@ -19,7 +19,7 @@ type Dictionary = Readonly<{
 	over_night: string;
 	over_night_description: string;
 	duration: string;
-	question_lenght: string;
+	question_length: string;
 	select: string;
 	confirm: string;
 	affirmation: string;
@@ -29,6 +29,8 @@ type Dictionary = Readonly<{
 	unavailable: string;
 	loading: string;
 	back: string;
+	language: string;
+	comments: string;
 }>
 
 export type Term = keyof Dictionary;
@@ -60,7 +62,7 @@ const dictionary: Dictionary = {
 	over_night: "Over night 🌙",
 	over_night_description: "It's night now, you can use it for a night, and return it in the morning.",
 	duration: "How long ⌛",
-	question_lenght: "For how long do you want to reserve the bicycle?",
+	question_length: "For how long do you want to reserve the bicycle?",
 	select: "Select",
 	confirm: "Confirm 📝🤝",
 	affirmation: "I confirm 🤝",
@@ -70,16 +72,60 @@ const dictionary: Dictionary = {
 	unavailable: "unavailable",
 	loading: "loading...",
 	back: "Back",
+	language: "Language",
+	comments: "Comments",
+};
 
+const german_dictionary: Dictionary = {
+	terms_conditions: "Allgemeine Geschäftsbedingungen",
+	held_by: "Gehalten von",
+	returned_by: "Zurückgegeben von",
+	reserve: "Reservieren",
+	last_users: "Letzte Nutzer",
+	reserve_initial: "Reservieren",
+	reserve_process_reassurance: "Sobald Sie bestätigen, folgen Sie den Anweisungen auf dem Bildschirm.",
+	proceed: "Fortfahren",
+	info: "Info 🔎",
+	info_description: [
+		"Machen Sie sich keine Sorgen, erst wenn Sie auf <'Ich bestätige 🤝'> klicken, gilt Ihre Reservierung als verbindlich.",
+		"Zuvor geben Sie Ihre beabsichtigte Reservierungsdauer an.",
+		"Danach wird angezeigt, wann Sie eine Taste am Schließfachgerät drücken müssen 👉🔘.",
+		"Aber Sie müssen es innerhalb von 10 Sekunden tun. Das ist mehr als genug, wenn Sie neben dem Gerät stehen.",
+		"Andernfalls wird die Reservierung neu gestartet. Aber keine Sorge, Sie können es sofort wieder versuchen.",
+	],
+	cancel: "Abbrechen",
+	short: "Kurz 🤏",
+	short_description: "Für eine kurze Fahrt zum Geschäft. Etwa eine Stunde.",
+	hours: "Ein paar Stunden 🕑",
+	hours_description: "Für einige Stunden, um irgendwo abzuhängen. Etwa 3 Stunden. Oder länger, wenn die Fahrräder nicht überbelegt sind.",
+	long: "Länger ☀️",
+	long_description: "Für einen längeren Zeitraum, je nach Situation. Wenn die Fahrräder nicht überbelegt sind, können Sie es für eine gerechtfertigt längere Zeit nutzen.",
+	over_night: "Über Nacht 🌙",
+	over_night_description: "Es ist jetzt Nacht, Sie können es über Nacht nutzen und morgens zurückgeben.",
+	duration: "Wie lange ⌛",
+	question_length: "Wie lange möchten Sie das Fahrrad reservieren?",
+	select: "Auswählen",
+	confirm: "Bestätigen 📝🤝",
+	affirmation: "Ich bestätige 🤝",
+	confirm_description: "Bestätigen Sie die Reservierung?",
+	device_connection: "Geräteverbindung wird überprüft...",
+	available: "verfügbar",
+	unavailable: "nicht verfügbar",
+	loading: "laden...",
+	back: "Zurück",
+	language: "Sprache",
+	comments: "Kommentare",
 };
 
 type Dictionaries = Readonly<{
 	en: Dictionary;
+	de: Dictionary;
 }>
 
 export type Language = keyof Dictionaries;
 
 export const dictionaries: Dictionaries = {
 	en: dictionary,
+	de: german_dictionary,
 }
 

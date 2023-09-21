@@ -2,7 +2,7 @@
 
 import React from "react";
 import {Tabs, Tab, Card, CardBody} from "@nextui-org/react";
-import { dictionaries } from "@/conf/dictionary.conf";
+import { dictionaries, Language } from "@/conf/dictionary.conf";
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 export enum Durrations {
@@ -12,7 +12,11 @@ export enum Durrations {
 	NIGHT = "night",
 }
 
-export default function DurrationSelect() {
+export default function DurrationSelect({
+	language,
+}: {
+	language: Language;
+}) {
 	const router = useRouter();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
@@ -20,15 +24,15 @@ export default function DurrationSelect() {
 	const tabData = [
 		{
 			key: Durrations.SHORT,
-			title: dictionaries.en.short,
-			content: dictionaries.en.short_description,
+			title: dictionaries[language].short,
+			content: dictionaries[language].short_description,
 		},
 		{
 			key: Durrations.HOURS,
-			title: dictionaries.en.hours,
-			content: dictionaries.en.hours_description,
+			title: dictionaries[language].hours,
+			content: dictionaries[language].hours_description,
 		},
-		daytimeDependantLongSelectionOption(),
+		daytimeDependantLongSelectionOption(language),
 	];
 
 	const current = searchParams.get("time");
@@ -64,20 +68,20 @@ export default function DurrationSelect() {
 	);
 }
 
-function daytimeDependantLongSelectionOption() {
+function daytimeDependantLongSelectionOption(language: Language) {
 	const long_option = new Date();
 	const hour = long_option.getHours();
 	if (hour > 5 && hour < 21) {
 		return {
 				key: Durrations.LONG,
-				title: dictionaries.en.long,
-				content: dictionaries.en.long_description,
+				title: dictionaries[language].long,
+				content: dictionaries[language].long_description,
 		}
 	} else {
 		return {
 				key: Durrations.NIGHT,
-				title: dictionaries.en.over_night,
-				content: dictionaries.en.over_night_description,
+				title: dictionaries[language].over_night,
+				content: dictionaries[language].over_night_description,
 		}
 	}
 }

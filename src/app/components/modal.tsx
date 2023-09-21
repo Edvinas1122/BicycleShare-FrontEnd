@@ -43,7 +43,7 @@ export function ModalInterface ({
 	return (
 		<>
 		{interfaceItems.map((unit: InterfaceUnit, index: number) => {
-			const display = unit.levelAppearant ? unit.levelAppearant === depth : true;
+			const display = unit.persistent || (unit.levelAppearant === depth);
 			if (!display) return null;
 			if (unit.segmentDemandant && unit.segmentDemandant !== segments[depth - 1]) return null;
 			return (
@@ -71,9 +71,11 @@ export function ModalInterface ({
 export default function DisplayModal({
 	children,
 	interfaceItems,
+	closeRoute,
 }: {
 	children: React.ReactNode;
 	interfaceItems?: InterfaceUnit[];
+	closeRoute: string;
 }) {
 	const {isOpen, onOpen, onOpenChange} = useDisclosure();
 	const router = useRouter();
@@ -84,7 +86,7 @@ export default function DisplayModal({
 
 	const Close = () => {
 		onOpenChange();
-		setTimeout( () => {router.push("/");}, 200);
+		setTimeout( () => {router.push(closeRoute);}, 200);
 	};
 
 	return (

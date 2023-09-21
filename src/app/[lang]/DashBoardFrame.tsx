@@ -6,14 +6,12 @@ const DashBoardFrame = ({
 	children: React.ReactNode
 }) => {
 
-	const dashBoardFrameStyle = "w-full h-full items-center justify-center";
-
 	return (
-		<div className={dashBoardFrameStyle}>
+		<>
 			<BicycleListWrapper>
 			{children}
 			</BicycleListWrapper>
-		</div>
+		</>
 	);
 }
 

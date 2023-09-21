@@ -2,16 +2,23 @@ import BicycleCard from "../components/BicycleCard";
 import constructBicycleService from "@/components/bicycle-api/bicycle.module";
 import BicycleListWrapper from "../components/BicycleWrapper";
 import { BicycleInfo } from "@/components/bicycle-api/content.service";
-import { Language } from "@/conf/dictionary.conf";
+import { Language, dictionaries } from "@/conf/dictionary.conf";
 
-export default async function Page({params: {lang}}: {params: {lang: string}}) {
+export default async function Page({params: {lang}}: {params: {lang: Language}}) {
 	// const bicycleService = constructBicycleService({cache: 'no-store'});
 	const bicycleService = constructBicycleService({next: {tags: ["bicycle"]}});
 	const bicycles: BicycleInfo[] = await bicycleService.getBicycles();
 
-	if (lang === undefined) {
-		lang = "en" as Language;
-	}
+	const buttons = [
+		{
+			label: dictionaries[lang].reserve,
+			route: "?press=select",
+		},
+		{
+			label: dictionaries[lang].last_users,
+			route: "?press=last-users",
+		},
+	];
 
 	return (
 		<>
@@ -22,7 +29,8 @@ export default async function Page({params: {lang}}: {params: {lang: string}}) {
 					props={bicycle.data}
 					user={bicycle.getLastUse()}
 					imageLink={bicycle.getImageLink()}
-					language={"en" as Language}
+					language={lang}
+					buttons={buttons}
 				/>
 			))
 		}

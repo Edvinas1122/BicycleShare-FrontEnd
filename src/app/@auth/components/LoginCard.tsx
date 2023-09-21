@@ -14,32 +14,41 @@ import {
 	QuoteCollection
 } from "./QuoteCollection";
 
+type InfoContent = {
+	[key: string]: string;
+}
+
+type InfoContentArray = {
+	[key: string]: string[];
+}
+
 export interface LoginCardProps {
 	icon: string;
 	title: string;
 	organization: string;
 	description: string;
-	descriptionCollection: string[];
+	descriptionCollection: InfoContentArray;
 	subtitle?: string;
-	buttonText: string;
+	buttonText: InfoContent;
 	devLink?: string;
-	devLinkText?: string;
+	devLinkTexts?: InfoContent;
 }
 
-const LoginCard: React.FC<
-	{
+const LoginCard: React.FC<{
 		props: LoginCardProps;
 		pop_appear?: boolean;
 		children?: React.ReactNode;
-	}
-> = ({
+		lang: string;
+}> = ({
 	props,
 	pop_appear,
-	children
+	children,
+	lang
 } : {
 	props: LoginCardProps,
 	pop_appear?: boolean,
-	children?: React.ReactNode
+	children?: React.ReactNode,
+	lang: string
 }) => {
 	const { icon,
 		title,
@@ -47,9 +56,10 @@ const LoginCard: React.FC<
 		description,
 		buttonText,
 		devLink,
-		devLinkText
+		devLinkTexts
 	} = props;
-
+	const devLinkText = devLinkTexts && devLinkTexts[lang];
+	const collection = props.descriptionCollection && props.descriptionCollection[lang];
 	const cardClass = "max-w-[400px] mx-auto loading h-[300px]" +
 		(pop_appear ? " pop-appear" : "");
 
@@ -74,7 +84,7 @@ const LoginCard: React.FC<
 			<Divider/>
 			<CardBody>
 				<QuoteCollection
-					quotes={props.descriptionCollection}
+					quotes={collection}
 					/>
 				<div className="flex flex-col justify-center items-center h-full">
 					{children}

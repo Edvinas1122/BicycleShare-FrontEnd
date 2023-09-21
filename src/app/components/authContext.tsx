@@ -51,14 +51,22 @@ export const AuthContext = React.createContext<{
 		termsAccepted: false
 	});
 
+type UserInfo = {
+	name: string;
+	username: string;
+	// language: string;
+	image: string;
+}
+
 export const AuthProvider: React.FC<{
 	children: React.ReactNode,
 	hasValidToken: boolean,
-	hasTheAcceptedTerms: boolean
+	hasTheAcceptedTerms: boolean,
+	userInfo: UserInfo
 }> = ({
 	children,
 	hasValidToken,
-	hasTheAcceptedTerms
+	hasTheAcceptedTerms,
 }: {
 	children: React.ReactNode;
 	hasValidToken: boolean;

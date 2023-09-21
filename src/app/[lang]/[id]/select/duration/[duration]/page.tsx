@@ -1,5 +1,6 @@
 import {
-	dictionaries
+	dictionaries,
+	Language
 } from "@/conf/dictionary.conf";
 
 // export function generateStaticParams() {
@@ -7,18 +8,18 @@ import {
 // }
 
 export default function Page({
-	params
+	params: { lang }
 }: {
-	params: { duration: string }
+	params: { lang: Language, duration: string }
 }) {
 	return (
 		<div>
 			<h1 className="text-xl font-bold">
-				{dictionaries.en.confirm}
+				{dictionaries[lang].confirm}
 			</h1>
 			<p>
 				{/* {params.duration} */}
-				{dictionaries.en.confirm_description}
+				{dictionaries[lang].confirm_description}
 			</p>
 		</div>
 	);
