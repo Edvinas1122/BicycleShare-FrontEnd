@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 
-export function QueryParameter<T = string>(query: string, routeHandler: Function): Function
+export function QueryParameter<T = string>(
+	query: string,
+	routeHandler: (...args: any) => Promise<any>
+): (request: Request) => Promise<Response>
 {
 	return async function (request: Request): Promise<Response> {
 		const { searchParams } = new URL(request.url);

@@ -8,7 +8,6 @@ import {
 	generateToken
 } from '@/components/next-api-utils/validation';
 import 
-	constructBicycleService,
 	{ constructUserService }
 from "@/components/bicycle-api/bicycle.module";
 import {
@@ -16,7 +15,7 @@ import {
 	respondSetCookies
 } from '@/components/next-api-utils/endpoints';
 
-async function routeHandler(code: string) {
+async function routeHandler(code: string): Promise<any> {
 	const IntraOAuth2 = getOAuth2Config();
 	const oAuth = new IntraAuth(IntraOAuth2);
 	const intra_token = await oAuth.getAccessToken(code);
