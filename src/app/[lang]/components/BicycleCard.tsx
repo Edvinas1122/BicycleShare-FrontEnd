@@ -41,6 +41,11 @@ export default function BicycleCard({
 
 	const router = useRouter();
 
+	React.useEffect(() => {
+		router.prefetch(`/${language}/${props.lockerId}/select`);
+		router.prefetch(`/${language}/${props.lockerId}/last-users`);
+	}, [router, language, props.lockerId]);
+
 	const handler = (route: string) => {
 		router.push(`/${language}/${props.lockerId}/${route}`);
 	};
