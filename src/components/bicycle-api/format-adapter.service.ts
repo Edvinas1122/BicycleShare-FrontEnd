@@ -74,7 +74,7 @@ export default class NotionFormatterService {
 	async getDatabaseContent(databaseId: string, query?: any): Promise<DatabaseList> {
 		const list = await this.notion.queryDatabase(databaseId, query);
 		if (!list.results) throw new BadRequestException(list.message);
-		return new DatabaseList(list, this.notion);
+		return new DatabaseList(list, this.notion, query);
 	}
 
 	async getPage(pageId: string): Promise<any> {
@@ -303,6 +303,7 @@ export class DatabaseList {
 			return filteredList;
 		} else {
 			console.error("map is not an array:", map, "failed ", this.id);
+			return [];
 		}
 	}
 

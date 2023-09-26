@@ -24,7 +24,10 @@ export default function Page({
 			name: bicycle.data.Name.title[0].plain_text,
 			image: bicycle.getImageLink(),
 		};
-	}).catch(error => (console.log(error)));
+	}).catch(error => ({
+		name: "error",
+		image: Promise.resolve("/default.png"),
+	}));
 
 	return (
 		<div>
