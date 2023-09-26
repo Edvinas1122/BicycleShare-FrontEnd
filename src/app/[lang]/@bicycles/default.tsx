@@ -7,7 +7,7 @@ import { Language, dictionaries } from "@/conf/dictionary.conf";
 export default async function Page({params: {lang}}: {params: {lang: Language}}) {
 	// const bicycleService = constructBicycleService({cache: 'no-store'});
 	const bicycleService = constructBicycleService({next: {tags: ["bicycle"]}});
-	const bicycles: BicycleInfo[] | null = await bicycleService.getBicycles();
+	const bicycles: BicycleInfo[] | null = await bicycleService.getBicycles().catch(() => (null));
 
 	const buttons = [
 		{

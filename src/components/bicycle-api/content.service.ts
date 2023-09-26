@@ -85,7 +85,6 @@ export default class BicycleShareContentService {
 		);
 		query.addFilter("Locker", "number", "equals", id);
 		const database = await query.execute();
-		console.log("database got", database);
 		if (!database.getPropertiesList().length) {
 			return null;
 		}

@@ -41,7 +41,7 @@ export default function RootLayout(
 				<main className={inter.className}>
 					{!acceptedTerms ? props.auth: null}
 					<LockedDisplay>
-					{props.children}
+						{props.children}
 					</LockedDisplay>
 				</main>
 			</AppGlobalProviders>

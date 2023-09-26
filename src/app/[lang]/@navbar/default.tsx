@@ -25,15 +25,19 @@ function formatUser(user: any) {
 	};
 }
 
-export default function Page({params: {lang}}: {params: {lang: Language}}) {
+export default async function Page({params: {lang}}: {params: {lang: Language}}) {
 
-	const user = getUserFromToken().then(formatUser);
+	const user = await getUserFromToken().then(formatUser).catch(() => ({image: "default.png", name: "error", username: "error"}));
+	console.log(lang, dictionaries[lang].language);
+	if (user.name === "error") {
+		return null;
+	}
 	return (
 		<>
 			<Navbar
 				icon={appLoginConfig.icon}
 			>
-				<UserMenu user={user}>
+				<UserMenu user={Promise.resolve(user)}>
 					<p>{dictionaries[lang].language}</p>
 				</UserMenu>
 			</Navbar>
