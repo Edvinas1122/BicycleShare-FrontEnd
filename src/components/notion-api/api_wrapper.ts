@@ -71,12 +71,18 @@ class APIFetcher {
 		}
 		const filledEndpoint = this.fillEndpointParams(theEndpoint.path, endpointParams);
 		const requestBody = this.setRequestBody(theEndpoint.name, body);
-		const fetchParams = {
+		let fetchParams = {
 			method: theEndpoint.method,
 			headers: this.headers,
-			body: theEndpoint.method !== 'GET' ? JSON.stringify(requestBody) : undefined,
 			...other,
 		};
+		// console.log(requestBody);
+		if (theEndpoint.method !== 'GET' && requestBody) {
+			fetchParams = {
+				...fetchParams,
+				body: JSON.stringify(requestBody),
+			};
+		}
 		const response = await this.fetch(`${this.apiBaseUrl}${filledEndpoint}`, fetchParams);
 		return response.json();
 	}

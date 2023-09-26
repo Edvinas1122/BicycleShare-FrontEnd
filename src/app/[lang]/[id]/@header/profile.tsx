@@ -35,6 +35,10 @@ function PromiseBicycleProfile({
 }) {
 	const data = use(info);
 
+	if (!data) {
+		return null;
+	}
+
 	return (
 		<>
 			<Suspense fallback={

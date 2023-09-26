@@ -274,7 +274,7 @@ class DatabaseQueryBuilder {
 			this.database_id,
 			formattedQuery
 		);
-		return new DatabaseList(database, this.notion);
+		return new DatabaseList(database, this.notion, this.filter);
 	}
 }
 
@@ -288,15 +288,22 @@ export class DatabaseList {
 	constructor(
 		private list: DatabaseListProps,
 		private notion: NotionService,
+		private id: any,
 	) {}
 
-	getPropertiesList(): any[] {
-		const filteredList = this.list.results.map((item: any) => {
-			const data = item.properties;
-			data.id = item.id;
-			return data;
-		});
-		return filteredList;
+	async getPropertiesList(): Promise<any[]> {
+
+		const map = await this.list;
+		if (Array.isArray(map.results)) {
+			const filteredList = map.results.map((item: any) => {
+				const data = item.properties;
+				data.id = item.id;
+				return data;
+			});
+			return filteredList;
+		} else {
+			console.error("map is not an array:", map, "failed ", this.id);
+		}
 	}
 
 	async getPagesList(): Promise<any[]> {

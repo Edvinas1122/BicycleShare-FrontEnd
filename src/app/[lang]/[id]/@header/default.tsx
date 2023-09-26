@@ -13,19 +13,18 @@ export default function Page({
 }: { 
 	params: { id: string } 
 }) {
-
 	const service = constructBicycleService({cache: 'no-store'});
 	const bicycle = service.getBicycleInterface(Number(params.id));
 	const bicycleInfo: Promise<BicycleProfileInfo> = bicycle.then((bicycle) => {
 		if (!bicycle) {
-			notFound();
+			// notFound();
 			throw new Error('Bicycle not found');
 		}
 		return {
 			name: bicycle.data.Name.title[0].plain_text,
 			image: bicycle.getImageLink(),
 		};
-	});
+	}).catch(error => (console.log(error)));
 
 	return (
 		<div>

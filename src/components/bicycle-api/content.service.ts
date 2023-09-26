@@ -46,23 +46,27 @@ export default class BicycleShareContentService {
 	}
 
 
-	async getBicycles(): Promise<BicycleInfo[]> {
+	async getBicycles(): Promise<BicycleInfo[] | null> {
 		// function delay(ms) {
 		// 	return new Promise(resolve => setTimeout(resolve, ms));
 		// }
 		// await delay(3000);
 		const database = await this.notionContentService.getDatabaseContent(this.config.BICYCLES);
-		const properties = database.getPropertiesList();
-		return properties.map((property: any) => {
-			const properties: BicycleData = {
-				id: property.id,
-				available: property.Availability.select.name === "Available",
-				disabledReason: property["Disabled Reason"].rich_text[0],
-				name: property.Name.title[0].plain_text,
-				lockerId: property.Locker.number,
-			}
-			return new BicycleInfo(properties, this.notionContentService, this.config);
-		});
+		try {
+			const properties = await database.getPropertiesList();
+			return properties.map((property: any) => {
+				const properties: BicycleData = {
+					id: property.id,
+					available: property.Availability.select.name === "Available",
+					disabledReason: property["Disabled Reason"].rich_text[0],
+					name: property.Name.title[0].plain_text,
+					lockerId: property.Locker.number,
+				}
+				return new BicycleInfo(properties, this.notionContentService, this.config);
+			});
+		} catch (error: any) {
+			return null;
+		}
 	}
 
 
@@ -81,6 +85,7 @@ export default class BicycleShareContentService {
 		);
 		query.addFilter("Locker", "number", "equals", id);
 		const database = await query.execute();
+		console.log("database got", database);
 		if (!database.getPropertiesList().length) {
 			return null;
 		}
@@ -245,6 +250,10 @@ export class BicycleInfo {
 			start: lastTimestamp["Share Started (UNIX)"],
 			end: lastTimestamp["Share Ended (UNIX)"],
 		}
+	}
+
+	getName(): string {
+		return (this.data.Name.title[0].plain_text);
 	}
 
 	async getLastUses(): Promise<Use[] | null> {

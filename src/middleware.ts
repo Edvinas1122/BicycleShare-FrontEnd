@@ -42,8 +42,8 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-	matcher: [
-		'/((?!_next|.*\\.svg$|.*\\.jpg$|.*\\.png$|/api|/api/revalidate).*)',
-		'/'
-	],
+    matcher: [
+        '/((?!_next|.*\\.svg$|.*\\.jpg$|.*\\.png$|.*\\.ico$|/api|/api/revalidate).*)',
+        '/'
+    ],
 }
