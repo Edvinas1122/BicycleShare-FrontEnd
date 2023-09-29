@@ -1,4 +1,4 @@
-import { LoginCardProps } from "@/app/@auth/components/LoginCard";
+import { LoginCardProps } from "@/app/[lang]/@auth/components/LoginCard";
 
 export const appLoginConfig: LoginCardProps = {
 	icon: "/bike_icon.svg",
@@ -24,6 +24,7 @@ export const appLoginConfig: LoginCardProps = {
 	devLinkTexts: {"en": "About the Project", "de": "Über das Projekt"},
 };
 
+
 const authCredentials = {
 	oAuth2: {
 		link: process.env.NEXT_PUBLIC_OAUTH_LINK || "",
@@ -34,9 +35,16 @@ const authCredentials = {
 };
 
 export const getOAuth2Config = () => {
-	return authCredentials.oAuth2;
+	const oAuth2 = authCredentials.oAuth2;
+	if (!oAuth2.link) throw new Error("No OAuth2 link");
+	if (!oAuth2.client_id) throw new Error("No OAuth2 client id");
+	if (!oAuth2.client_secret) throw new Error("No OAuth2 client secret");
+	if (!oAuth2.redirect_uri) throw new Error("No OAuth2 redirect uri");
+	return oAuth2;
 }
 
 export const getLoginLink = () => {
-	return process.env.NEXT_PUBLIC_OAUTH_LINK
+	const redirect_uri = process.env.NEXT_PUBLIC_OAUTH_LINK;
+	if (!redirect_uri) throw new Error("No redirect uri");
+	return redirect_uri;
 }

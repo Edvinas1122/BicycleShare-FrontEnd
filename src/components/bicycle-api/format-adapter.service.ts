@@ -46,6 +46,7 @@ const FormatConfiguration: FormatConfiguration = {
 export default class NotionFormatterService {
 	constructor(
 		private notion: NotionService,
+		// private render: NotionRendererService,
 	) {}
 
 	async getPageContent(pageId?: string): Promise<NotionBlock[]> {

@@ -1,16 +1,13 @@
-"use client";
-import React, {use, Suspense} from "react";
 import ParseError from "./utils/error";
 import BlocksView from "./render/blocks";
 
 
 const NotionPageData = ({
-	data
+	list
 }: {
-	data: Promise<any>
+	list: any
 }) => {
 
-	const list = use(data);
 
 	if (!list?.object || list.object !== 'list' || list.results === undefined) {
 		return (

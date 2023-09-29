@@ -1,5 +1,6 @@
 type Dictionary = Readonly<{
 	terms_conditions: string;
+	accept_terms_conditions: string;
 	held_by: string;
 	returned_by: string;
 	reserve: string;
@@ -37,6 +38,7 @@ export type Term = keyof Dictionary;
 
 const dictionary: Dictionary = {
 	terms_conditions: "Terms & Conditions",
+	accept_terms_conditions: "I accept the terms & conditions",
 	held_by: "Held by",
 	returned_by: "Returned by",
 	reserve: "Reserve",
@@ -78,6 +80,7 @@ const dictionary: Dictionary = {
 
 const german_dictionary: Dictionary = {
 	terms_conditions: "Allgemeine Geschäftsbedingungen",
+	accept_terms_conditions: "Ich akzeptiere die Allgemeinen Geschäftsbedingungen",
 	held_by: "Gehalten von",
 	returned_by: "Zurückgegeben von",
 	reserve: "Reservieren",

@@ -1,30 +1,59 @@
 import jwt from 'jsonwebtoken';
+import { SignJWT, jwtVerify } from 'jose'
+import { nanoid } from 'nanoid'
 import { cookies } from 'next/headers';
 import { respondError } from './endpoints';
 
 const secret: string = "cat";
 
-export const validateToken = (
-	token: string,
-	secret_param?: string
-): any => {
-	try {
-		const decoded = jwt.verify(token, secret_param ? secret_param : secret)
-		return decoded
-	} catch (e) {
-		console.log("token validation error", e);
-		return false
-	}
+// export const validateToken = (
+// 	token: string,
+// 	secret_param?: string
+// ): any => {
+// 	try {
+// 		const decoded = jwt.verify(token, secret_param ? secret_param : secret)
+// 		return decoded
+// 	} catch (e) {
+// 		console.log("token validation error", e);
+// 		return false
+// 	}
+// }
+
+export const validateToken = async (token: string): Promise<any> => {
+    try {
+		const verified = await jwtVerify(
+			token,
+			new TextEncoder().encode(secret),
+		);
+		return verified.payload;
+    } catch (e) {
+        console.log("token decryption error", e);
+        return false;
+    }
 }
 
-export const generateToken = (
-	user: any
-) => {
-	const token = jwt.sign(user, secret, {
-		expiresIn: '1h'
+export const generateToken = async (user: any) => {
+	const tokenKey = await new SignJWT({
+		...user
 	})
-	return token
+    .setProtectedHeader({ alg: 'HS256' })
+    .setJti(nanoid())
+    .setIssuedAt()
+    .setExpirationTime('2h')
+    .sign(new TextEncoder().encode(secret));
+
+    return tokenKey;
 }
+
+// export const generateToken = async (
+// 	user: any
+// ) => {
+// 	const token = jwt.sign(user, secret, {
+// 		expiresIn: '1h'
+// 	})
+
+// 	return token;
+// }
 
 export const hasAVaildToken = (): boolean => {
 	const cookieStore = cookies();
@@ -34,10 +63,10 @@ export const hasAVaildToken = (): boolean => {
 	return hasValidToken;
 }
 
-export const hasAcceptedTerms = (): boolean => {
+export const hasAcceptedTerms = async (): Promise<boolean> => {
 	const cookieStore = cookies();
 	const token = cookieStore.get('token');
-	const hasValidToken = token ? validateToken(token.value): false;
+	const hasValidToken = token ? await validateToken(token.value): false;
 	if (!hasValidToken) {
 		return false;
 	}
@@ -56,51 +85,70 @@ export const getUserFromToken = async (): Promise<any> => {
 
 export class Token {
 	private token: any;
+	private tokenDecoded: string | null;
 	constructor() {
 		const cookieStore = cookies();
 		this.token = cookieStore.get('token');
+		this.tokenDecoded = null;
 	}
 
-	public hasAVaildToken(): boolean {
-		const hasValidToken = this.token ? validateToken(this.token.value): false;
+	private async hasValidTokenP(): Promise<boolean> {
+		if (this.tokenDecoded) {
+			return true;
+		}
+		if (!this.token) {
+			throw new Error("Missing token");
+		}
+		const decoded = await validateToken(this.token.value);
+		if (!decoded) {
+			return false;
+		}
+		if (this.tokenDecoded === null) {
+			this.tokenDecoded = decoded;
+		}
+		return true;
+	}
+
+	public async hasAVaildToken(): Promise<boolean> {
+		const hasValidToken = this.token ? await this.hasValidTokenP(): false;
 		return hasValidToken;
 	}
 
-	public hasAcceptedTerms(): boolean {
-		if (!this.hasAVaildToken()) {
+	public async hasAcceptedTerms(): Promise<boolean> {
+		if (!await this.hasValidTokenP()) {
 			return false;
 		}
-		const decoded = validateToken(this.token.value);
+		const decoded = this.tokenDecoded ? this.tokenDecoded : await validateToken(this.token.value);
 		return decoded.termsAccepted;
 	}
 
-	public getUserFromToken(adapter: Function): any {
-		const decoded = validateToken(this.token.value);
+	public async getUserFromToken(adapter: Function): Promise<any> {
+		const decoded = this.tokenDecoded ? this.tokenDecoded : await validateToken(this.token.value);
 		return adapter(decoded);
 	}
 
-	public updateUserToken(property: string, value: any): void {
-		const decoded = validateToken(this.token.value);
+	public async updateUserToken(property: string, value: any): Promise<void> {
+		const decoded = this.tokenDecoded ? this.tokenDecoded : await validateToken(this.token.value);
 		decoded[property] = value;
 		delete decoded.exp;
-		const newToken = generateToken(decoded);
+		const newToken = await generateToken(decoded);
 		cookies().delete('token');
 		cookies().set('token', newToken);
 	}
 }
 
-export function ValidateToken(tokenToValidate: string, routeHandler: Function): Function
-{
-	return async function (request: Request): Promise<Response> {
-		const cookieStore = cookies();
-		const token = cookieStore.get('token');
-		if (!token) {
-			return respondError("Missing token", 401);
-		}
-		const decoded = validateToken(token.value, tokenToValidate);
-		if (!decoded) {
-			return respondError("Invalid token", 401);
-		}
-		return await routeHandler(request);
-	}
-}
+// export function ValidateToken(tokenToValidate: string, routeHandler: Function): Function
+// {
+// 	return async function (request: Request): Promise<Response> {
+// 		const cookieStore = cookies();
+// 		const token = cookieStore.get('token');
+// 		if (!token) {
+// 			return respondError("Missing token", 401);
+// 		}
+// 		const decoded = validateToken(token.value, tokenToValidate);
+// 		if (!decoded) {
+// 			return respondError("Invalid token", 401);
+// 		}
+// 		return await routeHandler(request);
+// 	}
+// }

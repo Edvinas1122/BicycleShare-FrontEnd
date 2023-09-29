@@ -47,10 +47,6 @@ export default class BicycleShareContentService {
 
 
 	async getBicycles(): Promise<BicycleInfo[] | null> {
-		// function delay(ms) {
-		// 	return new Promise(resolve => setTimeout(resolve, ms));
-		// }
-		// await delay(3000);
 		const database = await this.notionContentService.getDatabaseContent(this.config.BICYCLES);
 		try {
 			const properties = await database.getPropertiesList();
@@ -135,10 +131,12 @@ export class UserService {
 		);
 		query.addFilter("IntraID", "number", "equals", userID);
 		const database = await query.execute();
-		if (!database.getPropertiesList().length) {
+		const items = await database.getPropertiesList();
+		if (!items.length) {
+			console.log("No user found");
 			return null;
 		}
-		const userData = database.getPropertiesList()[0];
+		const userData = items[0];
 		return {
 			id: userData.IntraID.number,
 			name: userData.Name.rich_text[0].plain_text,
@@ -194,7 +192,7 @@ class UserInterface {
 		);
 		query.addFilter("IntraID", "number", "equals", this.user.id);
 		const database = await query.execute();
-		const itemsFound = database.getPropertiesList();
+		const itemsFound = await database.getPropertiesList();
 		return itemsFound.length > 0;
 	}
 }
