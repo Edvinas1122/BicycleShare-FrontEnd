@@ -1,72 +1,60 @@
 "use client";
-import React, {use, Suspense} from "react";
+import React from "react";
 import {
 	User,
 	Skeleton,
 } from "@nextui-org/react";
 
-export type BicycleProfileInfo = {
-	name: string,
-	image: Promise<string>,
-};
 
-export default function BicycleProfile({
-	info
-}: {
-	info: Promise<BicycleProfileInfo>
-}) {
-	return (
-		<>
-			<Suspense fallback={
-				<UserSkeleton/>
-			}>
-				<PromiseBicycleProfile
-					info={info}
-				/>
-			</Suspense>
-		</>
-	);
-}
+// function PromiseBicycleProfile({
+// 	info
+// }: {
+// 	info: Promise<BicycleProfileInfo>
+// }) {
+// 	const data = use(info);
 
-function PromiseBicycleProfile({
-	info
-}: {
-	info: Promise<BicycleProfileInfo>
-}) {
-	const data = use(info);
+// 	if (!data) {
+// 		return null;
+// 	}
 
-	if (!data) {
-		return null;
-	}
-
-	return (
-		<>
-			<Suspense fallback={
-				<User
-					name={data.name}
-					className={"justify-start"}
-				/>
-			}>
-				<LoadedBicycleProfile
-					name={data.name}
-					image={data.image}
-				/>
-			</Suspense>
-		</>
-	);
-}
+// 	return (
+// 		<>
+// 			<Suspense fallback={
+// 				<User
+// 					name={data.name}
+// 					className={"justify-start"}
+// 				/>
+// 			}>
+// 				<LoadedBicycleProfile
+// 					name={data.name}
+// 					image={data.image}
+// 				/>
+// 			</Suspense>
+// 		</>
+// 	);
+// }
 
 import NextImage from 'next/image';
 
-function LoadedBicycleProfile({
+export function BicycleAvatar({
 	name,
-	image
+	imageLink
 }: {
 	name: string,
-	image: Promise<string>,
-}) {
+	imageLink?: string,
+}
+) {
 
-	const imageLink = use(image);
+	if (!imageLink) {
+		return (
+			<>
+				<User
+					name={name}
+					className={"justify-start"}
+				/>
+			</>
+		);
+	}
 
 	return (
 		<>
@@ -86,7 +74,35 @@ function LoadedBicycleProfile({
 	);
 }
 
-function UserSkeleton() {
+// function LoadedBicycleProfile({
+// 	name,
+// 	image
+// }: {
+// 	name: string,
+// 	image: Promise<string>,
+// }) {
+
+// 	const imageLink = use(image);
+
+// 	return (
+// 		<>
+// 			<User
+// 				name={name}
+// 				className={"justify-start"}
+// 				avatarProps={{
+// 					src: imageLink,
+// 					imgProps: {
+// 						// as: {NextImage},
+// 						width: 30,
+// 						height: 30,
+// 					}
+// 				}}
+// 			/>
+// 		</>
+// 	);
+// }
+
+export function UserSkeleton() {
 	return (
 		<>
 			<div className="max-w-[300px] w-full flex items-center gap-3" style={{opacity: 0.5}}>

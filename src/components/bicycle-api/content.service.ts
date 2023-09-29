@@ -81,10 +81,11 @@ export default class BicycleShareContentService {
 		);
 		query.addFilter("Locker", "number", "equals", id);
 		const database = await query.execute();
-		if (!database.getPropertiesList().length) {
+		const properties = await database.getPropertiesList();
+		if (!properties.length) {
 			return null;
 		}
-		const bicycleData = database.getPropertiesList()[0];
+		const bicycleData = properties[0];
 		return new BicycleInfo(bicycleData, this.notionContentService, this.config);
 	}
 }

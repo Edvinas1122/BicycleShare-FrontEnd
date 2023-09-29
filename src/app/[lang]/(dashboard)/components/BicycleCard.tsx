@@ -31,18 +31,21 @@ export default function BicycleCard({
 	children,
 	language,
 	buttons,
+	action,
 }: {
 	props: BicycleInfo;
 	header: React.ReactNode;
 	children: React.ReactNode;
 	language: Language;
 	buttons: { label: string, route: string }[];
+	action: (path: string) => void;
 }) {
 
 	const router = useRouter();
 
 	const handler = (route: string) => {
 		router.push(`/${language}/${props.lockerId}/${route}`);
+		// action(`/${language}/${props.lockerId}/${route}`);
 	};
 
 	return (
@@ -61,10 +64,35 @@ export default function BicycleCard({
 					<Button key={index} onPress={() => handler(button.route)}>
 						{button.label}
 					</Button>
+					// <StatefulButton key={index} action={() => handler(button.route)}>
+					// 	{button.label}
+					// </StatefulButton>
 				))}
 			</CardFooter>
 			</Card>
 	)
+}
+
+function StatefulButton({
+	children,
+	action,
+}: {
+	children: React.ReactNode;
+	action: () => void;
+}) {
+	const [loading, setLoading] = React.useState(false);
+
+	return (
+		<Button
+			isLoading={loading}
+			onPress={() => {
+				setLoading(true);
+				action();
+			}}
+		>
+			{children}
+		</Button>
+	);
 }
 
 export function ImageSkeleton() {

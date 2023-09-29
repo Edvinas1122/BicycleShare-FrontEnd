@@ -1,10 +1,10 @@
-"use server";
 import { Suspense } from "react";
 import BicycleCard, {UserAvatar, UserSkeleton, ImageSuspense, ImageSkeleton} from "../components/BicycleCard";
 import constructBicycleService from "@/components/bicycle-api/bicycle.module";
 import BicycleListWrapper from "../components/BicycleWrapper";
 import { BicycleInfo } from "@/components/bicycle-api/content.service";
 import { Language, dictionaries } from "@/conf/dictionary.conf";
+import { redirect, RedirectType } from "next/navigation";
 
 export default async function Page({params: {lang}}: {params: {lang: Language}}) {
 	// const bicycleService = constructBicycleService({cache: 'no-store'});
@@ -22,6 +22,11 @@ export default async function Page({params: {lang}}: {params: {lang: Language}})
 			route: "?press=last-users",
 		},
 	];
+
+	const selectBicycle = async (path: string) => {
+		"use server";
+		redirect(path, RedirectType.replace);
+	};
 
 	if (!bicycles) {
 		return null;
@@ -45,6 +50,7 @@ export default async function Page({params: {lang}}: {params: {lang: Language}})
 					}
 					language={lang}
 					buttons={buttons}
+					action={selectBicycle}
 				>
 					<Suspense fallback={<ImageSkeleton/>}>
 						<Image

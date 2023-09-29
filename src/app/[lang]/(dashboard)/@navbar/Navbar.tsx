@@ -4,12 +4,12 @@ import {Navbar as NextNavbar, NavbarBrand, NavbarContent, NavbarItem, Link, Drop
 
 export default function Navbar({
 	children,
-	// lang,
 	icon,
+	title,
 }: {
 	children: React.ReactNode,
-	// lang: string,
 	icon: string,
+	title: string,
 }) {
 	// const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
@@ -27,7 +27,9 @@ export default function Navbar({
 					width={50}
 					radius="sm"
 					/>
-				<p className="font-bold text-inherit">Bicycle Share</p>
+				<p className="font-bold text-inherit">
+					{title}
+				</p>
 				</div>
 			</NavbarBrand>
 			<NavbarContent justify="end">
@@ -42,9 +44,11 @@ export default function Navbar({
 export function UserMenu({
 	user,
 	children,
+	menuItems,
 }: {
 	user: User
 	children: React.ReactNode
+	menuItems: React.ReactNode[]
 }) {
 
 	const compensateStyle =
@@ -61,9 +65,15 @@ export function UserMenu({
 				}}></div>
 			</DropdownTrigger>
 			<DropdownMenu aria-label="Profile Actions" variant="flat">
-			<DropdownItem key="logout" className="h-14 gap-2">
-				{children}
-			</DropdownItem>
+			{
+				menuItems.map((item, index) => {
+					return (
+						<DropdownItem key={index} className="h-14 gap-2">
+							{item}
+						</DropdownItem>
+					);
+				})
+			}
 			</DropdownMenu>
 		</Dropdown>
 		</>

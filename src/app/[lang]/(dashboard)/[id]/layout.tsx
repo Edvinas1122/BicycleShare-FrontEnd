@@ -10,12 +10,10 @@ import {
 export default function Layout({
 	children,
 	header,
-	device,
 	params: {lang}
 }:{
 	children: React.ReactNode;
 	header: React.ReactNode;
-	device: React.ReactNode;
 	params: {lang: Language};
 }){
 
@@ -95,7 +93,6 @@ export default function Layout({
 				headerContent={header}
 			>
 			<>
-			{device}
 			{children}
 			</>
 			</ModalContentWrapper>
