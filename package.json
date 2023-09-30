@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@edvinas1122/api_wrapper": "^1.0.0-alpha.2",
-    "@edvinas1122/notion-views": "file:/modules/@edvinas1122/notion-views",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
     "@fortawesome/free-brands-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
