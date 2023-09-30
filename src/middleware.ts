@@ -127,14 +127,14 @@ const redirectPaths = {
 function pathnameRedirect(pathname: string, redirectPaths: any) {
 	const paths = pathname.split("/");
 	const pathnameRedirect = Object.keys(redirectPaths).includes(paths[2]);
-	console.log(pathnameRedirect);
+	// console.log(pathnameRedirect);
 	return pathnameRedirect;
 }
 
 export async function middleware(request: NextRequest) {
 	const { pathname, href, origin } = request.nextUrl;
 
-	console.log("middleware");
+	// console.log("middleware");
 	if (pathnameIsMissingLocale(pathname, localesToPaths)) {
 		return handleMissingLocale(request);
 	}
@@ -147,13 +147,13 @@ export async function middleware(request: NextRequest) {
 			return ensurePath(request.nextUrl, "login");
 		}
 	} else if (!await auth.hasAcceptedTerms()) {
-		console.log("has token but not accepted terms");
+		// console.log("has token but not accepted terms");
 		headers.set('x-authorised', "false");
 		if (pathnameMissing(pathname, "legal")) {
 			return ensurePath(request.nextUrl, "legal");
 		}
 	} else {
-		console.log("has token");
+		// console.log("has token");
 		headers.set('x-authorised', "true");
 		const user = await auth.getUserFromToken(tokenAdapter);
 		headers.set('x-user-name', user.user);

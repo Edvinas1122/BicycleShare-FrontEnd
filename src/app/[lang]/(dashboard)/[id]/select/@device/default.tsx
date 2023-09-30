@@ -1,6 +1,11 @@
 import 
 	AvailabilityInfo
 from "./Availability";
+import * as PusherServer from "pusher";
+
+import {
+	getPusherConfig
+} from "@/conf/pusher.conf";
 
 export enum Status {
 	OFFLINE = "OFFLINE",
@@ -17,17 +22,27 @@ export default function Page() {
 	*/ 
 	async function checkAvailability(): Promise<Status> {
 		"use server";
-		return new Promise<Status>((resolve) => {
+		console.log("checkAvailability");
+		const pusher = new PusherServer.default(getPusherConfig());
+
+		return (new Promise<Status>((resolve) => {
+			pusher.trigger("my-channel", "my-event", {
+				message: "world"
+			});
 			setTimeout(() => {
-					resolve(Status.AVAILABLE);
-			}, 1000);
-		});
+				pusher.trigger("my-channel", "my-event", {
+					message: "hello world"
+				});
+				resolve(Status.AVAILABLE);
+			}, 4000);
+		}));
 	}
 
 	return (
 		<>
 			<AvailabilityInfo
 				serverMethod={checkAvailability}
+				pusherKey={getPusherConfig().key}
 			/>
 		</>
 	);

@@ -9,7 +9,7 @@ import {
 import {
 	Status
 } from "./default"
-
+import Script from 'next/script'
 
 /*
 	A component to display updates on device.
@@ -17,11 +17,15 @@ import {
 		1. The component should display a message
 		2. Must somehow block an parent interface
 			until the message is displayed
-*/ 
+*/
+declare var Pusher: any;
+
 export default function AvailabilityInfo({
 	serverMethod,
+	pusherKey,
 }: {
 	serverMethod: Function;
+	pusherKey: string;
 }) {
 
 	const [loading, setLoading] = React.useState<boolean>(true);
@@ -29,17 +33,8 @@ export default function AvailabilityInfo({
 	const [fadeOut, setFadeout] = React.useState<boolean>(false);
 
 	React.useEffect(() => {
-		serverMethod().then((result: Status) => {
-			const status = (result === "AVAILABLE" ? 
-				dictionaries.en.available : 
-				dictionaries.en.unavailable);
-			setResponse(status);
-		});
-	}, []);
-
-	React.useEffect(() => {
 		if (response) {
-			setFadeout(true);
+			// setFadeout(true);
 			setTimeout(() => {
 				setLoading(false);
 			}, 1000);
@@ -55,25 +50,57 @@ export default function AvailabilityInfo({
 		text-xs
 		align-center
 	`;
+	
+	const connectToPusher = async () => {
+		var pusher = new Pusher(pusherKey, {
+			cluster: 'eu',
+		});
+		const channel = pusher.subscribe('my-channel');
+		channel.bind('my-event', function(data: any) {
+			// alert(JSON.stringify(data));
+			setResponse(data.message);
+			
+		});
+		const sends = setInterval(() => {
+			serverMethod();
+		}, 6000);
+		return () => {
+			pusher.disconnect();
+			clearInterval(sends);
+		}
+	};
 
 	return (
+		<>
+		<Script 
+			src="https://js.pusher.com/8.2.0/pusher.min.js"
+			onReady={() => {connectToPusher();}}
+		/>
 		<div className={"w-full flex flex-col justify-end align-center"}>
 			<div className={initialClassName +
 				(fadeOut ? "vertical-shrink" : "vertical-expand")
 			}>
-				{loading ? (
+				{response ? (
+					<StatusInfo
+						status={response}
+					/>
+				) : (
+					<Spinner size="sm" />
+				)}
+				{/* {loading ? (
 					<div className={"flex flex-row gap-2 " +
-						(fadeOut ? "fade-out" : "")
-					}>
+					(fadeOut ? "fade-out" : "")
+				}>
 						<Spinner size="sm" />
 							<p className={"text-xs text-gray-500"}>
 								{dictionaries.en.device_connection}
 							</p>
 					</div>
 					) : null
-				}
+				} */}
 			</div>
 		</div>
+		</>
 	);
 }
 
@@ -88,3 +115,17 @@ export default function AvailabilityInfo({
 // function ConnectionMessagesDisplay({
 
 // })
+
+function StatusInfo({
+	status,
+}: {
+	status: string;
+}) {
+	return (
+		<>
+			<p className={"text-xs text-gray-500"}>
+				{status}
+			</p>
+		</>
+	);
+}

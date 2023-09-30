@@ -18,7 +18,6 @@ export default async function Page({
 	// const service = constructBicycleService({cache: 'no-store'}); // cache with bicycle tag
 	const service = constructBicycleService({next: {tags: ["bicycle"]}}); // cache with bicycle tag
 	const bicycle = service.getBicycleInterface(Number(params.id));
-	console.log(bicycle);
 	const bicycleInfo: Promise<BicycleProfileInfo> = bicycle.then((bicycle) => {
 		if (!bicycle) {
 			// notFound();

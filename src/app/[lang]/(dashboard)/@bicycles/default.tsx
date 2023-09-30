@@ -123,7 +123,6 @@ async function Avatar({
 	const resolvedUser = await user;
 	if (!resolvedUser) return null;
 	const availabilityInfo = resolvedUser.end ? dictionaries[lang].returned_by : dictionaries[lang].held_by;
-	console.log("availabilityInfo", resolvedUser.start);
 	const durationInfo = new Date(resolvedUser.start).toLocaleString(lang);
 	const completeInfo = `${availabilityInfo}`;
 	const classNames = {
