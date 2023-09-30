@@ -33,6 +33,9 @@ type Dictionary = Readonly<{
 	language: string;
 	comments: string;
 	drop_cache: string;
+	who: string;
+	took: string;
+	returned: string;
 }>
 
 export type Term = keyof Dictionary;
@@ -78,6 +81,9 @@ const dictionary: Dictionary = {
 	language: "Language",
 	comments: "Comments",
 	drop_cache: "Update cache",
+	who: "Who",
+	took: "took",
+	returned: "returned",
 };
 
 const german_dictionary: Dictionary = {
@@ -121,6 +127,9 @@ const german_dictionary: Dictionary = {
 	language: "Sprache",
 	comments: "Kommentare",
 	drop_cache: "Cache aktualisieren",
+	who: "Wer",
+	took: "nahm",
+	returned: "zurückgegeben",
 };
 
 type Dictionaries = Readonly<{

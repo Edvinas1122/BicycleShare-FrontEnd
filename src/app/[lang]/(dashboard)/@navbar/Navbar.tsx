@@ -54,7 +54,6 @@ export function UserMenu({
 	const compensateStyle =
 		`absolute h-8 w-8 rounded-full
 		`;
-	console.log("user menu", user);
 	return (
 		<>
 		<DisplayAvatar user={user} />

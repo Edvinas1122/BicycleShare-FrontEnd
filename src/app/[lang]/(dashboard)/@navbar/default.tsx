@@ -62,11 +62,11 @@ export default function Page({params: {lang}}: {params: {lang: Language}}) {
 							cacheMenuItem
 					]}
 				>
-					<StatefulButton
+					{/* <StatefulButton
 						action={dropCache}
 					>
 						{dictionaries[lang].drop_cache}
-					</StatefulButton>
+					</StatefulButton> */}
 				</UserMenu>
 			</Navbar>
 		</>
