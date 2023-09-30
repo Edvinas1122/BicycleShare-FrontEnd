@@ -9,7 +9,6 @@ import {
 	Language,
 } from '@/conf/dictionary.conf';
 import { Blurhash } from "react-blurhash";
-import Link from 'next/link';
 
 interface BicycleInfo {
 	lockerId: number;
@@ -64,6 +63,7 @@ export default function BicycleCard({
 			</Card>
 	)
 }
+import Link from 'next/link';
 
 export function LinkButton({
 	label,
