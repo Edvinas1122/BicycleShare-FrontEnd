@@ -6,10 +6,9 @@ import {
 import {
 	dictionaries
 } from "@/conf/dictionary.conf";
-import {
-	Status
-} from "./default"
+
 import Script from 'next/script'
+import Pusher from 'pusher-js'
 
 /*
 	A component to display updates on device.
@@ -18,7 +17,7 @@ import Script from 'next/script'
 		2. Must somehow block an parent interface
 			until the message is displayed
 */
-declare var Pusher: any;
+// declare var Pusher: any;
 
 export default function AvailabilityInfo({
 	serverMethod,
@@ -28,18 +27,8 @@ export default function AvailabilityInfo({
 	pusherKey: string;
 }) {
 
-	const [loading, setLoading] = React.useState<boolean>(true);
 	const [response, setResponse] = React.useState<string | null>(null);
 	const [fadeOut, setFadeout] = React.useState<boolean>(false);
-
-	React.useEffect(() => {
-		if (response) {
-			// setFadeout(true);
-			setTimeout(() => {
-				setLoading(false);
-			}, 1000);
-		}
-	}, [response]);
 
 	const initialClassName = `
 		w-full
@@ -52,7 +41,7 @@ export default function AvailabilityInfo({
 	`;
 	
 	const connectToPusher = async () => {
-		var pusher = new Pusher(pusherKey, {
+		const pusher = new Pusher(pusherKey, {
 			cluster: 'eu',
 		});
 		const channel = pusher.subscribe('my-channel');
@@ -70,12 +59,16 @@ export default function AvailabilityInfo({
 		}
 	};
 
+	React.useEffect(() => {
+		connectToPusher();
+	}, [connectToPusher]);
+
 	return (
 		<>
-		<Script 
+		{/* <Script 
 			src="https://js.pusher.com/8.2.0/pusher.min.js"
 			onReady={() => {connectToPusher();}}
-		/>
+		/> */}
 		<div className={"w-full flex flex-col justify-end align-center"}>
 			<div className={initialClassName +
 				(fadeOut ? "vertical-shrink" : "vertical-expand")
@@ -87,17 +80,6 @@ export default function AvailabilityInfo({
 				) : (
 					<Spinner size="sm" />
 				)}
-				{/* {loading ? (
-					<div className={"flex flex-row gap-2 " +
-					(fadeOut ? "fade-out" : "")
-				}>
-						<Spinner size="sm" />
-							<p className={"text-xs text-gray-500"}>
-								{dictionaries.en.device_connection}
-							</p>
-					</div>
-					) : null
-				} */}
 			</div>
 		</div>
 		</>
