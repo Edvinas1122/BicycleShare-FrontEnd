@@ -8,20 +8,6 @@ import{
 	Language, dictionaries
 } from "@/conf/dictionary.conf";
 
-type Timestamp = {
-	taken: string,
-	returned: string,
-	user: string,
-};
-
-// const timestamps: Timestamp[] = [
-// 	{
-// 		end: "2021-10-10",
-// 		start: "2021-10-11",
-// 		user: "John Doe",
-// 	}
-// ]
-
 export default async function Page({ 
 	params 
 }: { 
