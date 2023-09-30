@@ -231,10 +231,11 @@ export class BicycleInfo {
 		query.and().addFilter("Bicycles", "relation", "contains", this.data.id);
 		query.addSort("Share Started (UNIX)", "descending");
 		const database = await query.execute();
-		if (!database.getPropertiesList().length) {
+		const properties = await database.getPropertiesList();
+		if (!properties.length) {
 			return null;
 		}
-		const lastTimestamp = database.getPropertiesList()[0];
+		const lastTimestamp = properties[0];
 		const lastUser = lastTimestamp.Holder.relation[0]?.id;
 		if (!lastUser) {
 			return null;
@@ -245,8 +246,8 @@ export class BicycleInfo {
 			name: userData.page.properties.IntraName.title[0].plain_text,
 			fullName: userData.page.properties.Name.rich_text[0].plain_text,
 			image: userData.page.properties.ProfileImage,
-			start: lastTimestamp["Share Started (UNIX)"],
-			end: lastTimestamp["Share Ended (UNIX)"],
+			start: lastTimestamp["Share Started (UNIX)"]?.number,
+			end: lastTimestamp["Share Ended (UNIX)"]?.number,
 		}
 	}
 
@@ -254,17 +255,18 @@ export class BicycleInfo {
 		return (this.data.Name.title[0].plain_text);
 	}
 
-	async getLastUses(): Promise<Use[] | null> {
+	async getLastUses(index: number): Promise<Use[]> {
 		const query = this.notionContentService.getDatabaseQueryBuilder(
 			this.config.TIMESTAMPS
 		);
 		query.and().addFilter("Bicycles", "relation", "contains", this.data.id);
 		query.addSort("Share Started (UNIX)", "descending");
 		const database = await query.execute();
-		if (!database.getPropertiesList().length) {
-			return null;
+		const properties = await database.getPropertiesList();
+		if (!properties.length) {
+			return [];
 		}
-		const lastTimestamps = database.getPropertiesList();
+		const lastTimestamps = properties.slice(index, index + 5);
 		const uses = await lastTimestamps.map(async (timestamp: any, index: number) => {
 			const lastUser  = timestamp?.Holder.relation[0]?.id;
 			const userData = await this.notionContentService.getPage(lastUser);
@@ -278,7 +280,8 @@ export class BicycleInfo {
 				hour: '2-digit', 
 				minute: '2-digit', 
 				timeZone: 'Europe/Berlin' 
-			};			
+			};
+			if (!user.IntraID) return null;
 			return {
 				id: user.IntraID.number,
 				fullName: user.Name.rich_text[0].plain_text,

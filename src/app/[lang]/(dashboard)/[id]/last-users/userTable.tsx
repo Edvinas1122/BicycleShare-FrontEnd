@@ -5,7 +5,11 @@ import {
 	TableBody,
 	TableColumn,
 	TableRow,
-	TableCell
+	TableCell,
+	Skeleton,
+	Spinner,
+	getKeyValue,
+	User
 } from "@nextui-org/react";
 import React, {use, Suspense} from "react";
 
@@ -15,68 +19,72 @@ type Timestamp = {
 	user: string,
 };
 
-
-
-export default function PromiseTable({
-	timestamps,
+export function TableFrame({
+	headings,
+	getTimestamps,
 }: {
-	timestamps: Promise<any>,
-}){
-	
-	return (
-		<>
-		<Suspense fallback={<TableSkeleton/>}>
-			<TableFrame
-				timeStamps={timestamps}
-				>
-				{/* <UserTable timestamps={timestamps}/> */}
-			</TableFrame>
-		</Suspense>
-		</>
-	);
-}
-
-function TableFrame({
-	children,
-	timeStamps,
-}: {
-	children: React.ReactNode,
-	timeStamps: Promise<any>,
+	headings: {key: string, label: string}[],
+	getTimestamps: (iteration: number) => Promise<any[] | null>,
 }) {
 
-	const data = use(timeStamps) || [];
-	const columns = data.map((item: any) => {
+	const [timeStamps, setTimeStamps] = React.useState<any[]>([]);
+	const [loading, setLoading] = React.useState<boolean>(true);
+	const updateTimestamps = async () => {
+		setLoading(true);
+		const stamps = await getTimestamps(0);
+		if (stamps) {
+			setTimeStamps(stamps);
+			setLoading(false);
+		}
+	};
+
+	React.useEffect(() => {
+		updateTimestamps();
+	}, [getTimestamps]);
+
+	const classNames={
+        base: "max-h-[520px]",
+        table: "min-h-[320px]",
+    }
+
+	const renderCells = React.useCallback((item: any, columnKey: React.Key) => {
 		console.log(item);
-		const data = JSON.parse(item.value);
-		return data;
-	})
-	console.log(columns);
+		switch (columnKey) {
+			case "name":
+				return (<User 
+						name={item.name}
+						avatarProps={{
+							src: item.image,
+							size: "sm",
+						}}
+					/>);
+			default:
+				return item[columnKey];
+		}
+	}, [timeStamps]);
 
 	return (
 		<>
-		<Table removeWrapper aria-label="Example static collection table">
-			<TableHeader>
-				<TableColumn>Who</TableColumn>
-				<TableColumn>took</TableColumn>
-				<TableColumn>returned</TableColumn>
+		<Table removeWrapper classNames={classNames}>
+			<TableHeader columns={headings}>
+				{(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
 			</TableHeader>
-			<TableBody>
-			{columns.map((item: any, index: number) => {
-				if (!item) return null;
-				return (
-					<TableRow key={index}>
-						<TableCell>{item.name}</TableCell>
-						<TableCell>{item.start}</TableCell>
-						<TableCell>{item.end}</TableCell>
-					</TableRow>
-				);
-			})}
+			<TableBody
+				isLoading={loading}
+				loadingContent={<Spinner />}
+				items={timeStamps}
+			>
+			{(item: any) => (
+				<TableRow key={item.startUnix}>
+					{(columnKey) => <TableCell>{renderCells(item, columnKey)}</TableCell>}
+				</TableRow>
+			)}
 			</TableBody>
 		</Table>
 		</>
 	);
 }
-function TableSkeleton({
+export function TableSkeleton({
 }: {
 }) {
 	return (
@@ -87,7 +95,7 @@ function TableSkeleton({
 				<TableColumn>took</TableColumn>
 				<TableColumn>returned</TableColumn>
 			</TableHeader>
-			<TableBody>
+			<TableBody isLoading={true}>
 			{/* {children} */}
 			</TableBody>
 		</Table>

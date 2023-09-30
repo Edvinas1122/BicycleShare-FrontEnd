@@ -1,9 +1,9 @@
 import
 	constructBicycleService
 from "@/components/bicycle-api/bicycle.module";
-import
-	PromiseTable
-from "./userTable";
+import{
+	TableFrame
+} from "./userTable";
 
 type Timestamp = {
 	taken: string,
@@ -19,18 +19,43 @@ type Timestamp = {
 // 	}
 // ]
 
-export default function Page({ 
+export default async function Page({ 
 	params 
 }: { 
 	params: { id: string } 
 }) {
 
-	const service = constructBicycleService({cache: 'no-store'});
-	const bicycle = service.getBicycleInterface(Number(params.id));
-	const timestampsPromise = bicycle.then((bicycle) => bicycle?.getLastUses());
+	async function getTimestamps(iteration: number) {
+		"use server";
+		const service = constructBicycleService({cache: 'no-store'});
+		// const service = constructBicycleService({next: {tags: [`bicycle-use-${params.id}`]}});
+		const bicycle = await service.getBicycleInterface(Number(params.id));
+		if (!bicycle) return null;
+		const timestamps = await bicycle.getLastUses(iteration);
+		const times = await Promise.all(timestamps);
+		return times;
+	}
+
+	const headings = [
+		{
+			key: `name`,
+			label: `Who`,
+		},
+		{
+			key: `start`,
+			label: `took`,
+		},
+		{
+			key: `end`,
+			label: `returned`,
+		},
+	];
 	return (
 		<div>
-			<PromiseTable timestamps={timestampsPromise}/>
+			<TableFrame
+				headings={headings}
+				getTimestamps={getTimestamps}
+			/>
 		</div>
 	);
 }

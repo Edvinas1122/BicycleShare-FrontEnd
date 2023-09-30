@@ -8,7 +8,7 @@ export enum Status {
 	UNAVAILABLE = "UNAVAILABLE",
 }
 
-export default async function Page() {
+export default function Page() {
 
 	/*
 		Dirrects subscribtion to a IOT server.

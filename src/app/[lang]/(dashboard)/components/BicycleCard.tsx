@@ -254,8 +254,10 @@ export const ImageSuspense = ({
 
 export const UserAvatar = ({
 	user,
+	classNames
 }: {
 	user: UseInfo;
+	classNames?: any;
 }) => {
 
 	return (
@@ -264,6 +266,7 @@ export const UserAvatar = ({
 				name={user.name}
 				description={user?.fullName}
 				className="loader-fade-appear"
+				classNames={classNames}
 				avatarProps={{
 					src: user.image.url,
 					size: "md",
@@ -275,11 +278,11 @@ export const UserAvatar = ({
 
 export function UserSkeleton() {
 	return (
-		<div className="max-w-[130px] w-full flex items-center gap-3">
+		<div className="max-w-[130px] w-full flex flex-row-reverse items-center gap-3">
 			<div>
 			<Skeleton className="flex rounded-full w-10 h-10"/>
 			</div>  
-			<div className="w-full flex flex-col gap-2">
+			<div className="w-full flex flex-col items-end gap-2">
 			<Skeleton className="h-3 w-3/4 rounded-lg">
 				<p>John Doee</p>
 			</Skeleton>

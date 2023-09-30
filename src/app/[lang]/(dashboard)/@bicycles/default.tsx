@@ -95,9 +95,9 @@ async function BicycleHeader({
 	`;
 
 
-	const availabilityInfo = availability ? 
-		dictionaries[language].returned_by :
-		dictionaries[language].held_by;
+	// const availabilityInfo = availability ? 
+	// 	dictionaries[language].returned_by :
+	// 	dictionaries[language].held_by;
 
 	return (
 		<div className={classNames}>
@@ -105,12 +105,10 @@ async function BicycleHeader({
 				{title}
 			</h2>
 			<div>
-			<p className={
-				"text-xs"
-			}>{availabilityInfo}</p>
 			<Suspense fallback={<UserSkeleton/>}>
 				<Avatar
 					user={user}
+					lang={language}
 				/>
 			</Suspense>
 			</div>
@@ -120,15 +118,33 @@ async function BicycleHeader({
 
 async function Avatar({
 	user,
+	lang,
 }: {
 	user: Promise<UseInfo | null>;
+	lang: Language;
 }) {
 
 	const resolvedUser = await user;
-
+	if (!resolvedUser) return null;
+	const availabilityInfo = resolvedUser.end ? dictionaries[lang].returned_by : dictionaries[lang].held_by;
+	console.log("availabilityInfo", resolvedUser.start);
+	const durationInfo = new Date(resolvedUser.start).toLocaleString(lang);
+	const completeInfo = `${availabilityInfo}`;
+	const classNames = {
+		base: `flex-row-reverse items-center`,
+		wrapper: `items-end`,
+		name: `text-end`,
+		description: `text-end`
+	};
 	return (
 		<>
-		{resolvedUser ? <UserAvatar user={resolvedUser}/> : null}
+		<p className={
+				"text-xs"
+		}>{completeInfo}</p>
+		<UserAvatar classNames={classNames} user={resolvedUser}/>
+		<p className={
+				"text-xs"
+		}>{durationInfo}</p>
 		</>
 	);
 }
