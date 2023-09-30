@@ -9,6 +9,7 @@ import {
 	Language,
 } from '@/conf/dictionary.conf';
 import { Blurhash } from "react-blurhash";
+import Link from 'next/link';
 
 interface BicycleInfo {
 	lockerId: number;
@@ -30,23 +31,21 @@ export default function BicycleCard({
 	header,
 	children,
 	language,
-	buttons,
-	action,
+	footer,
 }: {
 	props: BicycleInfo;
 	header: React.ReactNode;
 	children: React.ReactNode;
 	language: Language;
-	buttons: { label: string, route: string }[];
-	action: (path: string) => void;
+	footer: React.ReactNode;
 }) {
 
-	const router = useRouter();
+	// const router = useRouter();
 
-	const handler = (route: string) => {
-		router.push(`/${language}/${props.lockerId}/${route}`);
-		// action(`/${language}/${props.lockerId}/${route}`);
-	};
+	// const handler = (route: string) => {
+	// 	router.push(`/${language}/${props.lockerId}/${route}`);
+	// 	// action(`/${language}/${props.lockerId}/${route}`);
+	// };
 
 	return (
 		<Card className={"w-[350px] min-h-[400px] pop-appear"}>
@@ -60,18 +59,28 @@ export default function BicycleCard({
 			{children}
 			</CardBody>
 			<CardFooter className={"flex flex-row gap-2"}>
-				{buttons.map((button, index) => (
-					<Button key={index} onPress={() => handler(button.route)}>
-						{button.label}
-					</Button>
-					// <StatefulButton key={index} action={() => handler(button.route)}>
-					// 	{button.label}
-					// </StatefulButton>
-				))}
+				{footer}
 			</CardFooter>
 			</Card>
 	)
 }
+
+export function LinkButton({
+	label,
+	route,
+}: {
+	label: string;
+	route: string;
+}) {
+
+	return (
+		<>
+			<Button as={Link} href={route}>
+				{label}
+			</Button>
+		</>
+	)
+};
 
 function StatefulButton({
 	children,

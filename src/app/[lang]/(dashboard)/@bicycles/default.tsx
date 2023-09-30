@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import BicycleCard, {UserAvatar, UserSkeleton, ImageSuspense, ImageSkeleton} from "../components/BicycleCard";
+import BicycleCard, {UserAvatar, UserSkeleton, ImageSuspense, ImageSkeleton, LinkButton} from "../components/BicycleCard";
 import constructBicycleService from "@/components/bicycle-api/bicycle.module";
 import BicycleListWrapper from "../components/BicycleWrapper";
 import { BicycleInfo } from "@/components/bicycle-api/content.service";
@@ -14,18 +14,13 @@ export default async function Page({params: {lang}}: {params: {lang: Language}})
 	const buttons = [
 		{
 			label: dictionaries[lang].reserve,
-			route: "?press=select",
+			route: `/select`,
 		},
 		{
 			label: dictionaries[lang].last_users,
-			route: "?press=last-users",
+			route: `/last-users`,
 		},
 	];
-
-	const selectBicycle = async (path: string) => {
-		"use server";
-		redirect(path, RedirectType.replace);
-	};
 
 	if (!bicycles) {
 		return null;
@@ -48,8 +43,15 @@ export default async function Page({params: {lang}}: {params: {lang: Language}})
 
 					}
 					language={lang}
-					buttons={buttons}
-					action={selectBicycle}
+					footer={
+						<>
+							<Buttons
+								buttons={buttons}
+								lang={lang}
+								id={bicycle.data.lockerId}
+							/>
+						</>
+					}
 				>
 					<Suspense fallback={<ImageSkeleton/>}>
 						<Image
@@ -92,11 +94,6 @@ async function BicycleHeader({
 		items-center
 		w-full
 	`;
-
-
-	// const availabilityInfo = availability ? 
-	// 	dictionaries[language].returned_by :
-	// 	dictionaries[language].held_by;
 
 	return (
 		<div className={classNames}>
@@ -167,6 +164,31 @@ async function Image({
 				width={310}
 				height={207}
 				/> : null}
+		</>
+	);
+}
+
+function Buttons({
+	buttons,
+	id,
+	lang,
+}: {
+	buttons: { label: string, route: string }[];
+	id: string;
+	lang: Language;
+}) {
+
+	const prefix = `/${lang}/${id}`;
+
+	return (
+		<>
+			{buttons.map((button) => (
+				<LinkButton
+					key={button.label}
+					label={button.label}
+					route={prefix + button.route}
+				/>
+			))}
 		</>
 	);
 }
