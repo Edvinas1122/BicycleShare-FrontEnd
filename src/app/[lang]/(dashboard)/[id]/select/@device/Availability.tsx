@@ -7,7 +7,7 @@ import {
 	dictionaries
 } from "@/conf/dictionary.conf";
 
-import Script from 'next/script'
+// import Script from 'next/script'
 import Pusher from 'pusher-js'
 
 /*
@@ -40,7 +40,7 @@ export default function AvailabilityInfo({
 		align-center
 	`;
 	
-	const connectToPusher = async () => {
+	const connectToPusher = () => {
 		const pusher = new Pusher(pusherKey, {
 			cluster: 'eu',
 		});
@@ -60,7 +60,8 @@ export default function AvailabilityInfo({
 	};
 
 	React.useEffect(() => {
-		connectToPusher();
+		const cleanup = connectToPusher();
+		return cleanup;
 	}, [connectToPusher]);
 
 	return (
@@ -85,18 +86,6 @@ export default function AvailabilityInfo({
 		</>
 	);
 }
-
-// enum DeviceMessages {
-// 	AVAILABLE,
-// 	UNAVAILABLE,
-// 	IN_USE,
-// 	PAIRED,
-// 	PROCEDURE_COMPLETED,
-// }
-
-// function ConnectionMessagesDisplay({
-
-// })
 
 function StatusInfo({
 	status,

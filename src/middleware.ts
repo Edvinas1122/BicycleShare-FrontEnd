@@ -8,6 +8,7 @@ const localesToPaths = {
 	'nl-NL': 'nl',
 	'nl': 'nl',
 	'de-DE': 'de',
+	'ue-UE': 'ue',
 }
 
 function getLocale(request: NextRequest) { 
