@@ -1,20 +1,16 @@
-"use client";
-import React from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { Language } from '@/conf/dictionary.conf';
+import { redirect, RedirectType } from "next/navigation"
 
-export default function Page() {
-	const router = useRouter();
-	const pathname = usePathname();
-	const searchParams = useSearchParams();
-	const dirrect = searchParams.get("press");
-
-	React.useEffect(() => {
-		if (dirrect && dirrect.length > 0) {
-			setTimeout(() => {
-				router.replace(pathname + "/" + dirrect);
-			}, 1);
-		}
-	}, [dirrect, pathname, router, searchParams]);
-
+export default function Page({
+	searchParams: {press},
+	params: {lang, id},
+}: {
+	searchParams: {press: string};
+	params: {lang: Language, id: string};
+}) {
+	const path = "/" + lang + "/" + id + "/" + press;
+	if (press.length > 0) {
+		redirect(path, RedirectType.replace);
+	}
 	return null;
 }

@@ -11,7 +11,6 @@ export default async function Page({params: {lang}}: {params: {lang: Language}})
 	const bicycleService = constructBicycleService({next: {tags: ["bicycle"]}});
 	const bicycles: BicycleInfo[] | null = await bicycleService.getBicycles();
 
-	console.log("language selected", lang);
 	const buttons = [
 		{
 			label: dictionaries[lang].reserve,
