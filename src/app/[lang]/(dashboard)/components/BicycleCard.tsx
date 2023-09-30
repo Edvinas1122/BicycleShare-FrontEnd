@@ -75,7 +75,7 @@ export function LinkButton({
 
 	return (
 		<>
-			<Button as={Link} href={route}>
+			<Button as={Link} href={route} replace={true}>
 				{label}
 			</Button>
 		</>

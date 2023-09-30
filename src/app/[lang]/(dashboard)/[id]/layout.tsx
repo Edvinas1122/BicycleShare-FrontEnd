@@ -1,4 +1,4 @@
-import DisplayModal, {InterfaceUnit} from "../../../components/modal";
+import DisplayModal, {InterfaceUnit} from "@/app/components/modal";
 import {
 	dictionaries,
 	Language
@@ -10,84 +10,23 @@ import {
 export default function Layout({
 	children,
 	header,
+	modalInterface,
 	params: {lang}
 }:{
 	children: React.ReactNode;
 	header: React.ReactNode;
+	modalInterface: React.ReactNode;
 	params: {lang: Language};
 }){
-
-	async function startLockerOpenSequence(phrasedRequest: string) {
-		"use server";
-		console.log(phrasedRequest);
-	}
-
-	const modalInterface: InterfaceUnit[] = [
-		buttonBuild(
-			dictionaries[lang].cancel,
-			"/", {
-				buttonProps: {
-					color: "danger",
-					variant: "light",
-				},
-			}),
-		buttonBuild(
-			dictionaries[lang].last_users,
-			"/last-users", { levelAppearant: 0, buttonProps: {
-					color: "primary",
-					variant: "ghost",
-			}}),
-		buttonBuild(
-			dictionaries[lang].comments,
-			"/comments", { levelAppearant: 0, buttonProps: {
-					color: "primary",
-					variant: "ghost",
-			}}),
-		buttonBuild(
-			dictionaries[lang].select,
-			"/select", { levelAppearant: 0}),
-		buttonBuild(
-			dictionaries[lang].back,
-			"../", { levelAppearant: 2, buttonProps: {
-				color: "primary",
-				variant: "ghost",
-			}}),
-		buttonBuild(
-			dictionaries[lang].info,
-			"/info", { levelAppearant: 1, buttonProps: {
-				color: "primary",
-				variant: "ghost",
-			}}),
-		buttonBuild(
-			dictionaries[lang].proceed,
-			"/duration", { levelAppearant: 1}),
-		buttonBuild(
-			dictionaries[lang].select,
-			"/short", { 
-				levelAppearant: 2,
-				segmentDemandant: "duration",
-				state: "time",
-			}),
-		buttonBuild(
-			dictionaries[lang].back,
-			"../", { levelAppearant: 3, buttonProps: {
-				color: "primary",
-				variant: "ghost",
-			}}),
-		buttonBuild(
-			dictionaries[lang].affirmation,
-			"", { 
-				levelAppearant: 3,
-				serverAction: startLockerOpenSequence
-			}),
-	];
-
 
 	return (
 		<>
 			<DisplayModal
-				interfaceItems={modalInterface}
-				closeRoute={"/" + lang}
+				modalInterface={modalInterface}
+				closeButton={{
+					route: "/" + lang,
+					label: dictionaries[lang].cancel,
+				}}
 			>
 			<ModalContentWrapper
 				headerContent={header}

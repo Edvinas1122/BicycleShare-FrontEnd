@@ -6,7 +6,6 @@ import {useRouter, usePathname, useSelectedLayoutSegments, useSearchParams} from
 export type InterfaceUnit = {
 	buttonChildren: React.ReactNode;
 	route: string;
-	close: boolean;
 	back: boolean;
 	persistent?: boolean;
 	levelAppearant?: number;
@@ -21,15 +20,12 @@ export type InterfaceUnit = {
 
 export function ModalInterface ({
 	interfaceItems,
-	onClose,
-	router,
 }: {
 	interfaceItems?: InterfaceUnit[];
-	onClose: Function;
-	router: any;
 }) {
 	if (!interfaceItems) return null;
 	const pathname = usePathname();
+	const router = useRouter();
 	const segments = useSelectedLayoutSegments();
 	const depth = segments.length;
 
@@ -51,7 +47,6 @@ export function ModalInterface ({
 				key={index}
 				onClick={() => {
 					if (unit.serverAction) unit.serverAction(pathname);
-					else if (unit.close) onClose();
 					else if (unit.back) router.back();
 					else {
 						console.log("unit.state", unit.state);
@@ -68,14 +63,32 @@ export function ModalInterface ({
 	)
 }
 
+function CloseButton({
+	onClose,
+	label,
+}: {
+	onClose: Function
+	label: string;
+}) {
+	return (
+		<Button
+			onClick={() => onClose()}
+			color="danger"
+			variant="light"
+		>
+			{label}
+		</Button>
+	)
+}
+
 export default function DisplayModal({
 	children,
-	interfaceItems,
-	closeRoute,
+	modalInterface,
+	closeButton,
 }: {
 	children: React.ReactNode;
-	interfaceItems?: InterfaceUnit[];
-	closeRoute: string;
+	modalInterface: React.ReactNode;
+	closeButton: {route: string, label: string};
 }) {
 	const {isOpen, onOpen, onOpenChange} = useDisclosure();
 	const router = useRouter();
@@ -86,7 +99,7 @@ export default function DisplayModal({
 
 	const Close = () => {
 		onOpenChange();
-		setTimeout( () => {router.push(closeRoute);}, 200);
+		setTimeout( () => {router.replace(closeButton.route);}, 200);
 	};
 
 	return (
@@ -97,11 +110,12 @@ export default function DisplayModal({
 					<>
 					{children}
 					<ModalFooter>
-						<ModalInterface
-							interfaceItems={interfaceItems}
+						<CloseButton
 							onClose={Close}
-							router={router}
+							label={closeButton.label}
+
 						/>
+						{modalInterface}
 					</ModalFooter>
 					</>
 				)}

@@ -18,19 +18,19 @@ export default async function Page({
 	// const service = constructBicycleService({cache: 'no-store'}); // cache with bicycle tag
 	const service = constructBicycleService({next: {tags: ["bicycle"]}}); // cache with bicycle tag
 	const bicycle = service.getBicycleInterface(Number(params.id));
+	console.log(bicycle);
 	const bicycleInfo: Promise<BicycleProfileInfo> = bicycle.then((bicycle) => {
 		if (!bicycle) {
-			notFound();
+			// notFound();
 			throw new Error('Bicycle not found');
 		}
 		return {
 			name: bicycle.data.Name.title[0].plain_text,
 			image: bicycle.getImageLink(),
 		};
-	}).catch(error => ({
-		name: "error",
-		image: Promise.resolve("/default.png"), // error image
-	}));
+	}).catch((error) => {
+		notFound();
+	});
 
 	return (
 		<div>

@@ -9,7 +9,7 @@ export default function Page({
 	params: {lang: Language, id: string};
 }) {
 	const path = "/" + lang + "/" + id + "/" + press;
-	if (press.length > 0) {
+	if (press) {
 		redirect(path, RedirectType.replace);
 	}
 	return null;

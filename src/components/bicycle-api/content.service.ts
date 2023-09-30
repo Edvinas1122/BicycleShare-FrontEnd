@@ -83,7 +83,7 @@ export default class BicycleShareContentService {
 		const database = await query.execute();
 		const properties = await database.getPropertiesList();
 		if (!properties.length) {
-			return null;
+			throw new NotFoundException("No bicycle found");
 		}
 		const bicycleData = properties[0];
 		return new BicycleInfo(bicycleData, this.notionContentService, this.config);
