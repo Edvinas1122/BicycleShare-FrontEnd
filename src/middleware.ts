@@ -175,8 +175,9 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: [
-        '/((?!_next|.*\\.svg$|.*\\.jpg$|.*\\.png$|.*\\.ico$|/api|/api/revalidate).*)',
-        '/'
-    ],
+	matcher: [
+		'/((?!api|_next/static|_next/image|favicon.ico|.*\\.jpg$|.*\\.png$|.*\\.svg$|.*\\.ico$).*)',
+		// '/((?!_next|.*\\.(?:[sj]vg|jpg|png|ico)$|/api).*)',
+		'/'
+	],
 }

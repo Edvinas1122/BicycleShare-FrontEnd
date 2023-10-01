@@ -43,6 +43,10 @@ export default function AvailabilityInfo({
 	const connectToPusher = () => {
 		const pusher = new Pusher(pusherKey, {
 			cluster: 'eu',
+			userAuthentication: {
+				transport: "jsonp",
+				endpoint: "/api/validate"
+			},
 		});
 		const channel = pusher.subscribe('my-channel');
 		channel.bind('my-event', function(data: any) {
