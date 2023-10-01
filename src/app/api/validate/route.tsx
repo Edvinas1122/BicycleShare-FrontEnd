@@ -1,7 +1,7 @@
 import { BodyParameters, Respond } from "@/components/next-api-utils/endpoints";
 
 type ValidationBody = {
-	socketId: string,
+	socket_id: string,
 };
 
 
@@ -11,5 +11,5 @@ async function routeHandler(params: any) {
 }
 
 export const POST = BodyParameters<ValidationBody>([
-	"socketId",
+	"socket_id",
 ], routeHandler);
