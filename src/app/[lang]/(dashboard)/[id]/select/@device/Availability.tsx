@@ -48,7 +48,7 @@ export default function AvailabilityInfo({
 				endpoint: "/api/validate"
 			},
 		});
-		const channel = pusher.subscribe('my-channel');
+		const channel = pusher.subscribe('private-my-channel');
 		channel.bind('my-event', function(data: any) {
 			// alert(JSON.stringify(data));
 			setResponse(data.message);
