@@ -1,6 +1,8 @@
 import { BodyParameters, Respond } from "@/components/next-api-utils/endpoints";
 import * as PusherServer from "pusher";
-import { getPusherConfig } from "@/conf/organisation.conf";
+import {
+	getPusherConfig
+} from "@/conf/pusher.conf";
 
 type ValidationBody = {
 	socket_id: string,
