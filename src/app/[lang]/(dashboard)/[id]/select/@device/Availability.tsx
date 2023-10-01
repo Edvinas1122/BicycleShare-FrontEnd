@@ -43,12 +43,13 @@ export default function AvailabilityInfo({
 	const connectToPusher = () => {
 		const pusher = new Pusher(pusherKey, {
 			cluster: 'eu',
-			userAuthentication: {
-				transport: "jsonp",
-				endpoint: "/api/validate"
-			},
+			// userAuthentication: {
+			// 	endpoint: "/pusher/auth",
+			// 	transport: "jsonp",
+			// 	headers: { "X-CSRF-Token": "SOME_CSRF_TOKEN" },
+			// },
 		});
-		const channel = pusher.subscribe('private-my-channel');
+		const channel = pusher.subscribe('my-channel');
 		channel.bind('my-event', function(data: any) {
 			// alert(JSON.stringify(data));
 			setResponse(data.message);

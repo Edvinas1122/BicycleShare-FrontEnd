@@ -2,19 +2,14 @@ import Navbar, {UserMenu} from "./Navbar";
 import { appLoginConfig } from '@/conf/organisation.conf';
 import { dictionaries, Language } from "@/conf/dictionary.conf";
 import { revalidateTag } from 'next/cache';
-import { headers } from "next/headers";
 import { StatefulButton } from "@/app/components/buttons";
 import { redirect, RedirectType } from "next/navigation";
+import { getUserFromHeaders } from "@/components/next-api-utils/validation";
 
 
 export default function Page({params: {lang}}: {params: {lang: Language}}) {
 
-	const headersList = headers();
-	const user = {
-		image: headersList.get('x-user-image'),
-		name: headersList.get('x-user-name'),
-		username: headersList.get('x-user-username')
-	};
+	const user = getUserFromHeaders();
 	if (user.name === "error") return null;
 	if (!dictionaries[lang]) return null;
 

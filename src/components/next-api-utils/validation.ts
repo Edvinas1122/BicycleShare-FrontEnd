@@ -45,16 +45,6 @@ export const generateToken = async (user: any) => {
     return tokenKey;
 }
 
-// export const generateToken = async (
-// 	user: any
-// ) => {
-// 	const token = jwt.sign(user, secret, {
-// 		expiresIn: '1h'
-// 	})
-
-// 	return token;
-// }
-
 export const hasAVaildToken = (): boolean => {
 	const cookieStore = cookies();
 	const token = cookieStore.get('token');
@@ -135,6 +125,20 @@ export class Token {
 		cookies().delete('token');
 		cookies().set('token', newToken);
 	}
+}
+
+import { headers } from 'next/headers';
+
+export function getUserFromHeaders(){
+	const headersList = headers();
+	const user = {
+		id: headersList.get('x-user-id'),
+		image: headersList.get('x-user-image'),
+		name: headersList.get('x-user-name'),
+		username: headersList.get('x-user-username')
+	};
+	if (user.name === "error") throw new Error("Missing token");
+	return user;
 }
 
 // export function ValidateToken(tokenToValidate: string, routeHandler: Function): Function

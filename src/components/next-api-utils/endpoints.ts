@@ -21,8 +21,7 @@ export function BodyParameters<T = string[]>(
 ): (request: Request) => Promise<Response>
 {
 	return async function (request: Request): Promise<Response> {
-		console.log("BodyParameters");
-		const body = await request.json();
+		const body = await contentTypeHandler(request);
 		const missingParameters = bodyParameters.filter((parameter) => !(parameter in body));
 		if (missingParameters.length > 0) {
 			return respondError(`Missing body parameters: ${missingParameters.join(", ")}`, 400);
@@ -68,4 +67,18 @@ export function Respond(body: any, status: number) {
 			status: status,
 		}
 	);
+}
+
+async function contentTypeHandler(request: Request) {
+	const contentType = request.headers.get('content-type');
+	if (contentType && contentType.includes('application/json')) {
+		return await request.json();
+	} else {
+		const data = await request.formData();
+		const body: any = {};
+		for (const entry of Array.from(data.entries())) {
+			body[entry[0]] = entry[1];
+		}
+		return body;
+	}
 }

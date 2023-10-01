@@ -31,7 +31,14 @@ function getRedirectUrl(locale: string, pathname: string, origin: string, href: 
 	return redirectUrl;
 }
 
-function pathnameIsMissingLocale(pathname: string, localesToPaths: any) {
+function pathnameIsMissingLocale(
+	pathname: string,
+	localesToPaths: any,
+	exceptedFromLocale: string[] = []
+) {
+	const segments = pathname.split("/").filter(Boolean);
+	if (segments.some(segment => exceptedFromLocale.includes(segment))) return false;
+	console.log("pathname", pathname);
 	const pathnameIsMissingLocale = Object.values(localesToPaths).every(
 		(locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
 	);
@@ -132,11 +139,16 @@ function pathnameRedirect(pathname: string, redirectPaths: any) {
 	return pathnameRedirect;
 }
 
+const exceptedFromLocale = [
+	"api",
+	"pusher",
+]
+
 export async function middleware(request: NextRequest) {
 	const { pathname, href, origin } = request.nextUrl;
 
-	// console.log("middleware");
-	if (pathnameIsMissingLocale(pathname, localesToPaths)) {
+	console.log("middleware", pathname);
+	if (pathnameIsMissingLocale(pathname, localesToPaths, exceptedFromLocale)) {
 		return handleMissingLocale(request);
 	}
 
