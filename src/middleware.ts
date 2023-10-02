@@ -126,7 +126,7 @@ function getRedirectPath(pathname: string, redirectPaths: any) {
 	return redirectPath;
 }
 
-const paramsList = ["code"];
+const paramsList = ["code", "state"];
 
 const redirectPaths = {
 	"login": "",

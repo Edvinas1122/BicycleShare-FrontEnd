@@ -6,7 +6,7 @@ export const LoginButton = ({
 	handleLogin,
 	children
 }: {
-	handleLogin: () => void;
+	handleLogin: (state: string) => void;
 	children: React.ReactNode;
 }) => {
 	const className = `log_button `;
@@ -14,7 +14,8 @@ export const LoginButton = ({
 
 	const handleButton = () => {
 		setLoading(true);
-		handleLogin();
+		const domain = window.location.origin;
+		handleLogin(domain);
 	};
 
 	return (

@@ -23,7 +23,7 @@ async function checkDatabase(user: any) {
 	return userWithInfo;
 }
 
-async function handleAuth(code: string | null) {
+async function handleAuth(code: string | null, state?: string) {
 	"use server"
 	if (code) {
 		try {
@@ -46,23 +46,28 @@ export default async function Page({
 
 	const headersList = headers()
 	const code = headersList.get('x-code');
-
-	async function handleLogin() {
+	
+	async function handleLogin(state: string) {
 		"use server";
-		const redirect_uri = getLoginLink();
+		const redirect_uri = getLoginLink() + "&state=" + state;
+		// console.log("redirecting to", redirect_uri);
 		redirect(redirect_uri, RedirectType.replace);
 	}
-
+	
 	const user = await handleAuth(code);
-
+	
 	if (user?.error) {
+		const state = headersList.get('x-state');
 		return (
 			<>
 				<p className="text-red-500 text-center">
 					{`${user?.error}`}
 				</p>
 				<Suspense>
-					<Redirect error={user.error}/>
+					<Redirect
+						error={user.error}
+						state={state}
+						/>
 				</Suspense>
 			</>
 		);
@@ -92,9 +97,16 @@ export default async function Page({
 	);
 }
 
-async function Redirect({error}: {error: any}) {
+async function Redirect({
+	error,
+	state,
+}: {
+	error: any;
+	state: string | null;
+}) {
 
 	const promise = await new Promise(resolve => setTimeout(resolve, 1000));
+	const redirect_uri = state ? state : "/";
 	redirect("/", RedirectType.replace);
 	return null;
 }
