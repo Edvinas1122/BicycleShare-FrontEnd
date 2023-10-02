@@ -51,6 +51,7 @@ export default function AvailabilityInfo({
 		});
 		const channel = pusher.subscribe('locker-device');
 		channel.bind('testing', function(data: any) {
+			console.log("got", data);
 			setResponse(data.message);
 			
 		});

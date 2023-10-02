@@ -11,7 +11,6 @@ export default function Layout({
 	navbar: React.ReactNode,
 }) {
 
-	console.log("layout children");
 	const className = `
 		flex flex-col w-[100vw] h-[100vh] items-center justify-center`;
 	const dashBoardFrameStyle = "w-full h-full items-center justify-start h-[100vh] w-[100vw] flex flex-col gap-4";

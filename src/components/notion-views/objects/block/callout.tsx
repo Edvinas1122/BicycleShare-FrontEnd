@@ -12,7 +12,6 @@ export default function handleCallout({
 }: {
 	callout: Callout
 }): any {
-	console.log(callout);
 	const richText = displayRichText(callout.rich_text);
 	// const icon = handleIcon(callout.icon);
 	const color = callout.color;

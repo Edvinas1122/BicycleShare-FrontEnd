@@ -34,7 +34,6 @@ export default async function Page({
 		const userInterface = service.getUserInterface(user);
 		const res = await userInterface.acceptTermsAndConditions();
 		if (res.status == 200) {
-			console.log("terms accepted successfully");
 			await token.updateUserToken("termsAccepted", true);
 			redirect('/');
 		}

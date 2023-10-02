@@ -12,7 +12,6 @@ type ValidationBody = {
 };
 
 async function routeHandler(params: any) {
-	console.log(params);
 	const user = getUserFromHeaders();
 	if (!user.id || !user.name) return Respond({message: 'not authorized'}, 403);
 	const pusherUser = {
@@ -22,11 +21,9 @@ async function routeHandler(params: any) {
 		},
 		watchlist: ['another_id_1']
 	}
-	console.log(user);
 	const socketId = params.socket_id;
 	const pusher = new PusherServer.default(getPusherConfig());
 	const authResponse = pusher.authenticateUser(socketId, pusherUser);
-	console.log(authResponse);
 	return new Response(JSON.stringify(authResponse), {
 		status: 200,
 		headers: {

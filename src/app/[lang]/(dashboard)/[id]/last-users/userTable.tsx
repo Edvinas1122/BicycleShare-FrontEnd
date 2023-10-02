@@ -48,7 +48,6 @@ export function TableFrame({
     }
 
 	const renderCells = React.useCallback((item: any, columnKey: React.Key) => {
-		console.log(item);
 		switch (columnKey) {
 			case "name":
 				return (<User 

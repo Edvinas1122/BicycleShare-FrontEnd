@@ -38,7 +38,6 @@ function pathnameIsMissingLocale(
 ) {
 	const segments = pathname.split("/").filter(Boolean);
 	if (segments.some(segment => exceptedFromLocale.includes(segment))) return false;
-	console.log("pathname", pathname);
 	const pathnameIsMissingLocale = Object.values(localesToPaths).every(
 		(locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
 	);
@@ -149,7 +148,6 @@ import { getPusherConfig } from "@/conf/pusher.conf";
 export async function middleware(request: NextRequest) {
 	const { pathname, href, origin } = request.nextUrl;
 
-	console.log("middleware", pathname);
 	if (pathnameIsMissingLocale(pathname, localesToPaths, exceptedFromLocale)) {
 		return handleMissingLocale(request);
 	}
@@ -187,10 +185,16 @@ export async function middleware(request: NextRequest) {
 		setParamsIntoHeaders(request.nextUrl, headers, paramsList);
 	}
 	headers.set('x-middleware-effect', new Date().toISOString());
-	if (paramsList.find((param) => param === "state")) {
-		return NextResponse.redirect(new URL(
-			paramsList[paramsList.indexOf("state") + 1] as string,
-		).toString());
+	const state = new URL(href).searchParams.get("state");
+	if (state) {
+		const redirectUrl = new URL(state).host;
+		const url = new URL(href);
+		console.log("state", redirectUrl);
+		console.log("href", url.host);
+		console.log(state + url.pathname + url.search)
+		if (redirectUrl !== url.host) {
+			return NextResponse.redirect(state + url.pathname + url.search);
+		}
 	}
 	return NextResponse.next({
 		request: {
