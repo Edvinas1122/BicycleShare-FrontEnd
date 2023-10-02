@@ -7,35 +7,40 @@ import {
 	getPusherConfig
 } from "@/conf/pusher.conf";
 
+import {
+	Language
+} from "@/conf/dictionary.conf";
+import { getUserFromHeaders } from "@/components/next-api-utils/validation";
+
 export enum Status {
 	OFFLINE = "OFFLINE",
 	AVAILABLE = "AVAILABLE",
 	UNAVAILABLE = "UNAVAILABLE",
 }
 
-export default function Page() {
+export default function Page({
+	params: {lang, id},
+}: {
+	params: {lang: Language, id: string};
+}) {
 
+	const user = getUserFromHeaders();
 	/*
 		Dirrects subscribtion to a IOT server.
 		Must keep a connection, for proventing
 		on using a device when it is offline or in use.
 	*/ 
-	async function checkAvailability(): Promise<Status> {
+	async function checkAvailability(eventName: string): Promise<void> {
 		"use server";
 		console.log("checkAvailability");
 		const pusher = new PusherServer.default(getPusherConfig());
-
-		return (new Promise<Status>((resolve) => {
-			pusher.trigger("my-channel", "my-event", {
-				message: "world"
-			});
-			setTimeout(() => {
-				pusher.trigger("my-channel", "my-event", {
-					message: "hello world"
-				});
-				resolve(Status.AVAILABLE);
-			}, 4000);
-		}));
+		pusher.trigger("locker-device", eventName, {
+			message: {
+				bicycle_id: id,
+				lang: lang,
+				user: user,
+			}
+		});
 	}
 
 	return (

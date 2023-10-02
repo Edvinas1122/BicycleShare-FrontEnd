@@ -49,14 +49,14 @@ export default function AvailabilityInfo({
 			// 	headers: { "X-CSRF-Token": "SOME_CSRF_TOKEN" },
 			// },
 		});
-		const channel = pusher.subscribe('my-channel');
-		channel.bind('my-event', function(data: any) {
+		const channel = pusher.subscribe('locker-device');
+		channel.bind('observe-response', function(data: any) {
 			// alert(JSON.stringify(data));
 			setResponse(data.message);
 			
 		});
 		const sends = setInterval(() => {
-			serverMethod();
+			serverMethod("observe");
 		}, 6000);
 		return () => {
 			pusher.disconnect();
