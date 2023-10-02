@@ -90,7 +90,7 @@ export default async function Page({
 						<FinaliseLogin
 							token={user.token}
 							refresh={user.message.termsAccepted}
-							state={user.state}
+							state={state}
 						/>
 					</Suspense>
 					</>
