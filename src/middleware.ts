@@ -144,6 +144,8 @@ const exceptedFromLocale = [
 	"pusher",
 ]
 
+import { getPusherConfig } from "@/conf/pusher.conf";
+
 export async function middleware(request: NextRequest) {
 	const { pathname, href, origin } = request.nextUrl;
 
@@ -151,7 +153,13 @@ export async function middleware(request: NextRequest) {
 	if (pathnameIsMissingLocale(pathname, localesToPaths, exceptedFromLocale)) {
 		return handleMissingLocale(request);
 	}
-
+	if (exceptedFromLocale.includes(pathname.split("/")[1])) {
+		const headerPassword = request.headers.get("x-password");
+		if (headerPassword !== getPusherConfig().key) {
+			return new Response("Unauthorized", { status: 401 });
+		}
+		return NextResponse.next();
+	}
 	const auth = new Token();
 	const headers = new Headers(request.headers);
 	if (!await auth.hasAVaildToken()) {
