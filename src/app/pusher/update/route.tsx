@@ -14,6 +14,8 @@ type PushMessage = {
 };
 
 async function routeHandler(params: any) {
+	console.log("API, pusher received:");
+	console.log(params);
 	const pusher = new PusherServer.default(getPusherConfig());
 	const {event, message} = params;
 	pusher.trigger("locker-device", event, {

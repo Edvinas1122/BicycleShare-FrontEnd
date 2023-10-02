@@ -20,10 +20,10 @@ import Pusher from 'pusher-js'
 // declare var Pusher: any;
 
 export default function AvailabilityInfo({
-	serverMethod,
+	pushEventMessage,
 	pusherKey,
 }: {
-	serverMethod: Function;
+	pushEventMessage: Function;
 	pusherKey: string;
 }) {
 
@@ -51,11 +51,11 @@ export default function AvailabilityInfo({
 		});
 		const channel = pusher.subscribe('locker-device');
 		channel.bind('testing', function(data: any) {
-			console.log("got", data);
+			console.log("Client socket got", data);
 			setResponse(data.message);
 			
 		});
-		serverMethod("observe"); // 
+		pushEventMessage("observe");
 		return () => {
 			pusher.disconnect();
 		}

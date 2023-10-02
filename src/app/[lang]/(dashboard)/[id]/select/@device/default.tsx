@@ -32,7 +32,7 @@ export default function Page({
 	*/ 
 	async function checkAvailability(eventName: string): Promise<void> {
 		"use server";
-		console.log("checkAvailability");
+		console.log("Server checkAvailability");
 		const pusher = new PusherServer.default(getPusherConfig());
 		pusher.trigger("locker-device", eventName, {
 			message: {
@@ -46,7 +46,7 @@ export default function Page({
 	return (
 		<>
 			<AvailabilityInfo
-				serverMethod={checkAvailability}
+				pushEventMessage={checkAvailability}
 				pusherKey={getPusherConfig().key}
 			/>
 		</>
