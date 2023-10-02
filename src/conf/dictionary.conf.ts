@@ -192,3 +192,34 @@ export const dictionaries: Dictionaries = {
 	ue: dictionaryUA,
 }
 
+type ClientDictionaries = Readonly<{
+	en: ClientDictionary;
+	de: ClientDictionary;
+	ue: ClientDictionary;
+}>
+
+export type ClientDictionary = {
+	online: string;
+}
+
+export const clientDictionary: ClientDictionary = {
+	online: "online",
+}
+
+export const german_client_dictionary: ClientDictionary = {
+	online: "online",
+}
+
+export const ue_client_dictionary: ClientDictionary = {
+	online: "онлайн",
+}
+
+export const clientDictionaries: ClientDictionaries = {
+	en: clientDictionary,
+	de: german_client_dictionary,
+	ue: ue_client_dictionary,
+}
+
+type ClLanguages = keyof ClientDictionaries;
+
+export const languages: Language[] = Object.keys(dictionaries) as Language[] & ClLanguages[];

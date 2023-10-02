@@ -30,7 +30,10 @@ export default function Page({
 		Must keep a connection, for proventing
 		on using a device when it is offline or in use.
 	*/ 
-	async function checkAvailability(eventName: string): Promise<void> {
+	async function checkAvailability(
+		eventName: string,
+		message?: string,
+	): Promise<void> {
 		"use server";
 		console.log("Server checkAvailability");
 		const pusher = new PusherServer.default(getPusherConfig());
@@ -38,7 +41,8 @@ export default function Page({
 			message: {
 				bicycle_id: id,
 				lang: lang,
-				user: user,
+				username: user.username,
+				info: message,
 			}
 		});
 	}
@@ -48,6 +52,7 @@ export default function Page({
 			<AvailabilityInfo
 				pushEventMessage={checkAvailability}
 				pusherKey={getPusherConfig().key}
+				lang={lang}
 			/>
 		</>
 	);

@@ -4,7 +4,7 @@ import {
 	Spinner
 } from "@nextui-org/react";
 import {
-	dictionaries
+	clientDictionaries, Language, languages
 } from "@/conf/dictionary.conf";
 
 // import Script from 'next/script'
@@ -22,9 +22,11 @@ import Pusher from 'pusher-js'
 export default function AvailabilityInfo({
 	pushEventMessage,
 	pusherKey,
+	lang,
 }: {
 	pushEventMessage: Function;
 	pusherKey: string;
+	lang: Language;
 }) {
 
 	const [response, setResponse] = React.useState<string | null>(null);
@@ -50,12 +52,11 @@ export default function AvailabilityInfo({
 			// },
 		});
 		const channel = pusher.subscribe('locker-device');
-		channel.bind('testing', function(data: any) {
+		channel.bind('pong', function(data: any) {
 			console.log("Client socket got", data);
 			setResponse(data.message);
-			
 		});
-		pushEventMessage("observe");
+		pushEventMessage("ping");
 		return () => {
 			pusher.disconnect();
 		}
@@ -79,6 +80,7 @@ export default function AvailabilityInfo({
 				{response ? (
 					<StatusInfo
 						status={response}
+						language={lang}
 					/>
 				) : (
 					<Spinner size="sm" />
@@ -89,11 +91,28 @@ export default function AvailabilityInfo({
 	);
 }
 
+export enum LockerMessages {
+	online = 'online',
+}
+
 function StatusInfo({
 	status,
+	language,
 }: {
 	status: string;
+	language: Language;
 }) {
+
+	if (clientDictionaries[language][status as keyof typeof clientDictionaries[Language]]) {
+		return (
+			<>
+				<p className={"text-xs text-green-500"}>
+					{clientDictionaries[language][status as keyof typeof clientDictionaries[Language]]}
+				</p>
+			</>
+		);
+	}
+
 	return (
 		<>
 			<p className={"text-xs text-gray-500"}>

@@ -37,6 +37,7 @@ function pathnameIsMissingLocale(
 	exceptedFromLocale: string[] = []
 ) {
 	const segments = pathname.split("/").filter(Boolean);
+	console.log("segments", segments);
 	if (segments.some(segment => exceptedFromLocale.includes(segment))) return false;
 	const pathnameIsMissingLocale = Object.values(localesToPaths).every(
 		(locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
@@ -151,6 +152,7 @@ export async function middleware(request: NextRequest) {
 	if (pathnameIsMissingLocale(pathname, localesToPaths, exceptedFromLocale)) {
 		return handleMissingLocale(request);
 	}
+	console.log("exceptedFromLocale");
 	if (exceptedFromLocale.includes(pathname.split("/")[1])) {
 		const headerPassword = request.headers.get("x-password");
 		if (headerPassword !== getPusherConfig().key) {
