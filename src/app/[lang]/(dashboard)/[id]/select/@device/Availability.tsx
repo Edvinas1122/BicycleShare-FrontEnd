@@ -51,16 +51,12 @@ export default function AvailabilityInfo({
 		});
 		const channel = pusher.subscribe('locker-device');
 		channel.bind('observe-response', function(data: any) {
-			// alert(JSON.stringify(data));
 			setResponse(data.message);
 			
 		});
-		const sends = setInterval(() => {
-			serverMethod("observe");
-		}, 6000);
+		serverMethod("observe"); // 
 		return () => {
 			pusher.disconnect();
-			clearInterval(sends);
 		}
 	};
 
