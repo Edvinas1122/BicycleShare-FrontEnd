@@ -99,24 +99,22 @@ export default async function Page({
 
 async function Redirect({
 	error,
-	state,
 }: {
 	error: any;
-	state: string | null;
 }) {
 
 	const promise = await new Promise(resolve => setTimeout(resolve, 1000));
-	const redirect_uri = state ? state : "/";
-	redirect("/", RedirectType.replace);
 	return null;
 }
 
 async function FinaliseLogin({
 	token,
-	refresh
+	refresh,
+	state,
 }:{
 	token: Promise<string>,
-	refresh: boolean
+	refresh: boolean,
+	state: string | null,
 }) {
 	const resolved = await token;
 	async function handleSetCookie(token: string) {
@@ -124,7 +122,8 @@ async function FinaliseLogin({
 		const cookie = cookies();
 		cookie.set('token', token);
 		if (refresh) {
-			redirect("/", RedirectType.replace);
+			const redirect_uri = state ? state : "/";
+			redirect(redirect_uri, RedirectType.replace);
 		}
 	}
 
