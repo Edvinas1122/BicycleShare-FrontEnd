@@ -46,18 +46,21 @@ export default async function Page({
 
 	const headersList = headers()
 	const code = headersList.get('x-code');
+	const state = headersList.get('x-state');
+
+	if (state) {
+		redirect(state + "/" + lang + "/login" + "?code=" + code, RedirectType.replace)
+	}
 	
 	async function handleLogin(state: string) {
 		"use server";
 		const redirect_uri = getLoginLink() + "&state=" + state;
-		// console.log("redirecting to", redirect_uri);
 		redirect(redirect_uri, RedirectType.replace);
 	}
 	
 	const user = await handleAuth(code);
 	
 	if (user?.error) {
-		const state = headersList.get('x-state');
 		return (
 			<>
 				<p className="text-red-500 text-center">
@@ -66,7 +69,6 @@ export default async function Page({
 				<Suspense>
 					<Redirect
 						error={user.error}
-						state={state}
 						/>
 				</Suspense>
 			</>
@@ -88,6 +90,7 @@ export default async function Page({
 						<FinaliseLogin
 							token={user.token}
 							refresh={user.message.termsAccepted}
+							state={user.state}
 						/>
 					</Suspense>
 					</>
