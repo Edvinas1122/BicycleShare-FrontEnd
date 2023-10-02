@@ -50,7 +50,7 @@ export default function AvailabilityInfo({
 			// },
 		});
 		const channel = pusher.subscribe('locker-device');
-		channel.bind('observe-response', function(data: any) {
+		channel.bind('testing', function(data: any) {
 			setResponse(data.message);
 			
 		});

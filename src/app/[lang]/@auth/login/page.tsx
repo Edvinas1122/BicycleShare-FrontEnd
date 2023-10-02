@@ -46,11 +46,6 @@ export default async function Page({
 
 	const headersList = headers()
 	const code = headersList.get('x-code');
-	const state = headersList.get('x-state');
-
-	if (state) {
-		redirect(state + "/" + lang + "/login" + "?code=" + code, RedirectType.replace)
-	}
 	
 	async function handleLogin(state: string) {
 		"use server";
@@ -82,17 +77,17 @@ export default async function Page({
 					<LoginButton handleLogin={handleLogin}>
 						{appLoginConfig.buttonText[lang]}
 					</LoginButton>
-				): (<>
-					<AuthProfile 
-						user={user.message}
+				): (
+					<>
+						<AuthProfile 
+							user={user.message}
 						/>
-					<Suspense>
-						<FinaliseLogin
-							token={user.token}
-							refresh={user.message.termsAccepted}
-							state={state}
-						/>
-					</Suspense>
+						<Suspense>
+							<FinaliseLogin
+								token={user.token}
+								refresh={user.message.termsAccepted}
+							/>
+						</Suspense>
 					</>
 				)
 			}
@@ -113,11 +108,9 @@ async function Redirect({
 async function FinaliseLogin({
 	token,
 	refresh,
-	state,
 }:{
 	token: Promise<string>,
 	refresh: boolean,
-	state: string | null,
 }) {
 	const resolved = await token;
 	async function handleSetCookie(token: string) {
@@ -125,7 +118,7 @@ async function FinaliseLogin({
 		const cookie = cookies();
 		cookie.set('token', token);
 		if (refresh) {
-			const redirect_uri = state ? state : "/";
+			const redirect_uri = "/";
 			redirect(redirect_uri, RedirectType.replace);
 		}
 	}

@@ -187,6 +187,11 @@ export async function middleware(request: NextRequest) {
 		setParamsIntoHeaders(request.nextUrl, headers, paramsList);
 	}
 	headers.set('x-middleware-effect', new Date().toISOString());
+	if (paramsList.find((param) => param === "state")) {
+		return NextResponse.redirect(new URL(
+			paramsList[paramsList.indexOf("state") + 1] as string,
+		).toString());
+	}
 	return NextResponse.next({
 		request: {
 		  headers: headers,
