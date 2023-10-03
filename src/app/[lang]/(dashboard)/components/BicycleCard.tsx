@@ -227,7 +227,7 @@ export const ImageSuspense = ({
 		if (src) {
 			setHashIsReady(true);
 		}
-	}, [setHashIsReady]);
+	}, [src]);
 
 
 	const blurhashStyle = 

@@ -23,12 +23,11 @@ export function ModalInterface ({
 }: {
 	interfaceItems?: InterfaceUnit[];
 }) {
-	if (!interfaceItems) return null;
 	const pathname = usePathname();
 	const router = useRouter();
 	const segments = useSelectedLayoutSegments();
 	const depth = segments.length;
-
+	
 	const routerAction = (unitroute: string, state?: string) => {
 		const urlParams = state ? new URLSearchParams(window.location.search): null;
 		const search = state && urlParams ? urlParams.get(state) : null;
@@ -36,6 +35,7 @@ export function ModalInterface ({
 		router["push"](pathname + route);
 	};
 	
+	if (!interfaceItems) return null;
 	return (
 		<>
 		{interfaceItems.map((unit: InterfaceUnit, index: number) => {
@@ -95,7 +95,7 @@ export default function DisplayModal({
 
 	React.useEffect(() => {
 		onOpen();
-	}, []);
+	}, [onOpen]);
 
 	const Close = () => {
 		onOpenChange();
