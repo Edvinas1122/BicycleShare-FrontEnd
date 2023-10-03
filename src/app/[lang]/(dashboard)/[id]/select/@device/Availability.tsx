@@ -112,10 +112,6 @@ export default function AvailabilityInfo({
 
 	return (
 		<>
-		{/* <Script 
-			src="https://js.pusher.com/8.2.0/pusher.min.js"
-			onReady={() => {connectToPusher();}}
-		/> */}
 		<div className={"w-full flex flex-col justify-end align-center"}>
 			<div className={initialClassName +
 				(fadeOut ? "vertical-shrink" : "vertical-expand")
