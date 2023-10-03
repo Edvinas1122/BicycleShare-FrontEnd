@@ -35,7 +35,7 @@ export default function Page({
 		message?: string,
 	): Promise<void> {
 		"use server";
-		console.log("Server checkAvailability");
+		console.log("Triggering pusher event");
 		const pusher = new PusherServer.default(getPusherConfig());
 		pusher.trigger("locker-device", eventName, {
 			message: {

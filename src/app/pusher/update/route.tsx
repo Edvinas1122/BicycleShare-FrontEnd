@@ -11,6 +11,7 @@ import * as PusherServer from "pusher";
 type PushMessage = {
 	event: string;
 	message: string;
+	channel: string;
 };
 
 async function routeHandler(params: any) {
