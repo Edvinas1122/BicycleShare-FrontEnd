@@ -37,6 +37,7 @@ function pathnameIsMissingLocale(
 	exceptedFromLocale: string[] = []
 ) {
 	const segments = pathname.split("/").filter(Boolean);
+	console.log("segments", segments);
 	if (segments.some(segment => exceptedFromLocale.includes(segment))) return false;
 	const pathnameIsMissingLocale = Object.values(localesToPaths).every(
 		(locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
@@ -151,13 +152,14 @@ export async function middleware(request: NextRequest) {
 	if (pathnameIsMissingLocale(pathname, localesToPaths, exceptedFromLocale)) {
 		return handleMissingLocale(request);
 	}
-	if (exceptedFromLocale.includes(pathname.split("/")[1])) {
-		const headerPassword = request.headers.get("x-password");
-		if (headerPassword !== getPusherConfig().key) {
-			return new Response("Unauthorized", { status: 401 });
-		}
-		return NextResponse.next();
-	}
+	console.log("exceptedFromLocale");
+	// if (exceptedFromLocale.includes(pathname.split("/")[1])) {
+	// 	const headerPassword = request.headers.get("x-password");
+	// 	if (headerPassword !== getPusherConfig().key) {
+	// 		return new Response("Unauthorized", { status: 401 });
+	// 	}
+	// 	return NextResponse.next();
+	// }
 	const auth = new Token();
 	const headers = new Headers(request.headers);
 	if (!await auth.hasAVaildToken()) {
@@ -185,8 +187,8 @@ export async function middleware(request: NextRequest) {
 		setParamsIntoHeaders(request.nextUrl, headers, paramsList);
 	}
 	headers.set('x-middleware-effect', new Date().toISOString());
-	const state = new URL(href).searchParams.get("state");
-	if (state) {
+	const state = new URL(href).searchParams.get("state"); // handle not here
+	if (state) { // handle not here
 		const redirectUrl = new URL(state).host;
 		const url = new URL(href);
 		console.log("state", redirectUrl);
