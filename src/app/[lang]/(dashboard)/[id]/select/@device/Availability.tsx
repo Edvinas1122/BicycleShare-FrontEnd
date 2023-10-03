@@ -42,73 +42,40 @@ export default function AvailabilityInfo({
 		align-center
 		`;
 		
-		
-		React.useEffect(() => {
-			const connectToPusher = async () => {
-			const pusher = new Pusher(pusherKey, {
-				cluster: 'eu',
-				// @ts-ignore
-				channelAuthorization: {
-					endpoint: "/pusher/auth",
-					// transport: "jsonp",
-				} as any,
-		
-				// userAuthentication: {
-				// 	endpoint: "/pusher/auth",
-				// 	transport: "jsonp",
-				// 	headers: { "X-CSRF-Token": "SOME_CSRF_TOKEN" },
-				// },
-			});
-			Pusher.log = (msg: any) => {
-				console.log("Pusher log:", msg);
-			};
-			pusher.connection.bind('connected', function() {
-				const channel = pusher.subscribe('locker-device');
-				// channel.bind('pong', function(data: any) {
-				// 	console.log("Client socket got", data);
-				// });
-				channel.bind('pusher:subscription_succeeded', function(data: any) {
-					const presenceChannel = pusher.subscribe('presence-locker-device');
-					presenceChannel.bind('pusher:subscription_succeeded', function(members: any) {
-						console.log("Client socket got", members);
-						presenceChannel.trigger('client-ping', {
-							message: "ping",
-						});
-					});
-					presenceChannel.bind('client-ping', function(data: any) {
-						console.log("Client socket got", data);
-						// presenceChannel.trigger('client-ping', {
-						// 	message: "pong",
-						// });
-					});
-
-					// setTimeout(() => {
-					// 	// pushEventMessage("ping", "online");
-					// 	channel.trigger('client-ping', {
-					// 		message: "test",
-					// 	});
-					// }, 10);
-				});
-
-			});
-			return async () => {
-				// cleanup
-				console.log("Client socket unsubscribed from channel");
-				await pusher.unsubscribe('locker-device');
-			}
-		};
-		let cleanupFunc: (() => void) | undefined;
-		connectToPusher().then((cleanup) => {
-			cleanupFunc = cleanup;
+	const setEventDriver = () => {
+		const pusher = new Pusher(pusherKey, {
+			cluster: 'eu',
+			// @ts-ignore
+			channelAuthorization: {
+				endpoint: "/pusher/auth",
+				// transport: "jsonp",
+			} as any,
 		});
-	
-		return () => {
-			console.log("Cleaning up");
-			if (cleanupFunc) {
-				cleanupFunc();
-			}
+		Pusher.log = (msg: any) => {
+			console.log("Pusher log:", msg);
 		};
-	}, [pusherKey]);
+		pusher.connection.bind('connected', function() {
+			const channel = pusher.subscribe('locker-device');
+			channel.bind('pusher:subscription_succeeded', function(data: any) {
+				const presenceChannel = pusher.subscribe('presence-locker-device');
+				presenceChannel.bind('pusher:subscription_succeeded', function(members: any) {
+					console.log("Client socket got", members);
+					presenceChannel.trigger('client-ping', {
+						message: "ping",
+					});
+				});
+				presenceChannel.bind('client-ping', function(data: any) {
+					console.log("Client socket got", data);
+				});
+			});
+		});
+
+		return () => {
+			pusher.disconnect();
+		};
+	}
+
+	React.useEffect(setEventDriver, [pusherKey]);
 
 	return (
 		<>
