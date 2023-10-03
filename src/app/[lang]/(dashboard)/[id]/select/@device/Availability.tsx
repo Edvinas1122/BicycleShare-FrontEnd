@@ -55,18 +55,15 @@ export default function AvailabilityInfo({
 			console.log("Pusher log:", msg);
 		};
 		pusher.connection.bind('connected', function() {
-			const channel = pusher.subscribe('locker-device');
-			channel.bind('pusher:subscription_succeeded', function(data: any) {
-				const presenceChannel = pusher.subscribe('presence-locker-device');
-				presenceChannel.bind('pusher:subscription_succeeded', function(members: any) {
-					console.log("Client socket got", members);
-					presenceChannel.trigger('client-ping', {
-						message: "ping",
-					});
+			const presenceChannel = pusher.subscribe('presence-locker-device');
+			presenceChannel.bind('pusher:subscription_succeeded', function(members: any) {
+				console.log("Client socket got", members);
+				presenceChannel.trigger('client-ping', {
+					message: "ping",
 				});
-				presenceChannel.bind('client-ping', function(data: any) {
-					console.log("Client socket got", data);
-				});
+			});
+			presenceChannel.bind('client-ping', function(data: any) {
+				console.log("Client socket got", data);
 			});
 		});
 
