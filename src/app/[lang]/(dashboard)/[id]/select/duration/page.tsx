@@ -6,7 +6,7 @@ import
 	DurrationSelect
 from "./durrationSelect";
 
-export default function Page({params: {lang}}: {params: {lang: Language}}) {
+export default async function Page({params: {lang}}: {params: {lang: Language}}) {
 
 	return (
 		<div>

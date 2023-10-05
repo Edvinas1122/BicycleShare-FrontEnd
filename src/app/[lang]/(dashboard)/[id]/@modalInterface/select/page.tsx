@@ -2,9 +2,9 @@ import {
 	dictionaries,
 	Language
 } from "@/conf/dictionary.conf";
-import {Buttons, ButtonProps} from "@/app/components/buttons";
+import {Buttons, ButtonProps, QueryButtonProps} from "@/app/components/srv-buttons";
 
-export default function Page({
+export default async function Page({
 	params: {lang, id},
 }: {
 	params: {lang: Language, id: string};

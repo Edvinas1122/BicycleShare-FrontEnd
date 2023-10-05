@@ -82,27 +82,6 @@ export function LinkButton({
 	)
 };
 
-function StatefulButton({
-	children,
-	action,
-}: {
-	children: React.ReactNode;
-	action: () => void;
-}) {
-	const [loading, setLoading] = React.useState(false);
-
-	return (
-		<Button
-			isLoading={loading}
-			onPress={() => {
-				setLoading(true);
-				action();
-			}}
-		>
-			{children}
-		</Button>
-	);
-}
 
 export function ImageSkeleton() {
 	return (

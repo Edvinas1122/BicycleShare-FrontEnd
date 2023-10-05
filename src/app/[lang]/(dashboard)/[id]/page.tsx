@@ -1,7 +1,7 @@
 import { Language } from '@/conf/dictionary.conf';
 import { redirect, RedirectType } from "next/navigation"
 
-export default function Page({
+export default async function Page({
 	searchParams: {press},
 	params: {lang, id},
 }: {

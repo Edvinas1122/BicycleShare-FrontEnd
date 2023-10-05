@@ -2,7 +2,7 @@ import {
 	dictionaries,
 	Language
 } from "@/conf/dictionary.conf";
-import {Buttons, QueryButtonProps} from "@/app/components/buttons";
+import {Buttons, ButtonProps, QueryButtonProps} from "@/app/components/srv-buttons";
 
 export default function Page({
 	params: {lang, id},

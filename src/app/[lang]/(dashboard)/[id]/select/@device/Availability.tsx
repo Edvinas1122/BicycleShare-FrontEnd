@@ -58,19 +58,12 @@ export default function AvailabilityInfo({
 			const presenceChannel = pusher.subscribe('presence-locker-device');
 			presenceChannel.bind('pusher:subscription_succeeded', function(members: any) {
 				const device = members.get("0");
-				console.log("Client socket got", device);
-				device ? setResponse("online") : setResponse("offline");
-			});
-			presenceChannel.bind('pusher:member_added', function(member: any) {
-				const device = member.info;
-				device.id == "0" ? setResponse("online") : setResponse("offline");
-			});
-			presenceChannel.bind('pusher:member_removed', function(member: any) {
-				const device = member.info;
-				device.id == "0" ? setResponse("offline") : setResponse("online");
+				if (!device) { setResponse("offline"); return; }
+				presenceChannel.trigger('client-ping', {
+						message: 'ping',
+					});					
 			});
 			presenceChannel.bind('client-pong', function(data: any) {
-				console.log("Client socket got", data);
 				setResponse(data.message);
 			});
 		});

@@ -18,7 +18,7 @@ export enum Status {
 	UNAVAILABLE = "UNAVAILABLE",
 }
 
-export default function Page({
+export default async function Page({
 	params: {lang, id},
 }: {
 	params: {lang: Language, id: string};

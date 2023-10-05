@@ -43,6 +43,7 @@ export function LinkButton({
 			<Button as={Link}
 				href={route}
 				{...props}
+				prefetch={true}
 			>
 				{label}
 			</Button>
@@ -139,14 +140,6 @@ export function Buttons({
 					);
 				}
 			})}
-			{/* {buttons.map((button) => (
-				<LinkButton
-					key={button.label}
-					label={button.label}
-					route={currentPath + button.route}
-					props={button.props}
-				/>
-			))} */}
 		</>
 	);
 }

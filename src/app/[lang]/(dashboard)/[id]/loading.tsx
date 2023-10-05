@@ -7,11 +7,11 @@ export default function Loading() {
 
 	return (
 		<>
-			<LoadingSkeleton>
+			{/* <LoadingSkeleton>
 			<h1 className="text-xl font-bold">
 				Loading...
 			</h1>
-			</LoadingSkeleton>
+			</LoadingSkeleton> */}
 		</>
 	);
 }
