@@ -7,7 +7,7 @@ import {
 // 	return [{ duration: 'short' }, { duration: 'hours' }, { duration: 'long' }, { duration: 'night' }]
 // }
 
-export default function Page({
+export default async function Page({
 	params: { lang }
 }: {
 	params: { lang: Language, duration: string }

@@ -22,11 +22,9 @@ export interface QueryButtonProps extends Omit<ButtonProps, 'type'> {
 
 export async function Buttons({
 	buttons,
-	lang,
 	currentPath,
 }: {
 	buttons: (ButtonProps | QueryButtonProps)[];
-	lang: Language;
 	currentPath: string;
 }) {
 

@@ -6,9 +6,11 @@ import {
 import {
 	clientDictionaries, Language, languages
 } from "@/conf/dictionary.conf";
-
+import {
+	usePusher
+} from "../PusherProvider";
 // import Script from 'next/script'
-import Pusher from 'pusher-js'
+// import Pusher from 'pusher-js'
 
 /*
 	A component to display updates on device.
@@ -17,20 +19,18 @@ import Pusher from 'pusher-js'
 		2. Must somehow block an parent interface
 			until the message is displayed
 */
-// declare var Pusher: any;
-
 export default function AvailabilityInfo({
-	pushEventMessage,
+	// pushEventMessage,
 	pusherKey,
 	lang,
 }: {
-	pushEventMessage: Function;
+	// pushEventMessage: Function;
 	pusherKey: string;
 	lang: Language;
 }) {
-
 	const [response, setResponse] = React.useState<string | null>(null);
 	const [fadeOut, setFadeout] = React.useState<boolean>(false);
+	const { pusher } = usePusher();
 
 	const initialClassName = `
 		w-full
@@ -40,40 +40,31 @@ export default function AvailabilityInfo({
 		text-center
 		text-xs
 		align-center
-		`;
-		
+	`;
+	
+	// https://github.com/pusher/pusher-js#binding-to-events
 	const setEventDriver = () => {
-		const pusher = new Pusher(pusherKey, {
-			cluster: 'eu',
-			// @ts-ignore
-			channelAuthorization: {
-				endpoint: "/pusher/auth",
-				// transport: "jsonp",
-			} as any,
-		});
-		Pusher.log = (msg: any) => {
-			console.log("Pusher log:", msg);
-		};
+		if (!pusher) return;
+		let presenceChannel: any;
 		pusher.connection.bind('connected', function() {
-			const presenceChannel = pusher.subscribe('presence-locker-device');
+			presenceChannel = pusher.subscribe('presence-locker-device');
 			presenceChannel.bind('pusher:subscription_succeeded', function(members: any) {
 				const device = members.get("0");
 				if (!device) { setResponse("offline"); return; }
 				presenceChannel.trigger('client-ping', {
-						message: 'ping',
-					});					
+					message: 'ping',
+				});					
 			});
 			presenceChannel.bind('client-pong', function(data: any) {
 				setResponse(data.message);
 			});
 		});
-
 		return () => {
-			pusher.disconnect();
-		};
+			presenceChannel.unbind('client-pong');
+		}
 	}
 
-	React.useEffect(setEventDriver, [pusherKey]);
+	React.useEffect(setEventDriver, [pusher]);
 
 	return (
 		<>

@@ -1,3 +1,8 @@
+import { PusherProvider } from "./PusherProvider";
+import {
+	getPusherConfig
+} from "@/conf/pusher.conf";
+
 export default function Layout({
 	children,
 	device,
@@ -8,10 +13,16 @@ export default function Layout({
 
 	return (
 		<>
-			{/* <ContextProvider> */}
+			<PusherProvider
+				pusherKey={getPusherConfig().key}
+			>
 			{device}
+			<div className={
+				"min-h-[150px]"
+			}>
 			{children}
-			{/* </ContextProvider> */}
+			</div>
+			</PusherProvider>
 		</>
 	);
 }

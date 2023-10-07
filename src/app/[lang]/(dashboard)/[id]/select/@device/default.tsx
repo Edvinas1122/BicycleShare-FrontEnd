@@ -24,33 +24,33 @@ export default async function Page({
 	params: {lang: Language, id: string};
 }) {
 
-	const user = getUserFromHeaders();
-	/*
-		Dirrects subscribtion to a IOT server.
-		Must keep a connection, for proventing
-		on using a device when it is offline or in use.
-	*/ 
-	async function checkAvailability(
-		eventName: string,
-		message?: string,
-	): Promise<void> {
-		"use server";
-		console.log("Triggering pusher event");
-		const pusher = new PusherServer.default(getPusherConfig());
-		pusher.trigger("locker-device", eventName, {
-			message: {
-				bicycle_id: id,
-				lang: lang,
-				username: user.username,
-				info: message,
-			}
-		});
-	}
+	// const user = getUserFromHeaders();
+	// /*
+	// 	Dirrects subscribtion to a IOT server.
+	// 	Must keep a connection, for proventing
+	// 	on using a device when it is offline or in use.
+	// */ 
+	// async function checkAvailability(
+	// 	eventName: string,
+	// 	message?: string,
+	// ): Promise<void> {
+	// 	"use server";
+	// 	console.log("Triggering pusher event");
+	// 	const pusher = new PusherServer.default(getPusherConfig());
+	// 	pusher.trigger("locker-device", eventName, {
+	// 		message: {
+	// 			bicycle_id: id,
+	// 			lang: lang,
+	// 			username: user.username,
+	// 			info: message,
+	// 		}
+	// 	});
+	// }
 
 	return (
 		<>
 			<AvailabilityInfo
-				pushEventMessage={checkAvailability}
+				// pushEventMessage={checkAvailability}
 				pusherKey={getPusherConfig().key}
 				lang={lang}
 			/>

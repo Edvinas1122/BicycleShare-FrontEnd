@@ -143,3 +143,30 @@ export function Buttons({
 		</>
 	);
 }
+
+export function BackButton({
+	label,
+	props,
+}: {
+	label: string;
+	props?: {
+		[key: string]: string;
+	}
+}) {
+	const router = useRouter();
+
+	const routerAction = () => {
+		router.back();
+	};
+
+	return (
+		<>
+			<Button
+				onClick={routerAction}
+				{...props}
+			>
+				{label}
+			</Button>
+		</>
+	)
+}

@@ -39,7 +39,6 @@ export default function Page({
 		<>
 			<Buttons
 				buttons={buttons}
-				lang={lang}
 				currentPath={currentPath}
 			/>
 		</>
