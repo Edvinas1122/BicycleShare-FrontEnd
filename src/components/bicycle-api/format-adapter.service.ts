@@ -330,6 +330,8 @@ type DatabaseListProps = {
 
 /*
 	Entry List contexted
+
+	method provider for "Entry" class
 */
 export class DatabaseList {
 	constructor(
@@ -405,5 +407,8 @@ export class Page {
 export const propertyExtractors: {[key:string]:(data: any)=>any} = {
 	rich_text: async (data: any) => {
 		return data[data.type][0].plain_text;
+	},
+	number: async (data: any) => {
+		return data[data.type];
 	}
 }

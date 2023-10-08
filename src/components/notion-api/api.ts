@@ -1,4 +1,4 @@
-import API from './api_wrapper';
+import API from '@edvinas1122/api_wrapper';
 import { notionAPIConfig, NotionEndpoints } from './notion.conf';
 
 export default class NotionAPI extends API<NotionEndpoints> {

@@ -4,6 +4,12 @@ const path = require('path');
 
 const nextConfig = {
 	webpack: (config) => {
+        // config.resolve.alias['@edvinas1122'] = path.resolve(__dirname, './local_modules/@edvinas1122');
+        // config.resolve.modules = [
+        //     ...config.resolve.modules, // Keep the existing modules resolution
+        //     path.resolve(__dirname, './local_modules/@edvinas1122', 'src')
+        // ];
+
 		config.module.rules.push({
 			test: /cv\/page\.tsx$/,
 			use: [
@@ -49,7 +55,12 @@ const nextConfig = {
 				pathname: '**',
 			}
 		]
-	}
+	},
+	// compiler: {
+	// 	removeConsole: {
+		// 	exclude: ['error'],
+	// 	},
+	// },
 }
 
 module.exports = nextConfig
