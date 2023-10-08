@@ -14,6 +14,8 @@ export enum NotionEndpoints {
     search = 'search',
     getUser = 'getUser',
     createPage = 'createPage',
+    deleteBlock = 'deleteBlock',
+    updateBlock = 'updateBlock',
 }
 
 export const notionAPIConfig = (
@@ -36,6 +38,8 @@ export const notionAPIConfig = (
         { name: NotionEndpoints.getUser, path: 'users/:userId', method: 'GET' },
         { name: NotionEndpoints.search, path: 'search', method: 'POST' },
         { name: NotionEndpoints.createPage, path: 'pages', method: 'POST'},
+        { name: NotionEndpoints.deleteBlock, path: 'blocks/:blockId', method: 'DELETE'},
+        { name: NotionEndpoints.updateBlock, path: 'blocks/:blockId', method: 'PATCH'},
     ],
     defaultParams: parameters(rootPageDir),
 });

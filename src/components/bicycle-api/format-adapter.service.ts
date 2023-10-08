@@ -1,6 +1,8 @@
 import NotionService from "../notion-api/notion.service";
 import { BadRequestException, ConflictException } from "../next-api-utils/exceptions";
-
+import {
+	Table, Properties
+} from "./DB-tools/table";
 
 /*
 	Provides a service for mapping content that requires
@@ -72,16 +74,30 @@ export default class NotionFormatterService {
 		return user;
 	}
 
+	/*
+		Aquire entries
+	*/
 	async getDatabaseContent(databaseId: string, query?: any): Promise<DatabaseList> {
 		const list = await this.notion.queryDatabase(databaseId, query);
 		if (!list.results) throw new BadRequestException(list.message);
-		return new DatabaseList(list, this.notion, query);
+		return new DatabaseList(list, this.notion);
 	}
 
 	async getPage(pageId: string): Promise<any> {
 		const page = await this.notion.getPage(pageId);
 		if (!page) throw new BadRequestException("No results found");
 		return new Page(page, this.notion);
+	}
+
+	public getDatabaseEntryBuilder(database_id: string): any {
+		return new DatabaseEntryBuilder(database_id, this.notion);
+	}
+
+	/*
+		query builder to aquire filtered entries
+	*/
+	public getDatabaseQueryBuilder(database_id: string): any {
+		return new DatabaseQueryBuilder(database_id, this.notion);
 	}
 
 	private async handleSubBlocks(blocks: NotionBlock[]): Promise<NotionBlock[]> {
@@ -115,17 +131,36 @@ export default class NotionFormatterService {
 		block.children = linkedPage;
 		return block;
 	}
-
-	public getDatabaseEntryBuilder(database_id: string): any {
-		return new DatabaseEntryBuilder(database_id, this.notion);
-	}
-
-	public getDatabaseQueryBuilder(database_id: string): any {
-		return new DatabaseQueryBuilder(database_id, this.notion);
-	}
-
 }
 
+export type TableProps = {
+	name: string;
+	database_id: string;
+	properties: Properties;
+}
+
+// export class NotionDatabaseTool {
+// 	constructor(
+// 		private notion: NotionService,
+// 		private tables: TableProps[],
+// 	) {}
+
+// 	getTable(name: string): Table {
+// 		const table = this.tables.find((table) => table.name === name);
+// 		if (!table) throw new BadRequestException("No table found");
+// 		return new Table(
+// 			table.database_id,
+// 			table.properties,
+// 			new DatabaseQueryBuilder(table.database_id, this.notion),
+// 			new DatabaseEntryBuilder(table.database_id, this.notion),
+// 		);
+// 	}
+
+// }
+
+/*
+	Insert an entry
+*/
 class DatabaseEntryBuilder {
 	private properties: any = {};
 
@@ -196,6 +231,10 @@ enum FilteredDataType {
 	relation = "relation",
 }
 
+
+/*
+	Table ID contexted
+*/
 class DatabaseQueryBuilder {
 	private filterTokens: any[] = [];
 	private filter: any = {};
@@ -265,7 +304,10 @@ class DatabaseQueryBuilder {
 		return this;
 	}
 
-	public async execute(): Promise<any> {
+	/*
+		Aquire entries
+	*/
+	public async execute(): Promise<DatabaseList> {
 		this.convertFilterInfoToFilter();
 		const formattedQuery = {
 			filter: this.filter,
@@ -275,7 +317,7 @@ class DatabaseQueryBuilder {
 			this.database_id,
 			formattedQuery
 		);
-		return new DatabaseList(database, this.notion, this.filter);
+		return new DatabaseList(database, this.notion);
 	}
 }
 
@@ -285,13 +327,19 @@ type DatabaseListProps = {
 	results: any[];
 }
 
+
+/*
+	Entry List contexted
+*/
 export class DatabaseList {
 	constructor(
 		private list: DatabaseListProps,
-		private notion: NotionService,
-		private id: any,
+		private notion: NotionService
 	) {}
 
+	/*
+		Data extraction operation
+	*/
 	async getPropertiesList(): Promise<any[]> {
 
 		const map = await this.list;
@@ -303,11 +351,33 @@ export class DatabaseList {
 			});
 			return filteredList;
 		} else {
-			console.error("map is not an array:", map, "failed ", this.id);
+			console.error("map is not an array:", map, "failed ");
 			return [];
 		}
 	}
 
+	/*
+		Data extraction operation
+	*/
+	async property(property: string): Promise<any[]> {
+		return (await this.getPropertiesList())[0][property]
+	}
+
+	async id(): Promise<string> {
+		return (await this.getPropertiesList())[0].id;
+	}
+
+	async delete() {
+		this.notion.deleteBlock(this.list.results[0].id);
+	}
+
+	async update(key: string, value: any) {
+		this.notion.updateBlock(this.list.results[0].id, key, value);
+	}
+
+	/*
+		entry bassed list operation
+	*/
 	async getPagesList(): Promise<any[]> {
 		const pagesIDs: string[] = this.list.results.map((item: any) => {
 			return item.id;
@@ -329,5 +399,11 @@ export class Page {
 		const children = await this.notion.getBlockChildren(this.page.id);
 		if (!children.results) throw new ConflictException({ message: "notion api data integrity logic failure" });
 		return children.results;
+	}
+}
+
+export const propertyExtractors: {[key:string]:(data: any)=>any} = {
+	rich_text: async (data: any) => {
+		return data[data.type][0].plain_text;
 	}
 }

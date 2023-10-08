@@ -62,4 +62,19 @@ export default class NotionService {
 			other: this.otherParams,
 		});
 	}
+
+	async deleteBlock(blockId: string, other?: any) {
+		return this.api.deleteBlock({
+			params: blockId ? { blockId: blockId } : undefined,
+			other: this.otherParams,
+		});
+	}
+
+	async updateBlock(blockId: string, body: any, other?: any) {
+		return this.api.updateBlock({
+			params: blockId ? { blockId: blockId } : undefined,
+			body: body,
+			other: this.otherParams,
+		});
+	}
 }

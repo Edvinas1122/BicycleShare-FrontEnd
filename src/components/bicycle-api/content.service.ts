@@ -1,5 +1,5 @@
-import NotionService from "../notion-api/notion.service";
 import NotionFormatterService from "./format-adapter.service";
+import { NotionDatabaseTool } from "./notion-database-tool";
 import { BadRequestException, ConflictException, NotFoundException } from "../next-api-utils/exceptions";
 
 /*
@@ -29,6 +29,7 @@ export default class BicycleShareContentService {
 	private config: ValidatedServiceConfig;
 	constructor(
 		private notionContentService: NotionFormatterService,
+		private databaseTool: NotionDatabaseTool,
 		config: ServiceConfig,
 	) {
 		if (Object.values(config).some(value => value === undefined)) {
@@ -45,6 +46,34 @@ export default class BicycleShareContentService {
 		);
 	}
 
+	async registerBicycleBorrow(
+		userId: number,
+		bicycleId: number,
+		duration: string,
+	) {
+		const unixTimestamp = new Date().getTime();
+		const bicycle_entry_id = await this.databaseTool
+			.getTable("Bicycles")
+			.getEntries("equals")
+			.byKey(bicycleId)
+			.then((entry: any) => entry.id());
+		const user_entry_id = await this.databaseTool
+			.getTable("SignedUp")
+			.getEntries("equals")
+			.byIntraID(userId)
+			.then((entry: any) => entry.id());
+		const response = await this.databaseTool
+			.getTable("Share Timestamps")
+			.newEntrySlot()
+			.insert({
+				Holder: [user_entry_id],
+				Bicycles: [bicycle_entry_id],
+				"Share Started (UNIX)": unixTimestamp,
+				"Returned On (UNIX)": 0,
+				"Intended Duration": duration,
+			})
+		return response;
+	}
 
 	async getBicycles(): Promise<BicycleInfo[] | null> {
 		const database = await this.notionContentService.getDatabaseContent(this.config.BICYCLES);
@@ -167,6 +196,9 @@ class UserInterface {
 		private config: ValidatedServiceConfig,
 	) {}
 
+	/*
+		Entry insetion into a table with protection against duplicates
+	*/
 	async acceptTermsAndConditions(): Promise<any> {
 		if (await this.exists()) {
 			return {message: "User already exists", status: 400};
@@ -175,6 +207,9 @@ class UserInterface {
 		return {message: "User registered", status: 200};
 	}
 
+	/*
+		Insertion method
+	*/
 	private async RegisterUser(): Promise<any> {
 		const newEntry = this.notionContentService.getDatabaseEntryBuilder(
 			this.config.SIGNED_USERS_DATABASE
@@ -187,6 +222,9 @@ class UserInterface {
 		return response;
 	}
 
+	/*
+		Checks if the user already exists in the database
+	*/
 	private async exists(): Promise<boolean> {
 		const query = this.notionContentService.getDatabaseQueryBuilder(
 			this.config.SIGNED_USERS_DATABASE
@@ -215,6 +253,10 @@ type Use = {
 	end: number;
 }
 
+
+/*
+	Table Entry
+*/
 export class BicycleInfo {
 	constructor(
 		public data: any,
@@ -223,6 +265,9 @@ export class BicycleInfo {
 	) {
 	}
 
+	/*
+		Relationally extract other table entry
+	*/
 	async getLastUse(): Promise<Use | null>
 	{
 		const query = this.notionContentService.getDatabaseQueryBuilder(
@@ -251,10 +296,16 @@ export class BicycleInfo {
 		}
 	}
 
+	/*
+		Structure property extraction / conversion
+	*/
 	getName(): string {
 		return (this.data.Name.title[0].plain_text);
 	}
 
+	/*
+		One to many relational extraction
+	*/
 	async getLastUses(index: number): Promise<Use[]> {
 		const query = this.notionContentService.getDatabaseQueryBuilder(
 			this.config.TIMESTAMPS
@@ -296,7 +347,9 @@ export class BicycleInfo {
 		return uses;
 	}
 
-	//**  because 
+	/*
+		Property aquisition method, not related to databases but rather to an entry storage
+	*/
 	async getImageLink(): Promise<string> {
 		return this.notionContentService.getPageContent(this.data.id).then((page: any) => {
 		  const image = page.results[0].image.file.url;

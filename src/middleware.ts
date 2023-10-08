@@ -147,6 +147,7 @@ const exceptedFromLocale = [
 export async function middleware(request: NextRequest) {
 	const { pathname, href, origin } = request.nextUrl;
 
+	// return NextResponse.next();
 	if (pathnameIsMissingLocale(pathname, localesToPaths, exceptedFromLocale)) {
 		return handleMissingLocale(request);
 	}
