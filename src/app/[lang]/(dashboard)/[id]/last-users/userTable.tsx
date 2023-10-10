@@ -40,7 +40,7 @@ export function TableFrame({
 
 	React.useEffect(() => {
 		updateTimestamps();
-	}, [updateTimestamps]);
+	}, [setTimeStamps, setLoading]);
 
 	const classNames={
         base: "max-h-[520px]",

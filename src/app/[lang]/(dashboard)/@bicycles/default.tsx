@@ -31,12 +31,12 @@ export default async function Page({params: {lang}}: {params: {lang: Language}})
 		{
 			bicycles.map((bicycle) => (
 				<BicycleCard
-					key={bicycle.data.id}
-					props={bicycle.data}
+					key={bicycle.getData().id}
+					props={bicycle.getData()}
 					header={
 						<BicycleHeader
-							title={bicycle.data.name}
-							availability={bicycle.data.available}
+							title={bicycle.getName()}
+							availability={bicycle.getData().available}
 							user={bicycle.getLastUse()}
 							language={lang}
 						/>
@@ -48,7 +48,7 @@ export default async function Page({params: {lang}}: {params: {lang: Language}})
 							<Buttons
 								buttons={buttons}
 								lang={lang}
-								id={bicycle.data.lockerId}
+								id={bicycle.getData().lockerId.toString()}
 							/>
 						</>
 					}
@@ -56,7 +56,7 @@ export default async function Page({params: {lang}}: {params: {lang: Language}})
 					<Suspense fallback={<ImageSkeleton/>}>
 						<Image
 							imageLink={bicycle.getImageLink()}
-							alt={bicycle.data.name}
+							alt={bicycle.getName()}
 						/>
 					</Suspense>
 				</BicycleCard>

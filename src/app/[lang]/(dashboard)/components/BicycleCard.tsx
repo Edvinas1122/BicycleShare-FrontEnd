@@ -20,7 +20,7 @@ type UseInfo = {
 	id: string;
 	name: string;
 	fullName: string;
-	image: {url:string}
+	image: {url: string}
 	start: number;
 	end: number;
 }
@@ -240,7 +240,7 @@ export const ImageSuspense = ({
 	);
 }
 
-export const UserAvatar = ({
+export const UserAvatar = async ({
 	user,
 	classNames
 }: {
@@ -248,6 +248,7 @@ export const UserAvatar = ({
 	classNames?: any;
 }) => {
 
+	const image = user.image.url;
 	return (
 		<>
 			<User
@@ -256,7 +257,7 @@ export const UserAvatar = ({
 				className="loader-fade-appear"
 				classNames={classNames}
 				avatarProps={{
-					src: user.image.url,
+					src: image,
 					size: "md",
 				}}
 				/>

@@ -147,13 +147,17 @@ const exceptedFromLocale = [
 export async function middleware(request: NextRequest) {
 	const { pathname, href, origin } = request.nextUrl;
 
-	// return NextResponse.next();
+	// return NextResponse.next(); // for testing
 	if (pathnameIsMissingLocale(pathname, localesToPaths, exceptedFromLocale)) {
 		return handleMissingLocale(request);
 	}
 	console.log("exceptedFromLocale");
+
+	// authorization token
 	const auth = new Token();
 	const headers = new Headers(request.headers);
+
+	// authorization exception for device - consider stronger protection
 	const headerPassword = request.headers.get("x-password");
 	if (headerPassword) {// protect stronger 1. only path, 2. ip, 3. other
 		headers.set('x-password', headerPassword);
@@ -163,17 +167,20 @@ export async function middleware(request: NextRequest) {
 			headers: headers,
 		}});
 	}
+	// authorization redirect
 	if (!await auth.hasAVaildToken()) {
 		headers.set('x-authorised', "false");
 		if (pathnameMissing(pathname, "login")) {
 			return ensurePath(request.nextUrl, "login");
 		}
+	// registration redirect
 	} else if (!await auth.hasAcceptedTerms()) {
 		// console.log("has token but not accepted terms");
 		headers.set('x-authorised', "false");
 		if (pathnameMissing(pathname, "legal")) {
 			return ensurePath(request.nextUrl, "legal");
 		}
+	// passing credentials to headers
 	} else {
 		// console.log("has token");
 		headers.set('x-authorised', "true");
@@ -184,21 +191,23 @@ export async function middleware(request: NextRequest) {
 		headers.set('x-user-username', user.name);
 		// headers.set('x-locale', getLocale(request));
 	}
+	// passing queries to headers
 	if (hasSpecialSeatchParams(request.nextUrl, paramsList)) {
 		setParamsIntoHeaders(request.nextUrl, headers, paramsList);
 	}
+	// stamp 
 	headers.set('x-middleware-effect', new Date().toISOString());
-	const state = new URL(href).searchParams.get("state"); // handle not here
-	if (state) { // handle not here
+
+	// redirecting to development branches when authorized
+	const state = new URL(href).searchParams.get("state"); // handle not here please
+	if (state) {
 		const redirectUrl = new URL(state).host;
 		const url = new URL(href);
-		console.log("state", redirectUrl);
-		console.log("href", url.host);
-		console.log(state + url.pathname + url.search)
 		if (redirectUrl !== url.host) {
 			return NextResponse.redirect(state + url.pathname + url.search);
 		}
 	}
+
 	return NextResponse.next({
 		request: {
 		  headers: headers,

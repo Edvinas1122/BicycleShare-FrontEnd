@@ -40,7 +40,7 @@ class EntryExtractor {
 		for (const property of properties.properties) {
 			const methodName: string = "by" + property.property.replace(/\s+/g, '_');
 			this[methodName] = this.assignExtractor(property);
-			console.log(methodName);
+			// console.log(methodName);
 		}
 	}
 

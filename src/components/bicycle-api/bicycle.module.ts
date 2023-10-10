@@ -83,17 +83,21 @@ const serviceTables = (): TableProps[] => [
 		properties: {
 			key: {
 				property: "IntraName",
-				property_type: "rich_text",
+				property_type: "title",
 			},
 			properties: [{
 				property: "Name",
 				property_type: "rich_text",
 			},{
 				property: "ProfileImage",
-				property_type: "rich_text",
+				property_type: "url",
 			},{
 				property: "IntraID",
 				property_type: "number",
+			},
+			{
+				property:"IntraName",
+				property_type: "title",
 			}
 		]}
 	},
@@ -125,27 +129,52 @@ export function constructServiceDatabaseTool(
 	return databaseTool;
 }
 
-function constructBicycleService(cache?: { [key: string]: any }) {
+import
+	buildNotionDatabaseTool
+from "@edvinas1122/notion-database-tool";
+
+function constructFormatterService(cache?: { [key: string]: any }) {
 	const notionConfig = getNotionConfig();
-	const notionAPI = new NotionAPI(notionConfig.integrationToken, notionConfig.rootPageId);
+	if (!notionConfig.integrationToken) throw new Error("No integration token provided");
+	const notionAPI = new NotionAPI(notionConfig.integrationToken);
 	const notionService = new NotionService(notionAPI, cache);
 	const notionFormatterService = new NotionFormatterService(notionService);
+	return notionFormatterService;
+}
+
+function constructBicycleService(cache?: { [key: string]: any }) {
+	// if (!notionConfig.integrationToken) throw new Error("No integration token provided");
+	// const notionAPI = new NotionAPI(notionConfig.integrationToken);
+	// const notionService = new NotionService(notionAPI, cache);
+	// const notionFormatterService = new NotionFormatterService(notionService);
+	const notionConfig = getNotionConfig();
+	if (!notionConfig.integrationToken) throw new Error("No integration token provided");
 	const bicycleShareContentService = new BicycleShareContentService(
-		notionFormatterService,
-		constructServiceDatabaseTool(cache),
-		getConfiguration(),
+		constructFormatterService(cache),
+		buildNotionDatabaseTool(
+			notionConfig.integrationToken,
+			serviceTables(),
+			cache
+		),
+		getConfiguration()
 	);
 	return bicycleShareContentService;
 }
 
 export function constructUserService(cache?: { [key: string]: any }) {
+	// const notionAPI = new NotionAPI(notionConfig.integrationToken, notionConfig.rootPageId);
+	// const notionService = new NotionService(notionAPI, cache);
+	// const notionFormatterService = new NotionFormatterService(notionService);
 	const notionConfig = getNotionConfig();
-	const notionAPI = new NotionAPI(notionConfig.integrationToken, notionConfig.rootPageId);
-	const notionService = new NotionService(notionAPI, cache);
-	const notionFormatterService = new NotionFormatterService(notionService);
+	if (!notionConfig.integrationToken) throw new Error("No integration token provided");
 	const userService = new UserService(
-		notionFormatterService,
-		getConfiguration()
+		// notionFormatterService,
+		// getConfiguration(),
+		buildNotionDatabaseTool(
+			notionConfig.integrationToken,
+			serviceTables(),
+			cache
+		),
 	);
 	return userService;
 }

@@ -22,6 +22,7 @@ export default async function Page({
 		if (!bicycle) return null;
 		const timestamps = await bicycle.getLastUses(iteration);
 		const times = await Promise.all(timestamps);
+		console.log("in component ", times);
 		return times;
 	}
 

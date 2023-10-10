@@ -15,10 +15,10 @@ import { headers, cookies } from 'next/headers'
 import handleOAuth from './OAuth2';
 
 async function checkDatabase(user: any) {
-	console.log("check database", user);
+	// console.log("check database", user);
 	const userService = constructUserService({cache: 'no-store'});
 	const userOnNotion = await userService.getUserByIntraID(user.id);
-	console.log("user on notion?", user.id, userOnNotion);
+	// console.log("user on notion?", user.id, userOnNotion);
 	const userWithInfo = {...user, termsAccepted: userOnNotion ? true : false}
 	return userWithInfo;
 }

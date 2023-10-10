@@ -1,4 +1,4 @@
-import { APIInfo } from './api_wrapper';
+import { APIInfo } from '@edvinas1122/api_wrapper';
 
 /* 
     https://developers.notion.com/reference/intro
@@ -20,7 +20,7 @@ export enum NotionEndpoints {
 
 export const notionAPIConfig = (
     authToken: string,
-    rootPageDir: string,
+    rootPageDir?: string,
 ): APIInfo => ({
     apiBaseUrl: 'https://api.notion.com/v1/',
     headers: {
@@ -41,7 +41,7 @@ export const notionAPIConfig = (
         { name: NotionEndpoints.deleteBlock, path: 'blocks/:blockId', method: 'DELETE'},
         { name: NotionEndpoints.updateBlock, path: 'blocks/:blockId', method: 'PATCH'},
     ],
-    defaultParams: parameters(rootPageDir),
+    defaultParams: parameters(rootPageDir? rootPageDir : ''),
 });
 
 export const parameters = (rootPageDir: string) => ({

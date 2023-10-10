@@ -7,7 +7,7 @@ const PromisedText = ({
 	promisedText: Promise<string>,
 }) => {
 	const data = use(promisedText);
-	console.log(data);
+	// console.log(data);
 	return <>{data}</>;
 }
 
