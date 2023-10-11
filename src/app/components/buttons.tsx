@@ -2,12 +2,12 @@
 import React from 'react';
 import {Button} from '@nextui-org/button';
 
-export function StatefulButton({
+export async function StatefulButton({
 	children,
 	action,
 }: {
 	children: React.ReactNode;
-	action: () => void;
+	action: () => Promise<void>;
 }) {
 	const [loading, setLoading] = React.useState(false);
 

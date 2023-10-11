@@ -1,13 +1,13 @@
 import Navbar, {UserMenu} from "./Navbar";
 import { appLoginConfig } from '@/conf/organisation.conf';
-import { dictionaries, Language } from "@/conf/dictionary.conf";
+import { dictionaries, Language, languages } from "@/conf/dictionary.conf";
 import { revalidateTag } from 'next/cache';
 import { StatefulButton } from "@/app/components/buttons";
 import { redirect, RedirectType } from "next/navigation";
 import { getUserFromHeaders } from "@/components/next-api-utils/validation";
 
 
-export default function Page({params: {lang}}: {params: {lang: Language}}) {
+export default async function Page({params: {lang}}: {params: {lang: Language}}) {
 
 	const user = getUserFromHeaders();
 	if (user.name === "error") return null;
@@ -20,17 +20,17 @@ export default function Page({params: {lang}}: {params: {lang: Language}}) {
 
 	async function selectEnglish() {
 		"use server"
-		redirect("/en", RedirectType.replace);
+		return await redirect("/en", RedirectType.replace);
 	}
 
 	async function selectGerman() {
 		"use server"
-		redirect("/de", RedirectType.replace);
+		return await redirect("/de", RedirectType.replace);
 	}
 
 	async function selectUkranian() {
 		"use server"
-		redirect("/ue", RedirectType.replace);
+		return await redirect("/ue", RedirectType.replace);
 	}
 
 	const languageMenuItem = (

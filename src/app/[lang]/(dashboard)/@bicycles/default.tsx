@@ -32,8 +32,9 @@ export default async function Page({params: {lang}}: {params: {lang: Language}})
 	return (
 		<>
 		{
-			bicycles.map((bicycle) => (
+			bicycles.map((bicycle, index) => (
 				<SingleBicycleCard
+					key={index}
 					lang={lang}
 					bicycle={bicycle}
 					buttons={buttons}
@@ -55,7 +56,7 @@ function SingleBicycleCard({
 }) {
 	return (
 		<BicycleCard
-			key={bicycle.getData().id}
+			// key={bicycle.getData().id}
 			props={bicycle.getData()}
 			header={
 				<BicycleHeader
