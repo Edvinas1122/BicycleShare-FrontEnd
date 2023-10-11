@@ -6,10 +6,12 @@ import {
 
 export const Unlock = ({
 	children,
-	// message,
+	bicycle_id,
+	duration,
 }: {
 	children: React.ReactNode;
-	// message: any;
+	bicycle_id: string;
+	duration: string;
 }) => {
 
 	const {pusher} = usePusher();
@@ -24,7 +26,7 @@ export const Unlock = ({
 		);
 		// https://github.com/pusher/pusher-js#triggering-client-events
 		presenceChannel.trigger('client-open-locker', {
-			message: 'request-unlock',
+			message: {bicycle_id, duration}
 		})
 		return () => {
 			presenceChannel.unbind('client-locker');

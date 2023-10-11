@@ -7,12 +7,15 @@ import {
 } from "./Unlock";
 
 export default async function Page({
-	params: { lang }
+	params: { lang, id, duration }
 }: {
-	params: { lang: Language, duration: string }
+	params: { lang: Language, duration: string, id: string }
 }) {
 	return (
-		<Unlock>
+		<Unlock
+			bicycle_id={id}
+			duration={duration}
+		>
 			<div>
 				Press the locker button
 			</div>

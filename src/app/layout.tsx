@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google';
 import {appLoginConfig} from "@/conf/organisation.conf";
 
+
 /*
 	NextUI library
 	https://nextui.org/docs/guide/installation

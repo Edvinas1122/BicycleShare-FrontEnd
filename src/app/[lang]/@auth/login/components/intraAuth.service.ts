@@ -4,6 +4,11 @@ interface OAuthInfo {
 	redirect_uri: string,
 }
 
+type ErrorMessage = {
+	error: string,
+	error_description: string,
+}
+
 export class IntraAuth {
 	private readonly oauthInfo: OAuthInfo;
 	private userInfoEndpoint: string = 'https://api.intra.42.fr/v2/me';
@@ -29,7 +34,9 @@ export class IntraAuth {
 		}
 		const response = await fetch(this.authUrl, options);
 		if (response.status !== 200) {
-			throw new Error("We had some issues regarding intra authorising us");
+			const json: ErrorMessage = await response.json();
+			console.error(json);
+			throw new LoginError(json);
 		}
 		const json = await response.json();
 		return json;
@@ -88,4 +95,14 @@ const formatAddapter = (intraInfo: IntraInfo) => {
 		image: intraInfo.image,
 		sucess: true,
 	}
+}
+
+export class LoginError extends Error {
+	public readonly error_description: string;
+    constructor(
+		message: ErrorMessage,
+	) {
+        super(message.error);
+		this.error_description = message.error_description;
+    }
 }

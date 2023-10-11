@@ -1,27 +1,33 @@
 "use client";
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
- 
+import { LoginError } from "./components/intraAuth.service";
+import { PopUp } from "@/app/components/notifications";
+import { clientDictionaries } from '@/conf/dictionary.conf';
+
 export default function Error({
-  error,
-  reset,
+	error,
+	reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+	error: LoginError,
+	reset: () => void
 }) {
 	const router = useRouter();
 	useEffect(() => {
-		console.error(error)
-		setTimeout(() => {
-			// router.replace('/login');
-			window.location.replace('/login');
-		}, 1000);
-	}, [error])
+		const cleanup = setTimeout(() => {
+			window.location.replace("/login");
+		}, 5000);
+		return () => {
+			clearTimeout(cleanup);
+		}
+	}, [error, router])
 	return (
 		<>
-			<p className="text-red-500 text-center">
-				{`${error}`}
+		<PopUp duration={4300}>
+			<p className={"text-sm"}>
+				{"Aw snape error..! We might need to update our intra stuff...!"}
 			</p>
+		</PopUp>
 		</>
 	);
 }
