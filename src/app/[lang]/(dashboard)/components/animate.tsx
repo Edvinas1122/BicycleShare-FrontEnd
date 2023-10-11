@@ -1,7 +1,7 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion"
 
-export default async function AnimateAppearing({
+export default function AnimateAppearing({
 	children,
 	key
 }: {

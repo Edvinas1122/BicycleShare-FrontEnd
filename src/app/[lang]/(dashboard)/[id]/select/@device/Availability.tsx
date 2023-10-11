@@ -70,7 +70,7 @@ export default function AvailabilityInfo({
 		}
 	}
 
-	React.useEffect(setEventDriver, [pusher]);
+	React.useEffect(setEventDriver, [pusher, pusherKey]);
 
 	return (
 		<>
