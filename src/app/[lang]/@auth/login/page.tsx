@@ -11,30 +11,9 @@ from "@/components/bicycle-api/bicycle.module";
 import { LoginButton } from "../components/LoginButton";
 import { AuthProfile, GetToken } from '../components/LoginInformation';
 import { Language } from '@/conf/dictionary.conf';
-import { headers, cookies } from 'next/headers'
-import handleOAuth from './OAuth2';
+import { headers, cookies } from 'next/headers';
+import {handleAuth} from "../layout";
 
-async function checkDatabase(user: any) {
-	// console.log("check database", user);
-	const userService = constructUserService({cache: 'no-store'});
-	const userOnNotion = await userService.getUserByIntraID(user.id);
-	// console.log("user on notion?", user.id, userOnNotion);
-	const userWithInfo = {...user, termsAccepted: userOnNotion ? true : false}
-	return userWithInfo;
-}
-
-async function handleAuth(code: string | null, state?: string) {
-	"use server"
-	if (code) {
-		try {
-			const response = await handleOAuth(code, checkDatabase);
-			return response;
-		} catch (error) {
-			return {error: error};
-		}
-	}
-	return null;
-}
 
 export default async function Page({
 	params: {lang},
@@ -55,20 +34,20 @@ export default async function Page({
 	
 	const user = await handleAuth(code);
 	
-	if (user?.error) {
-		return (
-			<>
-				<p className="text-red-500 text-center">
-					{`${user?.error}`}
-				</p>
-				<Suspense>
-					<Redirect
-						error={user.error}
-						/>
-				</Suspense>
-			</>
-		);
-	}
+	// if (user?.error) {
+	// 	return (
+	// 		<>
+	// 			<p className="text-red-500 text-center">
+	// 				{`${user?.error}`}
+	// 			</p>
+	// 			<Suspense>
+	// 				<Redirect
+	// 					error={user.error}
+	// 					/>
+	// 			</Suspense>
+	// 		</>
+	// 	);
+	// }
 
 	return (
 		<>
@@ -93,16 +72,6 @@ export default async function Page({
 			}
 		</>
 	);
-}
-
-async function Redirect({
-	error,
-}: {
-	error: any;
-}) {
-
-	const promise = await new Promise(resolve => setTimeout(resolve, 1000));
-	return null;
 }
 
 async function FinaliseLogin({

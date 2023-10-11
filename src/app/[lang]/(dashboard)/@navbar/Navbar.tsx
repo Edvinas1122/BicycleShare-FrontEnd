@@ -1,6 +1,7 @@
 "use client";
 import React, {use, Suspense} from "react";
 import {Navbar as NextNavbar, NavbarBrand, NavbarContent, NavbarItem, Link, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Image} from "@nextui-org/react";
+import {useScrollContext} from "../components/NavbarRef";
 
 export default function Navbar({
 	children,
@@ -11,11 +12,12 @@ export default function Navbar({
 	icon: string,
 	title: string,
 }) {
-	// const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+	const { containerRef } = useScrollContext();
 
 	return (
 		<NextNavbar
 			shouldHideOnScroll={true}
+			parentRef={containerRef}
 			// onMenuOpenChange={setIsMenuOpen}
 		>
 			<NavbarBrand>

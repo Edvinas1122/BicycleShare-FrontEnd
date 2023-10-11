@@ -9,6 +9,7 @@ import {
 	Language,
 } from '@/conf/dictionary.conf';
 import { Blurhash } from "react-blurhash";
+import AnimateAppearing from './animate';
 
 interface BicycleInfo {
 	lockerId: number;
@@ -38,13 +39,6 @@ export default function BicycleCard({
 	language: Language;
 	footer: React.ReactNode;
 }) {
-
-	// const router = useRouter();
-
-	// const handler = (route: string) => {
-	// 	router.push(`/${language}/${props.lockerId}/${route}`);
-	// 	// action(`/${language}/${props.lockerId}/${route}`);
-	// };
 
 	return (
 		<Card className={"w-[350px] min-h-[400px] pop-appear"}>
@@ -208,24 +202,27 @@ export const ImageSuspense = ({
 		}
 	}, [src]);
 
-
 	const blurhashStyle = 
 		`absolute blurhash ${animation ? "fade-out-slow" : "fade-in-slow"}`;
 
 	return (
 		<>
 			<Skeleton className="rounded-lg" isLoaded={hashIsReady}>
-			<NextImage
+			<Image
 				src={src}
 				width={width}
 				height={height}
 				alt={alt}
 				className={"rounded-lg"}
-				onLoadingComplete={swithState}
+				// onLoadingComplete={swithState}
+				onLoad={swithState}
+				shadow={"sm"}
 				/>
 			</Skeleton>
 			{!imageLoaded && imageHash && (
-				<div className={blurhashStyle}>
+				<div 
+				className={blurhashStyle}
+				>
 					<Blurhash
 						hash={imageHash}
 						width={width}
@@ -233,7 +230,7 @@ export const ImageSuspense = ({
 						resolutionX={32}
 						resolutionY={32}
 						punch={1}
-					/>
+						/>
 				</div>
 			)}
 		</>

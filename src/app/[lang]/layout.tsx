@@ -1,4 +1,12 @@
 import {headers} from "next/headers"
+import {Language, languages} from "@/conf/dictionary.conf";
+
+
+export async function generateStaticParams() {
+	return languages.map((lang: Language) => ({ lang }));
+}
+
+export const dynamicParams = false;
 
 export default function RootLayout({
 	auth,

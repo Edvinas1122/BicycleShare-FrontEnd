@@ -137,7 +137,9 @@ export const ModalContentWrapper = ({
 			<ModalHeader className="flex flex-col gap-1">
 				{headerContent}
 			</ModalHeader>
-			<ModalBody>
+			<ModalBody className={
+				"flex flex-col justify-center items-center h-full gap-4"
+			}>
 				{children}
 			</ModalBody>
 		</>

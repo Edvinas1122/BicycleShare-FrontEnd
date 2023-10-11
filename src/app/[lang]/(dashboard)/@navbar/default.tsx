@@ -28,11 +28,18 @@ export default function Page({params: {lang}}: {params: {lang: Language}}) {
 		redirect("/de", RedirectType.replace);
 	}
 
+	async function selectUkranian() {
+		"use server"
+		redirect("/ue", RedirectType.replace);
+	}
+
 	const languageMenuItem = (
 		<>
 		  <p>{dictionaries[lang].language}</p>
 		  <StatefulButton action={selectEnglish}>{"🇬🇧"}</StatefulButton>
 		  <StatefulButton action={selectGerman}>{"🇩🇪"}</StatefulButton>
+		  <StatefulButton action={selectUkranian}>{"🇺🇦"}</StatefulButton>
+
 		</>
 	);
 
@@ -57,11 +64,6 @@ export default function Page({params: {lang}}: {params: {lang: Language}}) {
 							cacheMenuItem
 					]}
 				>
-					{/* <StatefulButton
-						action={dropCache}
-					>
-						{dictionaries[lang].drop_cache}
-					</StatefulButton> */}
 				</UserMenu>
 			</Navbar>
 		</>

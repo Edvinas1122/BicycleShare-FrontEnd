@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
 import {
-	Spinner
+	Spinner,
+	Chip
 } from "@nextui-org/react";
 import {
 	clientDictionaries, Language, languages
@@ -9,6 +10,9 @@ import {
 import {
 	usePusher
 } from "../PusherProvider";
+import {
+	useDeviceInfo
+} from "../../context";
 // import Script from 'next/script'
 // import Pusher from 'pusher-js'
 
@@ -31,6 +35,7 @@ export default function AvailabilityInfo({
 	const [response, setResponse] = React.useState<string | null>(null);
 	const [fadeOut, setFadeout] = React.useState<boolean>(false);
 	const { pusher } = usePusher();
+	const { deviceStatus, setDeviceInfo } = useDeviceInfo();
 
 	const initialClassName = `
 		w-full
@@ -57,6 +62,7 @@ export default function AvailabilityInfo({
 			});
 			presenceChannel.bind('client-pong', function(data: any) {
 				setResponse(data.message);
+				setDeviceInfo(true);
 			});
 		});
 		return () => {
@@ -69,17 +75,29 @@ export default function AvailabilityInfo({
 	return (
 		<>
 		<div className={"w-full flex flex-col justify-end align-center"}>
-			<div className={initialClassName +
-				(fadeOut ? "vertical-shrink" : "vertical-expand")
+			<div className={initialClassName
+				// (fadeOut ? "vertical-shrink" : "vertical-expand")
 			}>
+				<Chip 
+					color="primary"
+					variant="faded"
+					className={"text-xs"}
+					endContent={
+						!response && <Spinner size="sm" />
+					}
+
+				>
+
 				{response ? (
 					<StatusInfo
 						status={response}
 						language={lang}
 					/>
-				) : (
-					<Spinner size="sm" />
+				): (
+					clientDictionaries[lang].loading
 				)}
+
+				</Chip>
 			</div>
 		</div>
 		</>
@@ -101,18 +119,14 @@ function StatusInfo({
 	if (clientDictionaries[language][status as keyof typeof clientDictionaries[Language]]) {
 		return (
 			<>
-				<p className={"text-xs text-green-500"}>
 					{clientDictionaries[language][status as keyof typeof clientDictionaries[Language]]}
-				</p>
 			</>
 		);
 	}
 
 	return (
 		<>
-			<p className={"text-xs text-gray-500"}>
 				{status}
-			</p>
 		</>
 	);
 }

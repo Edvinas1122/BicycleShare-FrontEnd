@@ -141,18 +141,3 @@ export function getUserFromHeaders(){
 	return user;
 }
 
-// export function ValidateToken(tokenToValidate: string, routeHandler: Function): Function
-// {
-// 	return async function (request: Request): Promise<Response> {
-// 		const cookieStore = cookies();
-// 		const token = cookieStore.get('token');
-// 		if (!token) {
-// 			return respondError("Missing token", 401);
-// 		}
-// 		const decoded = validateToken(token.value, tokenToValidate);
-// 		if (!decoded) {
-// 			return respondError("Invalid token", 401);
-// 		}
-// 		return await routeHandler(request);
-// 	}
-// }

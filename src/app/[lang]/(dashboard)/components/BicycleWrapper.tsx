@@ -3,6 +3,7 @@
 import {ScrollShadow} from "@nextui-org/react";
 import {Suspense} from "react";
 import Loading from "../@bicycles/loading";
+import {useScrollContext} from "./NavbarRef";
 
 const BicycleListWrapper = ({
 	children,
@@ -10,6 +11,7 @@ const BicycleListWrapper = ({
 	children: React.ReactNode
 }) => {
 
+	const { containerRef } = useScrollContext();
 	const bicycleListWrapperStyle = `
 		flex 
 		flex-row 
@@ -18,7 +20,7 @@ const BicycleListWrapper = ({
 		gap-4
 		overflow-y-scroll
 		max-h-screen 
-		max-w-full 
+		max-w-full
 	`;
 
 
@@ -27,6 +29,12 @@ const BicycleListWrapper = ({
 			hideScrollBar
 			isEnabled={false}
 			className={bicycleListWrapperStyle}
+			ref={containerRef}
+			style={{
+				transform: "translateY(-32px)",
+				paddingTop: "54px",
+				paddingBottom: "48px",
+			}}
 		>
 			<Suspense fallback={<Loading/>}>
 			{children}

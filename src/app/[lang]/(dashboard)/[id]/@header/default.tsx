@@ -1,46 +1,45 @@
 import {
-	notFound
-} from 'next/navigation'
-import
-	constructBicycleService
-from "@/components/bicycle-api/bicycle.module";
-import {
 	UserSkeleton, BicycleAvatar
 } from "./profile";
 import { Suspense } from 'react';
+import { fetchBicycleProfile } from '../../layout';
 
 
-export default async function Page({
+async function BicycleProfile({
+	id
+}: {
+	id: string
+}) {
+
+	const bicycleInfo: BicycleProfileInfo = await fetchBicycleProfile(id);
+
+	return (
+		<>
+				<PromiseBicycleProfile
+					info={bicycleInfo}
+				/>
+		</>
+	);
+}
+
+export default function Page({
 	params 
 }: { 
 	params: { id: string } 
 }) {
-	// const service = constructBicycleService({cache: 'no-store'}); // cache with bicycle tag
-	const service = constructBicycleService({next: {tags: ["bicycle"]}}); // cache with bicycle tag
-	const bicycle = service.getBicycleInterface(Number(params.id));
-	console.log("bicycle", bicycle);
-	const bicycleInfo: Promise<BicycleProfileInfo> = bicycle.then((bicycle) => {
-		if (!bicycle) {
-			// notFound();
-			throw new Error('Bicycle not found');
-		}
-		console.log("bicycle", bicycle);
-		return {
-			name: bicycle.getData().name,
-			image: bicycle.getImageLink(),
-		};
-	})
-	// .catch((error) => {
-	// 	// notFound();
-	// 	console.error(error);
-	// });
 
 	return (
 		<div>
 			<div className={
 				"flex flex-row h-[50px] items-center"
 			}>
-				<BicycleProfile info={bicycleInfo}/>
+				<Suspense fallback={
+					<UserSkeleton/>
+				} >
+				<BicycleProfile 
+					id={params.id}
+				/>
+				</Suspense>
 			</div>
 		</div>
 	);
@@ -48,50 +47,29 @@ export default async function Page({
 
 export type BicycleProfileInfo = {
 	name: string,
-	image: Promise<string>,
+	image: string,
 };
 
-function BicycleProfile({
-	info
-}: {
-	info: Promise<BicycleProfileInfo>
-}) {
-	return (
-		<>
-			<Suspense fallback={
-				<UserSkeleton/>
-			}>
-				<PromiseBicycleProfile
-					info={info}
-				/>
-			</Suspense>
-		</>
-	);
-}
 
 async function PromiseBicycleProfile({
 	info
 }: {
-	info: Promise<BicycleProfileInfo>
+	info: BicycleProfileInfo
 }) {
 	const data = await info;
 
-	if (!data) {
-		return null;
-	}
-
 	return (
 		<>
-			<Suspense fallback={
+			{/* <Suspense fallback={
 				<BicycleAvatar
 					name={data.name}
 				/>
-			}>
+			}> */}
 				<LoadedBicycleProfile
 					name={data.name}
 					image={data.image}
 				/>
-			</Suspense>
+			{/* </Suspense> */}
 		</>
 	);
 }
@@ -101,16 +79,16 @@ async function LoadedBicycleProfile({
 	image
 }: {
 	name: string,
-	image: Promise<string>,
+	image: string,
 }) {
 
-	const imageLink = await image;
+	// const imageLink = await image;
 
 	return (
 		<>
 			<BicycleAvatar
 				name={name}
-				imageLink={imageLink}
+				imageLink={image}
 			/>
 		</>
 	);

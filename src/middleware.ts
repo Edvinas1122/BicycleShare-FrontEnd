@@ -215,6 +215,43 @@ export async function middleware(request: NextRequest) {
 	});
 }
 
+async function makeHeaders(auth: Token, headers: Headers, request: NextRequest) {
+
+	const { pathname, href, origin } = request.nextUrl;
+
+	// authorization redirect
+	if (!await auth.hasAVaildToken()) {
+		headers.set('x-authorised', "false");
+		if (pathnameMissing(pathname, "login")) {
+			return ensurePath(request.nextUrl, "login");
+		}
+	// registration redirect
+	} else if (!await auth.hasAcceptedTerms()) {
+		// console.log("has token but not accepted terms");
+		headers.set('x-authorised', "false");
+		if (pathnameMissing(pathname, "legal")) {
+			return ensurePath(request.nextUrl, "legal");
+		}
+	// passing credentials to headers
+	} else {
+		// console.log("has token");
+		headers.set('x-authorised', "true");
+		const user = await auth.getUserFromToken(tokenAdapter);
+		headers.set('x-user-name', user.user);
+		headers.set('x-user-image', user.image);
+		headers.set('x-user-id', user.id);
+		headers.set('x-user-username', user.name);
+		// headers.set('x-locale', getLocale(request));
+	}
+	// passing queries to headers
+	if (hasSpecialSeatchParams(request.nextUrl, paramsList)) {
+		setParamsIntoHeaders(request.nextUrl, headers, paramsList);
+	}
+	// stamp 
+	headers.set('x-middleware-effect', new Date().toISOString());
+	return
+}
+
 export const config = {
 	matcher: [
 		'/((?!api|_next/static|_next/image|favicon.ico|.*\\.jpg$|.*\\.png$|.*\\.svg$|.*\\.ico$).*)',

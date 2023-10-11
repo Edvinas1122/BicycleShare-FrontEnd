@@ -3,10 +3,6 @@ import {
 	Language
 } from "@/conf/dictionary.conf";
 
-// export function generateStaticParams() {
-// 	return [{ duration: 'short' }, { duration: 'hours' }, { duration: 'long' }, { duration: 'night' }]
-// }
-
 export default async function Page({
 	params: { lang }
 }: {

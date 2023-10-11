@@ -6,10 +6,6 @@ import {
 	Unlock
 } from "./Unlock";
 
-// export function generateStaticParams() {
-// 	return [{ duration: 'short' }, { duration: 'hours' }, { duration: 'long' }, { duration: 'night' }]
-// }
-
 export default async function Page({
 	params: { lang }
 }: {

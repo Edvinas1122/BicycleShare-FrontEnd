@@ -6,6 +6,7 @@ import {
 import { 
 	ModalContentWrapper
 } from "@/app/components/modal";
+import { DeviceControllerContextProvider } from "./context";
 
 export default async function Layout({
 	children,
@@ -21,21 +22,23 @@ export default async function Layout({
 
 	return (
 		<>
+			<DeviceControllerContextProvider>
 			<DisplayModal
 				modalInterface={modalInterface}
 				closeButton={{
 					route: "/" + lang,
 					label: dictionaries[lang].cancel,
 				}}
-			>
+				>
 			<ModalContentWrapper
 				headerContent={header}
-			>
+				>
 			<>
 			{children}
 			</>
 			</ModalContentWrapper>
 			</DisplayModal>
+			</DeviceControllerContextProvider>
 		</>
 	);
 }

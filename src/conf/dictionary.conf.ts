@@ -200,18 +200,22 @@ type ClientDictionaries = Readonly<{
 
 export type ClientDictionary = {
 	online: string;
+	loading: string;
 }
 
 export const clientDictionary: ClientDictionary = {
 	online: "online",
+	loading: "loading",
 }
 
 export const german_client_dictionary: ClientDictionary = {
 	online: "online",
+	loading: "laden",
 }
 
 export const ue_client_dictionary: ClientDictionary = {
 	online: "онлайн",
+	loading: "завантаження",
 }
 
 export const clientDictionaries: ClientDictionaries = {

@@ -41,7 +41,6 @@ export default class BicycleShareContentService {
 
 	async getTermsAndConditions() {
 		return await this.notionContentService.getPageContent(
-			// this.config.TERMS_CONDITIONS ||
 			this.config.TERMS_CONDITIONS
 		);
 	}
@@ -83,36 +82,12 @@ export default class BicycleShareContentService {
 			.then((entries: any) => entries.all());
 
 		const bicycles = properties.map((property: any) => {
-			// const properties: BicycleData = {
-			// 	id: property["id"],
-			// 	available: property["Availability"],
-			// 	disabledReason: property["Disabled Reason"],
-			// 	name: property["Name"],
-			// 	lockerId: property["Locker"],
-			// }
 			return new BicycleInfo(
 				property,
 				this.databaseTool,
 				);
 		});
 		return bicycles;
-		// console.log("gete---->", await properties);
-		// const database = await this.notionContentService.getDatabaseContent(this.config.BICYCLES);
-		// try {
-		// 	const properties = await database.getPropertiesList();
-		// 	return properties.map((property: any) => {
-		// 		const properties: BicycleData = {
-		// 			id: property.id,
-		// 			available: property.Availability.select.name === "Available",
-		// 			disabledReason: property["Disabled Reason"].rich_text[0],
-		// 			name: property.Name.title[0].plain_text,
-		// 			lockerId: property.Locker.number,
-		// 		}
-		// 		return new BicycleInfo(properties, this.notionContentService, this.config);
-		// 	});
-		// } catch (error: any) {
-		// 	return null;
-		// }
 	}
 
 
@@ -131,7 +106,6 @@ export default class BicycleShareContentService {
 			.getEntries()
 			.byLocker(id)
 			.then((entry: any) => entry.all());
-		// console.log("gete---->", await properties);
 		if (!properties.length) {
 			throw new NotFoundException("No bicycle found");
 		}
@@ -140,22 +114,6 @@ export default class BicycleShareContentService {
 			bicycleData,
 			this.databaseTool,
 		);
-		// const query = this.notionContentService.getDatabaseQueryBuilder(
-		// 	this.config.BICYCLES,
-		// );
-		// query.addFilter("Locker", "number", "equals", id);
-		// const database = await query.execute();
-		// const properties = await database.getPropertiesList();
-		// if (!properties.length) {
-		// 	throw new NotFoundException("No bicycle found");
-		// }
-		// const bicycleData = properties[0];
-		// return new BicycleInfo(
-		// 	bicycleData,
-		// 	this.notionContentService,
-		// 	this.config,
-		// 	this.databaseTool,
-		// );
 	}
 }
 
@@ -214,24 +172,6 @@ export class UserService {
 			fullName: userData.IntraName,
 			image: userData.ProfileImage,
 		}
-
-		// const query = this.notionContentService.getDatabaseQueryBuilder(
-		// 	this.config.SIGNED_USERS_DATABASE,
-		// );
-		// query.addFilter("IntraID", "number", "equals", userID);
-		// const database = await query.execute();
-		// const items = await database.getPropertiesList();
-		// if (!items.length) {
-		// 	console.log("No user found");
-		// 	return null;
-		// }
-		// const userData = items[0];
-		// return {
-		// 	id: userData.IntraID.number,
-		// 	name: userData.Name.rich_text[0].plain_text,
-		// 	fullName: userData.IntraName.title[0].plain_text,
-		// 	image: userData.ProfileImage.url,
-		// }
 	}
 
 	public getUserInterface(user: TokenUser
@@ -268,7 +208,6 @@ class UserInterface {
 		Insertion method
 	*/
 	private async RegisterUser(): Promise<any> {
-		console.log("teggew--<",this.user.image)
 		const slot = await this.databaseTool
 			.getTable("SignedUp")
 			.newEntrySlot()
@@ -279,16 +218,6 @@ class UserInterface {
 				"IntraID": this.user.id,
 			});
 		return slot;
-
-		// const newEntry = this.notionContentService.getDatabaseEntryBuilder(
-		// 	this.config.SIGNED_USERS_DATABASE
-		// );
-		// newEntry.addTitle("IntraName", this.user.name);
-		// newEntry.addRichText("Name", this.user.fullName);
-		// newEntry.addUrl("ProfileImage", this.user.image);
-		// newEntry.addNumber("IntraID", this.user.id);
-		// const response = await newEntry.postEntry();
-		// return response;
 	}
 
 	/*
@@ -300,16 +229,7 @@ class UserInterface {
 			.getEntries()
 			.byIntraID(this.user.id)
 			.then((entry: any) => entry.all());
-
 		return query.length > 0;
-
-		// const query = this.notionContentService.getDatabaseQueryBuilder(
-		// 	this.config.SIGNED_USERS_DATABASE
-		// );
-		// query.addFilter("IntraID", "number", "equals", this.user.id);
-		// const database = await query.execute();
-		// const itemsFound = await database.getPropertiesList();
-		// return itemsFound.length > 0;
 	}
 }
 
@@ -368,32 +288,6 @@ export class BicycleInfo {
 			end: test[0]["Share Ended (UNIX)"],
 			image: {url: user.ProfileImage},
 		}
-		// console.log(test);
-
-		// const query = this.notionContentService.getDatabaseQueryBuilder(
-		// 	this.config.TIMESTAMPS,
-		// );
-		// query.and().addFilter("Bicycles", "relation", "contains", this.data.id);
-		// query.addSort("Share Started (UNIX)", "descending");
-		// const database = await query.execute();
-		// const properties = await database.getPropertiesList();
-		// if (!properties.length) {
-		// 	return null;
-		// }
-		// const lastTimestamp = properties[0];
-		// const lastUser = lastTimestamp.Holder.relation[0]?.id;
-		// if (!lastUser) {
-		// 	return null;
-		// }
-		// const userData = await this.notionContentService.getPage(lastUser);
-		// return {
-		// 	id: userData.page.properties.IntraID.number,
-		// 	name: userData.page.properties.IntraName.title[0].plain_text,
-		// 	fullName: userData.page.properties.Name.rich_text[0].plain_text,
-		// 	image: userData.page.properties.ProfileImage,
-		// 	start: lastTimestamp["Share Started (UNIX)"]?.number,
-		// 	end: lastTimestamp["Share Ended (UNIX)"]?.number,
-		// }
 	}
 
 	getData(): BicycleData {
@@ -429,86 +323,42 @@ export class BicycleInfo {
 			const last_user_data = await last_user();
 			const user = await last_user_data;
 			const image = await user.ProfileImage;
+			const startDate = this.timeLocaleConvert(time_stamp["Share Started (UNIX)"])
+			const endDate = this.timeLocaleConvert(time_stamp["Share Ended (UNIX)"])
 
 			return {
 				id: user["IntraID"],
 				name: user["Name"],
 				fullName: user["IntraName"],
-				start: time_stamp["Share Started (UNIX)"],
-				end: time_stamp["Share Ended (UNIX)"],
+				start: startDate,
+				end: endDate,
 				image: image,
 			}
 		});
 		return all_time_spamps;
+	}
 
-		// const last_user = await time_spamps[0]["Holder"][0];
-		// const last_user_data = await last_user();
-		// const user = await last_user_data;
-		// console.log("fefewge", user);
-		// return [{
-		// 	id: user["IntraID"],
-		// 	name: user["Name"],
-		// 	fullName: user["IntraName"],
-		// 	start: time_spamps[0]["Share Started (UNIX)"],
-		// 	end: time_spamps[0]["Share Ended (UNIX)"],
-		// 	image: {url: user.ProfileImage},
-		// }]
+	private timeLocaleConvert(time: number): string {
+		const options: Intl.DateTimeFormatOptions = {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit',
+			timeZone: 'Europe/Berlin'
+		};
 
-		// const query = this.notionContentService.getDatabaseQueryBuilder(
-		// 	this.config.TIMESTAMPS
-		// );
-		// query.and().addFilter("Bicycles", "relation", "contains", this.data.id);
-		// query.addSort("Share Started (UNIX)", "descending");
-		// const database = await query.execute();
-		// const properties = await database.getPropertiesList();
-		// if (!properties.length) {
-		// 	return [];
-		// }
-		// const lastTimestamps = properties.slice(index, index + 5);
-		// const uses = await lastTimestamps.map(async (timestamp: any, index: number) => {
-		// 	const lastUser  = timestamp?.Holder.relation[0]?.id;
-		// 	const userData = await this.notionContentService.getPage(lastUser);
-		// 	const user = userData.page.properties;
-		// 	const startDate = new Date(timestamp["Share Started (UNIX)"].number);
-		// 	const endDate = new Date(timestamp["Returned On (UNIX)"].number);
-		// 	const options: Intl.DateTimeFormatOptions = { 
-		// 		year: 'numeric', 
-		// 		month: 'short', 
-		// 		day: 'numeric', 
-		// 		hour: '2-digit', 
-		// 		minute: '2-digit', 
-		// 		timeZone: 'Europe/Berlin' 
-		// 	};
-		// 	if (!user.IntraID) return null;
-		// 	return {
-		// 		id: user.IntraID.number,
-		// 		fullName: user.Name.rich_text[0].plain_text,
-		// 		name: user.IntraName.title[0].plain_text,
-		// 		image: user.ProfileImage.url,
-		// 		start: startDate.toLocaleString('de-DE', options),
-		// 		startUnix: timestamp["Share Started (UNIX)"].number,
-		// 		end: endDate.toLocaleString('de-DE', options),
-		// 		endUnix: timestamp["Returned On (UNIX)"].number,
-		// 	}
-		// });
-		// return uses;
+		return new Date(time).toLocaleString('de-DE', options);
 	}
 
 	/*
 		Property aquisition method, not related to databases but rather to an entry storage
 	*/
 	async getImageLink(): Promise<string> {
-		// return "etrt";
-		// console.log("fefewge ------------", this.data);
 		return this.data.retrievePage().then((page: any) => {
 			const image = page.results[0].image.file.url;
-			// console.log("fefewge", image);
 			return image;
 		});
-		// return this.notionContentService.getPageContent(this.data.id).then((page: any) => {
-		//   const image = page.results[0].image.file.url;
-		//   return image;
-		// });
 	}
 
 }

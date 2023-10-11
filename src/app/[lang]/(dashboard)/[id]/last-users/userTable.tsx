@@ -22,16 +22,18 @@ type Timestamp = {
 export function TableFrame({
 	headings,
 	getTimestamps,
+	bicycle_id
 }: {
 	headings: {key: string, label: string}[],
-	getTimestamps: (iteration: number) => Promise<any[] | null>,
+	getTimestamps: (iteration: number, id: number) => Promise<any[] | null>,
+	bicycle_id: number,
 }) {
 
 	const [timeStamps, setTimeStamps] = React.useState<any[]>([]);
 	const [loading, setLoading] = React.useState<boolean>(true);
 	const updateTimestamps = async () => {
 		setLoading(true);
-		const stamps = await getTimestamps(0);
+		const stamps = await getTimestamps(0, bicycle_id);
 		if (stamps) {
 			setTimeStamps(stamps);
 			setLoading(false);
@@ -80,6 +82,7 @@ export function TableFrame({
 			)}
 			</TableBody>
 		</Table>
+		<PagginationControll/>
 		</>
 	);
 }
@@ -100,4 +103,13 @@ export function TableSkeleton({
 		</Table>
 		</>
 	);
+}
+
+
+import {Pagination} from "@nextui-org/react";
+
+export default function PagginationControll() {
+  return (
+    <Pagination showControls total={4} initialPage={1} />
+  );
 }

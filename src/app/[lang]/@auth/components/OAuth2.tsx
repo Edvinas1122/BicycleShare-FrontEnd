@@ -3,7 +3,7 @@ import {
 } from '@/conf/organisation.conf';
 import {
 	IntraAuth
-} from './components/intraAuth.service';
+} from '../login/components/intraAuth.service';
 import {
 	generateToken
 } from '@/components/next-api-utils/validation';

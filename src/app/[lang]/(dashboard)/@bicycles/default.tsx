@@ -1,15 +1,18 @@
 import { Suspense } from "react";
-import BicycleCard, {UserAvatar, UserSkeleton, ImageSuspense, ImageSkeleton, LinkButton} from "../components/BicycleCard";
-import constructBicycleService from "@/components/bicycle-api/bicycle.module";
-import BicycleListWrapper from "../components/BicycleWrapper";
-import { BicycleInfo } from "@/components/bicycle-api/content.service";
+import BicycleCard, {
+	UserAvatar,
+	UserSkeleton,
+	ImageSuspense,
+	ImageSkeleton,
+	LinkButton
+} from "../components/BicycleCard";
 import { Language, dictionaries } from "@/conf/dictionary.conf";
 import { redirect, RedirectType } from "next/navigation";
+import { fetchBicycles } from "../layout";
+
 
 export default async function Page({params: {lang}}: {params: {lang: Language}}) {
-	// const bicycleService = constructBicycleService({cache: 'no-store'});
-	const bicycleService = constructBicycleService({next: {tags: ["bicycle"]}});
-	const bicycles: BicycleInfo[] | null = await bicycleService.getBicycles();
+	const bicycles = await fetchBicycles();
 
 	const buttons = [
 		{
@@ -30,39 +33,56 @@ export default async function Page({params: {lang}}: {params: {lang: Language}})
 		<>
 		{
 			bicycles.map((bicycle) => (
-				<BicycleCard
-					key={bicycle.getData().id}
-					props={bicycle.getData()}
-					header={
-						<BicycleHeader
-							title={bicycle.getName()}
-							availability={bicycle.getData().available}
-							user={bicycle.getLastUse()}
-							language={lang}
-						/>
-
-					}
-					language={lang}
-					footer={
-						<>
-							<Buttons
-								buttons={buttons}
-								lang={lang}
-								id={bicycle.getData().lockerId.toString()}
-							/>
-						</>
-					}
-				>
-					<Suspense fallback={<ImageSkeleton/>}>
-						<Image
-							imageLink={bicycle.getImageLink()}
-							alt={bicycle.getName()}
-						/>
-					</Suspense>
-				</BicycleCard>
+				<SingleBicycleCard
+					lang={lang}
+					bicycle={bicycle}
+					buttons={buttons}
+				/>
 			))
 		}
 		</>
+	);
+}
+
+function SingleBicycleCard({
+	lang, 
+	bicycle,
+	buttons
+}: {
+	lang: Language,
+	bicycle: any,
+	buttons: any
+}) {
+	return (
+		<BicycleCard
+			key={bicycle.getData().id}
+			props={bicycle.getData()}
+			header={
+				<BicycleHeader
+					title={bicycle.getName()}
+					availability={bicycle.getData().available}
+					user={bicycle.getLastUse()}
+					language={lang}
+				/>
+			}
+			language={lang}
+			footer={
+				<>
+					<Buttons
+						buttons={buttons}
+						lang={lang}
+						id={bicycle.getData().lockerId.toString()}
+					/>
+				</>
+			}
+		>
+			<Suspense fallback={<ImageSkeleton/>}>
+				<Image
+					imageLink={bicycle.getImageLink()}
+					alt={bicycle.getName()}
+				/>
+			</Suspense>
+		</BicycleCard>
 	);
 }
 

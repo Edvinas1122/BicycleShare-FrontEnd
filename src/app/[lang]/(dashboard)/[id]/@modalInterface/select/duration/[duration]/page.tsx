@@ -10,18 +10,6 @@ export default function Page({
 	params: {lang: Language, id: string, duration: string};
 }) {
 
-	// const buttons: QueryButtonProps[] = [
-	// 	{
-	// 		label: dictionaries[lang].select,
-	// 		route: "",
-	// 		props: {
-	// 			color: "primary",
-	// 		},
-	// 		params: "time",
-	// 		defaultState: "short",
-	// 		type: "query",
-	// 	},
-	// ];
 
 	const buttons: ButtonProps[] = [
 		{
