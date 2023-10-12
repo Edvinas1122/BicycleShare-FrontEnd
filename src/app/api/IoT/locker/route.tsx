@@ -22,12 +22,26 @@ async function routeHandler(params: any) {
 	console.log(params);
 	const {user_id, bicycle_id, duration} = params;
 	const service = constructBicycleService({cache: "no-store"});
-	const response = await service.registerBicycleBorrow(user_id, bicycle_id, duration);
+	const response
+		= await service
+			.registerBicycleBorrow(
+				user_id,
+				bicycle_id,
+				duration
+			);
 	revalidateTag(`bicycle-use-${bicycle_id}`);
 	revalidateTag(`bicycle`);
-	const pusher = new PusherServer.default(getPusherConfig());
-	pusher.trigger("presence-locker-device", "lend-status", {
-		message: {registred: true, user_id, bicycle_id, duration}
+	const pusher
+		= new PusherServer
+			.default(getPusherConfig());
+	pusher.trigger(
+		"presence-locker-device",
+		"lend-status",
+		{
+			registred: true,
+			user_id,
+			bicycle_id,
+			duration
 	});
 	console.log("response", response);
 	// console.log("data", timestamp);
