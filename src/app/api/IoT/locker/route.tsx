@@ -21,7 +21,8 @@ async function routeHandler(params: any) {
 	console.log("api/locker, message received:");
 	console.log(params);
 	const {user_id, bicycle_id, duration} = params;
-	const service = constructBicycleService({cache: "no-store"});
+	const service
+		= constructBicycleService({cache: "no-store"});
 	const response
 		= await service
 			.registerBicycleBorrow(

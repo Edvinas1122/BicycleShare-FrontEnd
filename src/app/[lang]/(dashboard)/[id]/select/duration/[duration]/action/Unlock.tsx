@@ -20,12 +20,19 @@ export const Unlock = ({
 	const setEventDriver = () => {
 		if (!pusher) return;
 		const presenceChannel = pusher.channel("presence-locker-device")
-		presenceChannel.bind('client-locker',
+		presenceChannel.bind('client-open-seq-begin',
 			function(data: any) {
-				presenceChannel.bind('lend-status', function(data: any) {
-
-				});
-				console.log("client-locker", data);
+				if (data === "begin") {
+					presenceChannel.bind('client-open-seq-end', function(data: any) {
+					});
+					presenceChannel.bind('client-locker-button-press', function(data: any) {
+						presenceChannel.bind('lend-status', function(data: any) {
+							console.log("sequence complete", "data have", data);
+						});
+					});
+				} else {
+					console.log("sequence aborted", data);
+				}
 			}
 		);
 		// https://github.com/pusher/pusher-js#triggering-client-events
@@ -34,6 +41,9 @@ export const Unlock = ({
 		})
 		return () => {
 			presenceChannel.unbind('client-locker');
+			presenceChannel.unbind('client-locker-button-press');
+			presenceChannel.unbind('client-open-seq-begin');
+			presenceChannel.unbind('client-open-seq-end');
 		}
 	}
 
