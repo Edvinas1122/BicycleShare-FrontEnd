@@ -2,7 +2,7 @@
 import React from 'react';
 import {Button} from '@nextui-org/button';
 
-export async function StatefulButton({
+export function StatefulButton({
 	children,
 	action,
 }: {

@@ -24,6 +24,7 @@ export const Unlock = ({
 				console.log("client-locker", data);
 			}
 		);
+		presenceChannel.bind('')
 		// https://github.com/pusher/pusher-js#triggering-client-events
 		presenceChannel.trigger('client-open-locker', {
 			bicycle_id, duration, message: "give"

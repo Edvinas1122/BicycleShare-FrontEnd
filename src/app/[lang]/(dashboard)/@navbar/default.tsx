@@ -7,8 +7,11 @@ import { redirect, RedirectType } from "next/navigation";
 import { getUserFromHeaders } from "@/components/next-api-utils/validation";
 
 
-export default async function Page({params: {lang}}: {params: {lang: Language}}) {
-
+export default function Page({
+	params: {lang}
+}: {
+	params: {lang: Language}
+}) {
 	const user = getUserFromHeaders();
 	if (user.name === "error") return null;
 	if (!dictionaries[lang]) return null;
@@ -20,17 +23,17 @@ export default async function Page({params: {lang}}: {params: {lang: Language}})
 
 	async function selectEnglish() {
 		"use server"
-		return await redirect("/en", RedirectType.replace);
+		redirect("/en", RedirectType.replace);
 	}
 
 	async function selectGerman() {
 		"use server"
-		return await redirect("/de", RedirectType.replace);
+		redirect("/de", RedirectType.replace);
 	}
 
 	async function selectUkranian() {
 		"use server"
-		return await redirect("/ue", RedirectType.replace);
+		redirect("/ue", RedirectType.replace);
 	}
 
 	const languageMenuItem = (
@@ -39,7 +42,6 @@ export default async function Page({params: {lang}}: {params: {lang: Language}})
 		  <StatefulButton action={selectEnglish}>{"🇬🇧"}</StatefulButton>
 		  <StatefulButton action={selectGerman}>{"🇩🇪"}</StatefulButton>
 		  <StatefulButton action={selectUkranian}>{"🇺🇦"}</StatefulButton>
-
 		</>
 	);
 
@@ -60,10 +62,9 @@ export default async function Page({params: {lang}}: {params: {lang: Language}})
 			>
 				<UserMenu user={user}
 					menuItems={[
-							languageMenuItem,
-							cacheMenuItem
-					]}
-				>
+						languageMenuItem,
+						cacheMenuItem
+					]}>
 				</UserMenu>
 			</Navbar>
 		</>

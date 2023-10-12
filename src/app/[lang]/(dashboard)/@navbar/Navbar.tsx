@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import React, {use, Suspense} from "react";
 import {Navbar as NextNavbar, NavbarBrand, NavbarContent, NavbarItem, Link, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Image} from "@nextui-org/react";
 import {useScrollContext} from "../components/NavbarRef";

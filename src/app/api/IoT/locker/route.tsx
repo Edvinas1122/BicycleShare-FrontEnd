@@ -24,6 +24,7 @@ async function routeHandler(params: any) {
 	const service = constructBicycleService({cache: "no-store"});
 	const response = await service.registerBicycleBorrow(user_id, bicycle_id, duration);
 	revalidateTag(`bicycle-use-${bicycle_id}`);
+	revalidateTag(`bicycle`);
 	const pusher = new PusherServer.default(getPusherConfig());
 	pusher.trigger("presence-locker-device", "lend-status", {
 		message: {registred: true, user_id, bicycle_id, duration}
