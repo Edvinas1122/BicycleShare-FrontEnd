@@ -13,8 +13,6 @@ import {
 import {
 	useDeviceInfo
 } from "../../context";
-// import Script from 'next/script'
-// import Pusher from 'pusher-js'
 
 /*
 	A component to display updates on device.
@@ -53,13 +51,16 @@ export default function AvailabilityInfo({
 		let presenceChannel: any;
 		pusher.connection.bind('connected', function() {
 			presenceChannel = pusher.subscribe('presence-locker-device');
-			presenceChannel.bind('pusher:subscription_succeeded', function(members: any) {
-				const device = members.get("0");
-				if (!device) { setResponse("offline"); return; }
-				presenceChannel.trigger('client-ping', {
-					message: 'ping',
-				});					
-			});
+			presenceChannel.bind(
+				'pusher:subscription_succeeded',
+				function(members: any) {
+					const device = members.get("0");
+					if (!device) { setResponse("offline"); return; }
+					presenceChannel.trigger('client-ping', {
+						message: 'ping',
+					});					
+				}
+			);
 			presenceChannel.bind('client-pong', function(data: any) {
 				setResponse(data.message);
 				setDeviceInfo(true);

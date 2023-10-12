@@ -54,7 +54,7 @@ export default class BicycleShareContentService {
 		const bicycle_entry_id = await this.databaseTool
 			.getTable("Bicycles")
 			.getEntries("equals")
-			.byKey(bicycleId)
+			.byLocker(bicycleId)
 			.then((entry: any) => entry.id());
 		const user_entry_id = await this.databaseTool
 			.getTable("SignedUp")
