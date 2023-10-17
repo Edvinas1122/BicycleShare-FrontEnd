@@ -313,7 +313,8 @@ export class BicycleInfo {
 			.then((entries: any) => entries.all());
 
 		const all_time_spamps = await time_spamps.map(async (time_stamp: any) => {
-			const last_user = await time_stamp["Holder"][0].last_user();
+			const last_user = await time_stamp["Holder"][0];
+			if (!last_user) return [];
 			const last_user_data = await last_user();
 			const user = await last_user_data;
 			const image = await user.ProfileImage;
