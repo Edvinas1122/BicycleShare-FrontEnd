@@ -38,7 +38,6 @@ export async function acceptTermsAndConditions() {
 			image: headers_list.get("x-user-image") as string,
 		})
 		const result = await userInterface.acceptTermsAndConditions();
-		console.log(result);
 		if (result.status !== 200) {
 			console.error("Error accepting terms and conditions", result);
 		}

@@ -5,14 +5,12 @@ import { revalidateTag } from 'next/cache';
 import { StatefulButton } from "@/app/components/buttons";
 import { redirect, RedirectType } from "next/navigation";
 import { getUserFromHeaders } from "@/components/next-api-utils/validation";
-import { getServerSession } from "next-auth/next";
 
-export default async function Page({
+export default function Page({
 	params: {lang}
 }: {
 	params: {lang: Language}
 }) {
-	const session = await getServerSession();
 
 	if (!dictionaries[lang]) return null;
 
@@ -60,20 +58,21 @@ export default async function Page({
 		</LogoutButton>
 	);
 
+	const user = getUserFromHeaders();
+
 	return (
 		<>
 			<Navbar
 				icon={appLoginConfig.icon}
 				title={appLoginConfig.title}
 			>
-				{/* {session.user as string} */}
-				{/* <UserMenu user={session.user}
+				<UserMenu user={user}
 					menuItems={[
 						languageMenuItem,
 						cacheMenuItem,
 						logoutButton
 					]}>
-				</UserMenu> */}
+				</UserMenu>
 			</Navbar>
 		</>
 	);

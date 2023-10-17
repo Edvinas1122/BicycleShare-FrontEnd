@@ -143,10 +143,6 @@ function constructFormatterService(cache?: { [key: string]: any }) {
 }
 
 function constructBicycleService(cache?: { [key: string]: any }) {
-	// if (!notionConfig.integrationToken) throw new Error("No integration token provided");
-	// const notionAPI = new NotionAPI(notionConfig.integrationToken);
-	// const notionService = new NotionService(notionAPI, cache);
-	// const notionFormatterService = new NotionFormatterService(notionService);
 	const notionConfig = getNotionConfig();
 	if (!notionConfig.integrationToken) throw new Error("No integration token provided");
 	const bicycleShareContentService = new BicycleShareContentService(
