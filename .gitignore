@@ -2,6 +2,9 @@
 
 # dependencies
 /node_modules
+node_modules/*
+compile/*
+compile/
 /.pnp
 .pnp.js
 
@@ -42,4 +45,10 @@ next-cv/*
 next-cv/
 package-lock.json
 test/
-```
+package.local.json
+npm.sh
+
+@edvinas1122/notion-database-tool/
+@edvinas1122/notion-database-tool/*
+local_modules/
+local_modules/*
