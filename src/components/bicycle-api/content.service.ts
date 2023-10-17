@@ -127,17 +127,8 @@ type User = {
 type TokenUser = {
 	id: number;
 	login: string;
-	first_name: string;
-	last_name: string;
-	image: {
-		link: string;
-		versions: {
-			large: string;
-			medium: string;
-			small: string;
-			micro: string;
-		}
-	}
+	name: string;
+	image: string
 }
 
 export class UserService {
@@ -179,8 +170,8 @@ export class UserService {
 		return new UserInterface({
 				id: user.id,
 				name: user.login,
-				fullName: `${user.first_name} ${user.last_name}`,
-				image: user.image.link,
+				fullName: `${user.name}`,
+				image: user.image,
 			},
 			this.databaseTool,
 		);
@@ -201,6 +192,9 @@ class UserInterface {
 			return {message: "User already exists", status: 400};
 		}
 		const response = await this.RegisterUser();
+		if (response.object !== "page") {
+			return {message: "User not registered", status: 400};
+		}
 		return {message: "User registered", status: 200};
 	}
 
@@ -278,8 +272,8 @@ export class BicycleInfo {
 			return null;
 		}
 		const last_user = await test[0]["Holder"][0];
+		if (!last_user) return null;
 		const user = await last_user();
-		// console.log("fewfewew----<<<",user);
 		return {
 			id: user["IntraID"],
 			name: user["Name"],
@@ -319,7 +313,7 @@ export class BicycleInfo {
 			.then((entries: any) => entries.all());
 
 		const all_time_spamps = await time_spamps.map(async (time_stamp: any) => {
-			const last_user = await time_stamp["Holder"][0];
+			const last_user = await time_stamp["Holder"][0].last_user();
 			const last_user_data = await last_user();
 			const user = await last_user_data;
 			const image = await user.ProfileImage;

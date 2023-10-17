@@ -89,7 +89,7 @@ export class Token {
 		if (!this.token) {
 			throw new Error("Missing token");
 		}
-		const decoded = await validateToken(this.token.value);
+		const decoded = await validateToken(this.token);
 		if (!decoded) {
 			return false;
 		}
@@ -108,17 +108,17 @@ export class Token {
 		if (!await this.hasValidTokenP()) {
 			return false;
 		}
-		const decoded = this.tokenDecoded ? this.tokenDecoded : await validateToken(this.token.value);
+		const decoded = this.tokenDecoded ? this.tokenDecoded : await validateToken(this.token);
 		return decoded.termsAccepted;
 	}
 
 	public async getUserFromToken(adapter: Function): Promise<any> {
-		const decoded = this.tokenDecoded ? this.tokenDecoded : await validateToken(this.token.value);
+		const decoded = this.tokenDecoded ? this.tokenDecoded : await validateToken(this.token);
 		return adapter(decoded);
 	}
 
 	public async updateUserToken(property: string, value: any): Promise<void> {
-		const decoded = this.tokenDecoded ? this.tokenDecoded : await validateToken(this.token.value);
+		const decoded = this.tokenDecoded ? this.tokenDecoded : await validateToken(this.token);
 		decoded[property] = value;
 		delete decoded.exp;
 		const newToken = await generateToken(decoded);

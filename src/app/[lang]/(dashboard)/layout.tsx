@@ -5,6 +5,7 @@ import {
 	notFound
 } from 'next/navigation';
 import { ScrollProvider } from "./components/NavbarRef";
+import { headers } from "next/headers";
 
 export async function generateStaticParams() {
 	const bicycles = await fetchBicycles();
@@ -72,6 +73,8 @@ export default function Layout({
 	const className = `
 		flex flex-col w-[100vw] h-[100vh] items-center justify-center`;
 	const dashBoardFrameStyle = "w-full h-full items-center justify-start h-[100vh] w-[100vw] flex flex-col gap-4";
+	const headers_list = headers();
+	const bicycleOwned = headers_list.get("bicycleOwned");
 	return (
 		<div className={className}>
 		<ScrollProvider>

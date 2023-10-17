@@ -18,6 +18,7 @@ import {
 	appLoginConfig,
 	getLoginLink
 } from '@/conf/organisation.conf';
+import { headers } from "next/headers";
 
 
 export async function getTermsAndConditions() {
@@ -29,14 +30,19 @@ export async function getTermsAndConditions() {
 export async function acceptTermsAndConditions() {
 		"use server";
 		const service = constructUserService({cache: 'no-store'});
-		const token = new Token()
-		const user = await token.getUserFromToken((any: any) => (any));
-		const userInterface = service.getUserInterface(user);
-		const res = await userInterface.acceptTermsAndConditions();
-		if (res.status == 200) {
-			await token.updateUserToken("termsAccepted", true);
-			redirect('/');
+		const headers_list = headers();
+		const userInterface = await service.getUserInterface({
+			id: Number(headers_list.get("x-user-id") as string),
+			name: headers_list.get("x-user-name") as string,
+			login: headers_list.get("x-user-login") as string,
+			image: headers_list.get("x-user-image") as string,
+		})
+		const result = await userInterface.acceptTermsAndConditions();
+		console.log(result);
+		if (result.status !== 200) {
+			console.error("Error accepting terms and conditions", result);
 		}
+		redirect('/');
 }
 
 async function checkDatabase(user: any) {

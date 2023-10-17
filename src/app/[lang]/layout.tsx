@@ -1,5 +1,8 @@
-import {headers} from "next/headers"
 import {Language, languages} from "@/conf/dictionary.conf";
+import {redirect} from "next/navigation";
+import {getServerSession} from "next-auth/next";
+import { options } from "../api/auth/[...nextauth]/options";
+import { headers } from "next/headers";
 
 
 export async function generateStaticParams() {
@@ -8,16 +11,17 @@ export async function generateStaticParams() {
 
 export const dynamicParams = false;
 
-export default function RootLayout({
+export default function Layout({
 	auth,
 	children,
+	params: {lang}
 }: {
 	auth: React.ReactNode,
 	children: React.ReactNode
-}) {
-
-	const authorized = headers().get('x-authorised')
-	if (authorized === null) throw new Error('x-authorised header not found');
-	const authorizedBool = authorized.includes('true');
-	return authorizedBool ? children : auth;
+	params: {lang: Language}
+}) {	
+	const headers_list = headers();
+	const terms_accepted = headers_list.get("x-terms_accepted");
+	const session = terms_accepted === "true" ? true : false;
+	return session ? children : auth;
 }

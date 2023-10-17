@@ -1,13 +1,14 @@
 "use client";
 import { Button } from "@nextui-org/react";
 import React from "react";
+import { signIn } from "next-auth/react"
 
 export const LoginButton = ({
-	handleLogin,
-	children
+	children,
+	handleLogin
 }: {
-	handleLogin: (state: string) => void;
 	children: React.ReactNode;
+	handleLogin?: (state: string) => void;
 }) => {
 	const className = `log_button `;
 	const [loading, setLoading] = React.useState(false);
@@ -15,7 +16,8 @@ export const LoginButton = ({
 	const handleButton = () => {
 		setLoading(true);
 		const domain = window.location.origin;
-		handleLogin(domain);
+		handleLogin && handleLogin(domain);
+		signIn("42-school")
 	};
 
 	return (

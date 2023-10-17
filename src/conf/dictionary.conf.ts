@@ -36,6 +36,7 @@ type Dictionary = Readonly<{
 	who: string;
 	took: string;
 	returned: string;
+	logout: string;
 }>
 
 export type Term = keyof Dictionary;
@@ -84,6 +85,7 @@ const dictionary: Dictionary = {
 	who: "Who",
 	took: "took",
 	returned: "returned",
+	logout: "Logout",
 };
 
 const german_dictionary: Dictionary = {
@@ -130,6 +132,7 @@ const german_dictionary: Dictionary = {
 	who: "Wer",
 	took: "nahm",
 	returned: "zurückgegeben",
+	logout: "Ausloggen",
 };
 
 const dictionaryUA: Dictionary = {
@@ -176,6 +179,7 @@ const dictionaryUA: Dictionary = {
     who: "Хто",
     took: "взяв",
     returned: "повернув",
+	logout: "Вийти",
 };
 
 type Dictionaries = Readonly<{

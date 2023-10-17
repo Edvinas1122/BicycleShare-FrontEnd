@@ -3,6 +3,7 @@ import "./animations.css"
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google';
 import {appLoginConfig} from "@/conf/organisation.conf";
+import { SessionProvider } from "next-auth/react"
 
 
 /*
@@ -14,6 +15,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 interface RootLayoutProps {
 	children: React.ReactNode;
+	// param: {session: any};
 }
 
 export const metadata: Metadata = {
@@ -22,7 +24,8 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout(
-	props: RootLayoutProps
+	props: RootLayoutProps,
+	// param: {session: any}
 ) {
 	return (
 		<html lang="en" className={"fixed inset-0 flex items-center justify-center"}>

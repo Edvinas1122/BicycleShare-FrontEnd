@@ -18,6 +18,7 @@ export default async function Page({
 }) {
 
 	const termsAndConditions = await getTermsAndConditions();
+
 	return (
 		<>
 			<NotionPageData

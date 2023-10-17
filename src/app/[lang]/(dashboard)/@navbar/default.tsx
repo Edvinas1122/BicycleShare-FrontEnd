@@ -1,19 +1,19 @@
-import Navbar, {UserMenu} from "./Navbar";
+import Navbar, {UserMenu, LogoutButton} from "./Navbar";
 import { appLoginConfig } from '@/conf/organisation.conf';
 import { dictionaries, Language, languages } from "@/conf/dictionary.conf";
 import { revalidateTag } from 'next/cache';
 import { StatefulButton } from "@/app/components/buttons";
 import { redirect, RedirectType } from "next/navigation";
 import { getUserFromHeaders } from "@/components/next-api-utils/validation";
+import { getServerSession } from "next-auth/next";
 
-
-export default function Page({
+export default async function Page({
 	params: {lang}
 }: {
 	params: {lang: Language}
 }) {
-	const user = getUserFromHeaders();
-	if (user.name === "error") return null;
+	const session = await getServerSession();
+
 	if (!dictionaries[lang]) return null;
 
 	async function dropCache() {
@@ -54,18 +54,26 @@ export default function Page({
 		</>
 	  );
 
+	const logoutButton = (
+		<LogoutButton>
+			{dictionaries[lang].logout}
+		</LogoutButton>
+	);
+
 	return (
 		<>
 			<Navbar
 				icon={appLoginConfig.icon}
 				title={appLoginConfig.title}
 			>
-				<UserMenu user={user}
+				{/* {session.user as string} */}
+				{/* <UserMenu user={session.user}
 					menuItems={[
 						languageMenuItem,
-						cacheMenuItem
+						cacheMenuItem,
+						logoutButton
 					]}>
-				</UserMenu>
+				</UserMenu> */}
 			</Navbar>
 		</>
 	);

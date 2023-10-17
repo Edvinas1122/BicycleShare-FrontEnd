@@ -119,3 +119,20 @@ export function UserMenuItem({
 		</>
 	);
 }
+
+import { signOut } from "next-auth/react"
+import { StatefulButton } from "@/app/components/buttons";
+
+export function LogoutButton({
+	children,
+}: {
+	children: React.ReactNode
+}) {
+	return (
+		<StatefulButton
+			action={() => signOut()}
+		>
+			{children}
+		</StatefulButton>
+	);
+}
