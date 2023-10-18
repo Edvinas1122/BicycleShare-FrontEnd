@@ -7,11 +7,15 @@ from "@/components/bicycle-api/bicycle.module";
 
 async function checkDatabase(user: any) {
 	const userService = constructUserService({cache: 'no-store'});
-	const userOnNotion = await userService.getUserByIntraID(user.id);
+	const [userOnNotion, ownership] = await Promise.all([
+		userService.getUserByIntraID(user.id),
+		userService.userOwnsBicycle(user.id)
+	]);
+	console.log("ownership", ownership);
 	const userWithInfo = {
 		...user,
 		termsAccepted: userOnNotion ? true : false,
-		bicycleOwned: false,
+		ownership: ownership,
 	}
 	return userWithInfo;
 }

@@ -53,12 +53,12 @@ export default class BicycleShareContentService {
 		const unixTimestamp = new Date().getTime();
 		const bicycle_entry_id = await this.databaseTool
 			.getTable("Bicycles")
-			.getEntries("equals")
+			.getEntry("equals")
 			.byLocker(bicycleId)
 			.then((entry: any) => entry.id());
 		const user_entry_id = await this.databaseTool
 			.getTable("SignedUp")
-			.getEntries("equals")
+			.getEntry("equals")
 			.byIntraID(userId)
 			.then((entry: any) => entry.id());
 		const response = await this.databaseTool
@@ -103,7 +103,7 @@ export default class BicycleShareContentService {
 	async getBicycleInterface(id: number): Promise<BicycleInfo | null> {
 		const properties = await this.databaseTool
 			.getTable("Bicycles")
-			.getEntries()
+			.getEntry()
 			.byLocker(id)
 			.then((entry: any) => entry.all());
 		if (!properties.length) {
@@ -131,6 +131,13 @@ type TokenUser = {
 	image: string
 }
 
+type Ownership = {
+	since: number;
+	intendedDuration: string;
+	bicycle_name: string;
+	bicycle_id: number;
+}
+
 export class UserService {
 	// private config: ValidatedServiceConfig;
 	constructor(
@@ -145,10 +152,45 @@ export class UserService {
 		// this.config = config as ValidatedServiceConfig;
 	}
 
+	async userOwnsBicycle(id: number): Promise<Ownership | null> {
+		const user = await this.databaseTool
+			.getTable("SignedUp")
+			.getEntry()
+			.byIntraID(id)
+			.then((entry: any) => entry.all());
+		if (!user.length) return null;
+		const user_id = user[0].id;
+		const latest_use_timestamps = await this.databaseTool
+			.getTable("Share TimeStamps")
+			.query()
+			.filter(
+				"Holder",
+				"relation",
+				"contains",
+				user_id
+			)
+			.sort("Share Started (UNIX)", "descending")
+			.limit(1)
+			.get()
+			.then((entry: any) => entry.all());
+		if (latest_use_timestamps.length === 0) {
+			return null;
+		}
+		const latest_use_timestamp = latest_use_timestamps[0];
+		const the_owned_bicycle = await latest_use_timestamp["Bicycles"][0]();
+		const ownership: Ownership = {
+			since: latest_use_timestamp["Share Started (UNIX)"],
+			intendedDuration: latest_use_timestamp["Intended Duration"],
+			bicycle_name: the_owned_bicycle["Name"],
+			bicycle_id: the_owned_bicycle["Locker"],
+		}
+		return ownership;
+	}
+
 	async getUserByIntraID(userID: number): Promise<User | null> {
 		const properties = await this.databaseTool
 			.getTable("SignedUp")
-			.getEntries()
+			.getEntry()
 			.byIntraID(userID)
 			.then((entry: any) => entry.all());
 
@@ -220,7 +262,7 @@ class UserInterface {
 	private async exists(): Promise<boolean> {
 		const query = await this.databaseTool
 			.getTable("SignedUp")
-			.getEntries()
+			.getEntry()
 			.byIntraID(this.user.id)
 			.then((entry: any) => entry.all());
 		return query.length > 0;
@@ -261,7 +303,7 @@ export class BicycleInfo {
 	async getLastUse(): Promise<Use | null>
 	{
 		const test = await this.databaseTool
-			.getTable("Share Timestamps")
+			.getTable("Share TimeStamps")
 			.query()
 			.filter("Bicycles", "relation", "contains", this.data.id)
 			.sort("Share Started (UNIX)", "descending")
@@ -305,7 +347,7 @@ export class BicycleInfo {
 	*/
 	async getLastUses(index: number): Promise<Use[]> {
 		const time_spamps = await this.databaseTool
-			.getTable("Share Timestamps")
+			.getTable("Share TimeStamps")
 			.query()
 			.filter("Bicycles", "relation", "contains", this.data.id)
 			.sort("Share Started (UNIX)", "descending")

@@ -63,10 +63,12 @@ export async function getTimestamps(iteration: number, id: number) {
 export default function Layout({
 	children,
 	bicycles,
+	ownership,
 	navbar
 }: {
 	children: React.ReactNode,
 	bicycles: React.ReactNode,
+	ownership: React.ReactNode,
 	navbar: React.ReactNode,
 }) {
 
@@ -74,7 +76,9 @@ export default function Layout({
 		flex flex-col w-[100vw] h-[100vh] items-center justify-center`;
 	const dashBoardFrameStyle = "w-full h-full items-center justify-start h-[100vh] w-[100vw] flex flex-col gap-4";
 	const headers_list = headers();
-	const bicycleOwned = headers_list.get("bicycleOwned");
+	console.log(headers_list);
+	const bicycle_owned = headers_list.get("x-bicycle_owned");
+	const display_ownership = bicycle_owned === "null" ? false : true;
 	return (
 		<div className={className}>
 		<ScrollProvider>
@@ -82,7 +86,7 @@ export default function Layout({
 			<div className={dashBoardFrameStyle}>
 			<DashBoardFrame>
 				{children}
-				{bicycles}
+				{display_ownership ? ownership : bicycles}
 			</DashBoardFrame>
 			</div>
 		</ScrollProvider>

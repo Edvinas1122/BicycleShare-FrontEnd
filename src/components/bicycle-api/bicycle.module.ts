@@ -52,7 +52,7 @@ const serviceTables = (): TableProps[] => [
 			]}
 	},
 	{
-		name: "Share Timestamps",
+		name: "Share TimeStamps",
 		database_id: getConfiguration().TIMESTAMPS as string,
 		properties: {
 			key: {
@@ -98,6 +98,10 @@ const serviceTables = (): TableProps[] => [
 			{
 				property:"IntraName",
 				property_type: "title",
+			},
+			{
+				property: "Bicycles",
+				property_type: "relation",
 			}
 		]}
 	},

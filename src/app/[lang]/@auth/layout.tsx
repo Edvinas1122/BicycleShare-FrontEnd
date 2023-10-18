@@ -71,7 +71,6 @@ export default function Layout({
 }) {
 
 	const cardClass = "min-w-[350px] max-w-[30vw] mx-auto loading min-h-[300px] max-h-[80vh]";
-
 	return (
 		<>
 			<LoginCard

@@ -40,7 +40,7 @@ function pathnameIsMissingLocale(
 	const segments = pathname.split("/").filter(Boolean);
 	console.log("segments", segments);
 	if (segments.some(segment => exceptedFromLocale.includes(segment))) return false;
-	console.log("not excepted from locale", pathname);
+	// console.log("not excepted from locale", pathname);
 	const pathnameIsMissingLocale = Object.values(localesToPaths).every(
 		(locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
 	);
@@ -53,7 +53,7 @@ function handleMissingLocale(
 	const { pathname, href, origin } = request.nextUrl;
 	const locale = getLocale(request);
 	const redirectUrl = getRedirectUrl(locale, pathname, origin, href);
-	console.log("redirectUrl", redirectUrl);
+	// console.log("redirectUrl", redirectUrl);
 	return NextResponse.redirect(redirectUrl);
 }
 
@@ -201,14 +201,14 @@ export function setHeadersWithToken(handle: Function) {
 	return async (request: NextRequest) => {
 		const headers = new Headers(request.headers);
 		const token = await getToken({ req: request });
-		console.log("token :", token);
+		// console.log("token :", token);
 		if (token) {
 			headers.set('x-user-id', token.id as string);
 			headers.set('x-user-login', token.login as string);
 			headers.set('x-user-name', token.name as string);
 			headers.set('x-user-image', token.image as string);
 			headers.set('x-terms_accepted', token.termsAccepted as string);
-			headers.set('x-bicycle_owned', token.bicycleOwned as string);
+			headers.set('x-bicycle_owned', JSON.stringify(token.ownership as string));
 			return handleConditionalRedirects(token, headers, request);
 		}
 		const handler = handle(request);
@@ -223,7 +223,6 @@ export function setHeadersWithToken(handle: Function) {
 export function authHandler() {
 	return async (request: NextRequest) => {
 		const auth = getNextAuthMiddleware(getLocale(request));
-		// return NextResponse.next();
 		return (auth as any)(request);
 	}
 }
@@ -234,9 +233,9 @@ function handleConditionalRedirects(
 	request: NextRequest
 ) {
 	const { pathname, href, origin } = request.nextUrl;
-	console.log("origin :", origin);
+	// console.log("origin :", origin);
 	if (pathnameIsMissingLocale(pathname, localesToPaths, exceptedFromLocale)) {
-		console.log("handleMissingLocale");
+		// console.log("handleMissingLocale");
 		return handleMissingLocale(request);
 	}
 	if (token.termsAccepted === false) {

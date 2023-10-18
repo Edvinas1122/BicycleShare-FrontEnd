@@ -2,14 +2,13 @@
 import {Button} from '@nextui-org/button';
 import {Card, CardBody, CardFooter, CardHeader} from '@nextui-org/card';
 import {Image, Skeleton, User} from "@nextui-org/react";
-import React, { use, Suspense } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { Suspense } from 'react';
 import {
 	dictionaries,
 	Language,
 } from '@/conf/dictionary.conf';
 import { Blurhash } from "react-blurhash";
-import AnimateAppearing from './animate';
+// import AnimateAppearing from './animate';
 
 interface BicycleInfo {
 	lockerId: number;
