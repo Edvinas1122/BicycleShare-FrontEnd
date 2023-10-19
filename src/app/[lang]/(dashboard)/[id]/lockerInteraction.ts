@@ -72,6 +72,7 @@ const lockerInteractSequence = (
 	presenceChannel.trigger('client-open-locker', interaction);
 
 	return () => {
+		presenceChannel.trigger(`client-sequence-abort`, {}); // empty event data
 		presenceChannel.unbind('client-locker');
 		presenceChannel.unbind('client-locker-button-press');
 		presenceChannel.unbind('client-open-seq-begin');
