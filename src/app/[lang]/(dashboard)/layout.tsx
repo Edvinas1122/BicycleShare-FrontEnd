@@ -72,13 +72,13 @@ export default function Layout({
 	navbar: React.ReactNode,
 }) {
 
+	const headers_list = headers();
+	const bicycle_owned = headers_list.get("x-bicycle_owned");
+	const display_ownership = bicycle_owned === "null" ? false : true;
 	const className = `
 		flex flex-col w-[100vw] h-[100vh] items-center justify-center`;
 	const dashBoardFrameStyle = "w-full h-full items-center justify-start h-[100vh] w-[100vw] flex flex-col gap-4";
-	const headers_list = headers();
-	console.log(headers_list);
-	const bicycle_owned = headers_list.get("x-bicycle_owned");
-	const display_ownership = bicycle_owned === "null" ? false : true;
+
 	return (
 		<div className={className}>
 		<ScrollProvider>

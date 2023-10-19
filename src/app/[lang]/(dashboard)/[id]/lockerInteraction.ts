@@ -27,45 +27,13 @@ type Interaction = GiveInteraction | ReturnInteraction | OpenInteraction;
 	2. call it with the pusher object and the interaction object
 	3. pass in callbacks for the outcome, processing, and abort events
 	4. the function returns a cleanup function that unbinds the events
-
-	Example:
-		const {pusher} = usePusher();
-
-		const outcome = (data: any) => {
-			console.log("outcome", data);
-		}
-
-		const processing = (data: any) => {
-			console.log("processing", data);
-		}
-
-		const abort = (data: any) => {
-			console.log("abort", data);
-		}
-
-		const setEventDriver = () => {
-			if (!pusher) return;
-			const interaction: GiveInteraction = {
-				message: "give",
-				bicycle_id: bicycle_id,
-				duration: duration,
-			}
-			const cleanup = lockerInteractSequence(
-				pusher,
-				interaction,
-				outcome,
-				processing,
-				abort,
-			);
-			return cleanup;
-		}
-
-		React.useEffect(setEventDriver, [pusher]);
 */
 const lockerInteractSequence = (
 	pusher: any,
 	interaction: Interaction,
+	user_id: string,
 	outcomeCallback: (data: any) => void,
+	processStartedCallback: () => void,
 	processingCallback: (data: any) => void,
 	abortCallback: (data: any) => void,
 	) => {
@@ -74,15 +42,13 @@ const lockerInteractSequence = (
 	const presenceChannel = pusher.channel("presence-locker-device");
 
 	/*
-		Has Unlock approval waiting time exploit. See:
+		Implamented approval waiting time exploit resolution. See:
 		https://spangled-hall-d99.notion.site/Implementing-unlock-sync-c7802ada30eb4d70ab89346510981a69
-
-		Suggested solution:
-		user id marked event (client-open-seq-begin) -> (client-open-seq-end-${user_id})
 	*/
-	presenceChannel.bind('client-open-seq-begin',
+	presenceChannel.bind(`client-open-seq-${user_id}`,
 		function(data: any) {
 			if (data === "begin") {
+				processStartedCallback();
 				presenceChannel.bind('client-locker-button-press', function(data: any) {
 					processingCallback(data);
 					presenceChannel.bind('lend-status', function(data: any) {

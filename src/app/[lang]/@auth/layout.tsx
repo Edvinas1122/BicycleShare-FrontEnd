@@ -44,23 +44,23 @@ export async function acceptTermsAndConditions() {
 		redirect('/');
 }
 
-async function checkDatabase(user: any) {
-	const userService = constructUserService({cache: 'no-store'});
-	const userOnNotion = await userService.getUserByIntraID(user.id);
-	const userWithInfo = {...user, termsAccepted: userOnNotion ? true : false}
-	return userWithInfo;
-}
+// async function checkDatabase(user: any) {
+// 	const userService = constructUserService({cache: 'no-store'});
+// 	const userOnNotion = await userService.getUserByIntraID(user.id);
+// 	const userWithInfo = {...user, termsAccepted: userOnNotion ? true : false}
+// 	return userWithInfo;
+// }
 
-export async function handleAuth(code: string | null, state?: string) {
-	"use server"
-	if (code) {
-		// try {
-			const response = await handleOAuth(code, checkDatabase);
-			return response;
-		// } catch (error) { return {error: error};}
-	}
-	return null;
-}
+// export async function handleAuth(code: string | null, state?: string) {
+// 	"use server"
+// 	if (code) {
+// 		// try {
+// 			const response = await handleOAuth(code, checkDatabase);
+// 			return response;
+// 		// } catch (error) { return {error: error};}
+// 	}
+// 	return null;
+// }
 
 export default function Layout({
 	children,

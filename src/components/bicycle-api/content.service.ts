@@ -177,12 +177,15 @@ export class UserService {
 			return null;
 		}
 		const latest_use_timestamp = latest_use_timestamps[0];
-		const the_owned_bicycle = await latest_use_timestamp["Bicycles"][0]();
+		// a returned bicycle is not owned
+		if (latest_use_timestamp["Returned On (UNIX)"] !== 0) return null;
+	
+		const the_possesed_bicycle = await latest_use_timestamp["Bicycles"][0]();
 		const ownership: Ownership = {
 			since: latest_use_timestamp["Share Started (UNIX)"],
 			intendedDuration: latest_use_timestamp["Intended Duration"],
-			bicycle_name: the_owned_bicycle["Name"],
-			bicycle_id: the_owned_bicycle["Locker"],
+			bicycle_name: the_possesed_bicycle["Name"],
+			bicycle_id: the_possesed_bicycle["Locker"],
 		}
 		return ownership;
 	}

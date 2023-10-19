@@ -201,7 +201,6 @@ export function setHeadersWithToken(handle: Function) {
 	return async (request: NextRequest) => {
 		const headers = new Headers(request.headers);
 		const token = await getToken({ req: request });
-		// console.log("token :", token);
 		if (token) {
 			headers.set('x-user-id', token.id as string);
 			headers.set('x-user-login', token.login as string);
@@ -233,18 +232,17 @@ function handleConditionalRedirects(
 	request: NextRequest
 ) {
 	const { pathname, href, origin } = request.nextUrl;
-	// console.log("origin :", origin);
 	if (pathnameIsMissingLocale(pathname, localesToPaths, exceptedFromLocale)) {
-		// console.log("handleMissingLocale");
 		return handleMissingLocale(request);
 	}
 	if (token.termsAccepted === false) {
 		const response = ensurePath(request.nextUrl, `legal`, headers);
 		return response;
-	} else if (token.bicycleOwned === true) {
-		const response = ensurePath(request.nextUrl, `bicycle`, headers);
-		return response;
-	}
+	} 
+	// else if (token.ownership !== null) {
+	// 	const response = ensurePath(request.nextUrl, `2`, headers);
+	// 	return response;
+	// }
 	return NextResponse.next({request: {
 		headers: headers,
 	}});
@@ -256,118 +254,6 @@ export const middleware
 			authHandler
 		)
 	);
-
-
-// export async function middleware(request: NextRequest) {
-// 	const { pathname, href, origin } = request.nextUrl;
-
-// 	// return NextResponse.next(); // for testing
-// 	// if (pathnameIsMissingLocale(pathname, localesToPaths, exceptedFromLocale)) {
-// 	// 	return handleMissingLocale(request);
-// 	// }
-
-// 	// authorization token
-// 	const auth = new Token();
-// 	const headers = new Headers(request.headers);
-
-// 	// authorization exception for device - consider stronger protection
-// 	const headerPassword = request.headers.get("x-password");
-// 	if (headerPassword) {// protect stronger 1. only path, 2. ip, 3. other
-// 		headers.set('x-password', headerPassword);
-// 		headers.set('x-user-id', "0");
-// 		headers.set('x-user-name', "device");
-// 		return NextResponse.next({request: {
-// 			headers: headers,
-// 		}});
-// 	}
-// 	// // authorization redirect
-// 	// if (!await auth.hasAVaildToken()) {
-// 	// 	headers.set('x-authorised', "false");
-// 	// 	if (pathnameMissing(pathname, "login")) {
-// 	// 		return ensurePath(request.nextUrl, "login");
-// 	// 	}
-// 	// // registration redirect
-// 	// } else if (!await auth.hasAcceptedTerms()) {
-// 	// 	// console.log("has token but not accepted terms");
-// 	// 	headers.set('x-authorised', "false");
-// 	// 	if (pathnameMissing(pathname, "legal")) {
-// 	// 		return ensurePath(request.nextUrl, "legal");
-// 	// 	}
-// 	// // passing credentials to headers
-// 	// } else {
-// 	// 	// console.log("has token");
-// 	// 	headers.set('x-authorised', "true");
-// 	// 	const user = await auth.getUserFromToken(tokenAdapter);
-// 	// 	headers.set('x-user-name', user.user);
-// 	// 	headers.set('x-user-image', user.image);
-// 	// 	headers.set('x-user-id', user.id);
-// 	// 	headers.set('x-user-username', user.name);
-// 	// 	// headers.set('x-locale', getLocale(request));
-// 	// }
-// 	// // passing queries to headers
-// 	// if (hasSpecialSeatchParams(request.nextUrl, paramsList)) {
-// 	// 	setParamsIntoHeaders(request.nextUrl, headers, paramsList);
-// 	// }
-// 	// stamp 
-// 	headers.set('x-middleware-effect', new Date().toISOString());
-
-// 	// redirecting to development branches when authorized
-// 	// const state = new URL(href).searchParams.get("state"); // handle not here please
-// 	// if (state) {
-// 	// 	const redirectUrl = new URL(state).host;
-// 	// 	const url = new URL(href);
-// 	// 	if (redirectUrl !== url.host) {
-// 	// 		return NextResponse.redirect(state + url.pathname + url.search);
-// 	// 	}
-// 	// }
-
-// 	return NextResponse.next({
-// 		request: {
-// 		  headers: headers,
-// 		},
-// 	});
-// }
-
-// async function makeHeaders(auth: Token, headers: Headers, request: NextRequest) {
-
-// 	const { pathname, href, origin } = request.nextUrl;
-
-// 	// authorization redirect
-// 	if (!await auth.hasAVaildToken()) {
-// 		headers.set('x-authorised', "false");
-// 		if (pathnameMissing(pathname, "login")) {
-// 			return ensurePath(request.nextUrl, "login");
-// 		}
-// 	// registration redirect
-// 	} else if (!await auth.hasAcceptedTerms()) {
-// 		// console.log("has token but not accepted terms");
-// 		headers.set('x-authorised', "false");
-// 		if (pathnameMissing(pathname, "legal")) {
-// 			return ensurePath(request.nextUrl, "legal");
-// 		}
-// 	// passing credentials to headers
-// 	} else {
-// 		// console.log("has token");
-// 		headers.set('x-authorised', "true");
-// 		const user = await auth.getUserFromToken(tokenAdapter);
-// 		headers.set('x-user-name', user.user);
-// 		headers.set('x-user-image', user.image);
-// 		headers.set('x-user-id', user.id);
-// 		headers.set('x-user-username', user.name);
-// 		// headers.set('x-locale', getLocale(request));
-// 	}
-// 	// passing queries to headers
-// 	if (hasSpecialSeatchParams(request.nextUrl, paramsList)) {
-// 		setParamsIntoHeaders(request.nextUrl, headers, paramsList);
-// 	}
-// 	// stamp 
-// 	headers.set('x-middleware-effect', new Date().toISOString());
-// 	return
-// }
-
-// export const config = {
-// 	matcher: ["/"]
-// }
 
 export const config = {
 	matcher: [

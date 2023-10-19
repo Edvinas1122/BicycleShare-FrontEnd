@@ -52,14 +52,9 @@ export const options: NextAuthOptions = {
 			token: any;
 			user: any;
 		}) {
-			// console.log("session callback", session, token, user);
 			session.user = token;
 			return session;
 		},
-		// async updateUser(message: any, token: any) {
-		// 	console.log("update user callback", message, token);
-		// 	return true;
-		// },
 		async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
 			// console.log("redirect callback", url, baseUrl);
 			return baseUrl;
