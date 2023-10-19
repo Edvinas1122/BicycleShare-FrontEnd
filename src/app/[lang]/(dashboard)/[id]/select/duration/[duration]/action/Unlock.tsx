@@ -2,7 +2,10 @@
 import React from "react";
 import {
 	usePusher,
-} from "../../../PusherProvider"; // TODO: use relative path
+} from "../../../../PusherProvider"; // TODO: use relative path
+import
+	lockerInteractSequence, {GiveInteraction}
+from "../../../../lockerInteraction";
 
 export const Unlock = ({
 	children,
@@ -16,35 +19,33 @@ export const Unlock = ({
 
 	const {pusher} = usePusher();
 
-	// https://github.com/pusher/pusher-js#accessing-channels
+	const outcome = (data: any) => {
+		console.log("outcome", data);
+	}
+
+	const processing = (data: any) => {
+		console.log("processing", data);
+	}
+
+	const abort = (data: any) => {
+		console.log("abort", data);
+	}
+
 	const setEventDriver = () => {
 		if (!pusher) return;
-		const presenceChannel = pusher.channel("presence-locker-device")
-		presenceChannel.bind('client-open-seq-begin',
-			function(data: any) {
-				if (data === "begin") {
-					presenceChannel.bind('client-open-seq-end', function(data: any) {
-					});
-					presenceChannel.bind('client-locker-button-press', function(data: any) {
-						presenceChannel.bind('lend-status', function(data: any) {
-							console.log("sequence complete", "data have", data);
-						});
-					});
-				} else {
-					console.log("sequence aborted", data);
-				}
-			}
-		);
-		// https://github.com/pusher/pusher-js#triggering-client-events
-		presenceChannel.trigger('client-open-locker', {
-			bicycle_id, duration, message: "give"
-		})
-		return () => {
-			presenceChannel.unbind('client-locker');
-			presenceChannel.unbind('client-locker-button-press');
-			presenceChannel.unbind('client-open-seq-begin');
-			presenceChannel.unbind('client-open-seq-end');
+		const interaction: GiveInteraction = {
+			message: "give",
+			bicycle_id: bicycle_id,
+			duration: duration,
 		}
+		const cleanup = lockerInteractSequence(
+			pusher,
+			interaction,
+			outcome,
+			processing,
+			abort,
+		);
+		return cleanup;
 	}
 
 	React.useEffect(setEventDriver, [pusher]);

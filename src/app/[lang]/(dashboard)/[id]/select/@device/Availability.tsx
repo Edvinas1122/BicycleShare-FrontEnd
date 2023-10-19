@@ -9,7 +9,7 @@ import {
 } from "@/conf/dictionary.conf";
 import {
 	usePusher
-} from "../PusherProvider";
+} from "../../PusherProvider";
 import {
 	useDeviceInfo
 } from "../../context";

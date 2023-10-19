@@ -1,4 +1,4 @@
-import { PusherProvider } from "./PusherProvider";
+import { PusherProvider } from "../PusherProvider";
 import {
 	getPusherConfig
 } from "@/conf/pusher.conf";
