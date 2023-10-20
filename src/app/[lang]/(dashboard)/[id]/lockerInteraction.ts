@@ -29,7 +29,7 @@ type Interaction = GiveInteraction | ReturnInteraction | OpenInteraction;
 	4. the function returns a cleanup function that unbinds the events
 */
 const lockerInteractSequence = (
-	pusher: any,
+	channel: any,
 	interaction: Interaction,
 	user_id: string,
 	outcomeCallback: (data: any) => void,
@@ -38,20 +38,17 @@ const lockerInteractSequence = (
 	abortCallback: (data: any) => void,
 	) => {
 
-	// https://github.com/pusher/pusher-js#accessing-channels
-	const presenceChannel = pusher.channel("presence-locker-device");
-
 	/*
 		Implamented approval waiting time exploit resolution. See:
 		https://spangled-hall-d99.notion.site/Implementing-unlock-sync-c7802ada30eb4d70ab89346510981a69
 	*/
-	presenceChannel.bind(`client-open-seq-${user_id}`,
+	channel.bind(`client-open-seq-${user_id}`,
 		function(data: any) {
 			if (data === "begin") {
 				processStartedCallback();
-				presenceChannel.bind('client-locker-button-press', function(data: any) {
+				channel.bind('client-locker-button-press', function(data: any) {
 					processingCallback(data);
-					presenceChannel.bind('lend-status', function(data: any) {
+					channel.bind('lend-status', function(data: any) {
 						outcomeCallback(data);
 					});
 				});
@@ -69,14 +66,14 @@ const lockerInteractSequence = (
 		Suggested solution:
 		use a server-side endpoint to trigger the event
 	*/ 
-	presenceChannel.trigger('client-open-locker', interaction);
+	channel.trigger('client-open-locker', interaction);
 
 	return () => {
-		presenceChannel.trigger(`client-sequence-abort`, {}); // empty event data
-		presenceChannel.unbind('client-locker');
-		presenceChannel.unbind('client-locker-button-press');
-		presenceChannel.unbind('client-open-seq-begin');
-		presenceChannel.unbind('client-open-seq-end');
+		channel.trigger(`client-sequence-abort`, {}); // empty event data
+		channel.unbind('client-locker');
+		channel.unbind('client-locker-button-press');
+		channel.unbind('client-open-seq-begin');
+		channel.unbind('client-open-seq-end');
 	}
 }
 

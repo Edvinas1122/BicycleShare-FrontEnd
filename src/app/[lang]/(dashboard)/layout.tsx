@@ -6,6 +6,9 @@ import {
 } from 'next/navigation';
 import { ScrollProvider } from "./components/NavbarRef";
 import { headers } from "next/headers";
+import { PusherProvider } from "./PusherProvider";
+import { getPusherConfig } from "@/conf/pusher.conf";
+import { PusherChannelProvider } from "./ChannelProvider";
 
 export async function generateStaticParams() {
 	const bicycles = await fetchBicycles();
@@ -85,8 +88,16 @@ export default function Layout({
 			{navbar}
 			<div className={dashBoardFrameStyle}>
 			<DashBoardFrame>
+			<PusherProvider
+				pusherKey={getPusherConfig().key}
+			>
 				{children}
+			<PusherChannelProvider
+				channelName={"private-live-events"}
+			>
 				{display_ownership ? ownership : bicycles}
+			</PusherChannelProvider>
+			</PusherProvider>
 			</DashBoardFrame>
 			</div>
 		</ScrollProvider>

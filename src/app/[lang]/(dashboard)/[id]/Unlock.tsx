@@ -1,30 +1,30 @@
 "use client";
 import React from "react";
 import {
-	usePusher,
-} from "../../../../PusherProvider"; // TODO: use relative path
+	usePusherChannel
+} from "@/app/[lang]/(dashboard)/ChannelProvider";
 import
-	lockerInteractSequence, {GiveInteraction}
-from "../../../../lockerInteraction";
+	lockerInteractSequence, {
+		GiveInteraction,
+		Interaction,
+		OpenInteraction,
+		ReturnInteraction
+} from "./lockerInteraction";
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 
 export const Unlock = ({
-	// children,
 	user_id,
-	bicycle_id,
-	duration,
-	lendedRedirect,
+	interaction,
+	outcomeCallback,
 }: {
-	// children: React.ReactNode;
 	user_id: string;
-	bicycle_id: string;
-	duration: string;
-	lendedRedirect: (data: any) => void;
+	interaction: Interaction;
+	outcomeCallback?: (data: any) => void;
 }) => {
 
-	const {pusher} = usePusher();
 	const router = useRouter();
+	const { channel, subscribed } = usePusherChannel();
 	const [awaiting, setAwaiting] = React.useState(true);
 	const [pleaseWait, setPleaseWait] = React.useState(false);
 
@@ -33,8 +33,8 @@ export const Unlock = ({
 	}
 
 	const outcome = async (data: any) => {
-		signIn("42-school")
-		lendedRedirect(data);
+		outcomeCallback && outcomeCallback(data);
+		router.replace("/");
 	}
 
 	const processing = (data: any) => {
@@ -48,14 +48,14 @@ export const Unlock = ({
 	}
 
 	const setEventDriver = () => {
-		if (!pusher) return;
-		const interaction: GiveInteraction = {
-			message: "give",
-			bicycle_id: bicycle_id,
-			duration: duration,
-		}
+		if (!channel || !subscribed) return;
+		// const interaction: GiveInteraction = {
+		// 	message: "give",
+		// 	bicycle_id: bicycle_id,
+		// 	duration: duration,
+		// }
 		const cleanup = lockerInteractSequence(
-			pusher,
+			channel,
 			interaction,
 			user_id,
 			outcome,
@@ -66,7 +66,7 @@ export const Unlock = ({
 		return cleanup;
 	}
 
-	React.useEffect(setEventDriver, [pusher]);
+	React.useEffect(setEventDriver, [channel, subscribed]);
 
 	return (
 		<>
@@ -112,3 +112,8 @@ const TellToWait = () => {
 	)
 }
 
+export const refetchToken = () => {
+	signIn("42-school");
+}
+
+export type {Interaction, GiveInteraction, OpenInteraction, ReturnInteraction};

@@ -3,7 +3,6 @@ import "./animations.css"
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google';
 import {appLoginConfig} from "@/conf/organisation.conf";
-import { SessionProvider } from "next-auth/react"
 
 
 /*

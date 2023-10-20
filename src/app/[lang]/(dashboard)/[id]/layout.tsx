@@ -7,6 +7,7 @@ import {
 	ModalContentWrapper
 } from "@/app/components/modal";
 import { DeviceControllerContextProvider } from "./context";
+import { PusherChannelProvider } from "../ChannelProvider";
 
 export default async function Layout({
 	children,
@@ -34,7 +35,11 @@ export default async function Layout({
 				headerContent={header}
 				>
 			<>
+			<PusherChannelProvider
+				channelName={"presence-locker-device"}
+			>
 			{children}
+			</PusherChannelProvider>
 			</>
 			</ModalContentWrapper>
 			</DisplayModal>

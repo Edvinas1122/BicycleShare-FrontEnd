@@ -8,8 +8,8 @@ import {
 	clientDictionaries, Language, languages
 } from "@/conf/dictionary.conf";
 import {
-	usePusher
-} from "../../PusherProvider";
+	usePusherChannel
+} from "@/app/[lang]/(dashboard)/ChannelProvider";
 import {
 	useDeviceInfo
 } from "../../context";
@@ -22,18 +22,31 @@ import {
 			until the message is displayed
 */
 export default function AvailabilityInfo({
-	// pushEventMessage,
-	pusherKey,
 	lang,
 }: {
-	// pushEventMessage: Function;
-	pusherKey: string;
 	lang: Language;
 }) {
 	const [response, setResponse] = React.useState<string | null>(null);
-	const [fadeOut, setFadeout] = React.useState<boolean>(false);
-	const { pusher } = usePusher();
-	const { deviceStatus, setDeviceInfo } = useDeviceInfo();
+	const {channel, subscribed} = usePusherChannel();
+
+	
+	// https://github.com/pusher/pusher-js#binding-to-events
+	const setEventDriver = () => {
+		if (!channel || !subscribed) return;
+		channel.bind('client-pong', function(data: any) {
+			setResponse(data.message);
+		});
+		const device = channel.members.get("0");
+		if (!device) { setResponse("offline"); return; }
+		channel.trigger('client-ping', {
+			message: 'ping',
+		});					
+		return () => {
+			channel.unbind('client-pong');
+		}
+	}
+	
+	React.useEffect(setEventDriver, [channel, subscribed]);
 
 	const initialClassName = `
 		w-full
@@ -45,34 +58,6 @@ export default function AvailabilityInfo({
 		align-center
 	`;
 	
-	// https://github.com/pusher/pusher-js#binding-to-events
-	const setEventDriver = () => {
-		if (!pusher) return;
-		let presenceChannel: any;
-		pusher.connection.bind('connected', function() {
-			presenceChannel = pusher.subscribe('presence-locker-device');
-			presenceChannel.bind(
-				'pusher:subscription_succeeded',
-				function(members: any) {
-					const device = members.get("0");
-					if (!device) { setResponse("offline"); return; }
-					presenceChannel.trigger('client-ping', {
-						message: 'ping',
-					});					
-				}
-			);
-			presenceChannel.bind('client-pong', function(data: any) {
-				setResponse(data.message);
-				setDeviceInfo(true);
-			});
-		});
-		return () => {
-			presenceChannel.unbind('client-pong');
-		}
-	}
-
-	React.useEffect(setEventDriver, [pusher, pusherKey]);
-
 	return (
 		<>
 		<div className={"w-full flex flex-col justify-end align-center"}>

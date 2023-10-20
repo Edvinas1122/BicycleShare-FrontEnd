@@ -8,6 +8,7 @@ type LendControllerProps = {
 	props: {
 		unlock: string;
 		return: string;
+		bicycle_id: string;
 	};
 };
 
@@ -15,7 +16,8 @@ export const LendController = ({
 	props,
 }: LendControllerProps) => {
 	const classStyles = "w-[350px] h-[150px] pop-appear";
-	const route = "/";
+	const unlock_route = `/${props.bicycle_id}/select/?interact=unlock`;
+	const return_route = `/${props.bicycle_id}/select/?interact=return`;
 
 	return (
 		<Card className={classStyles}>
@@ -24,11 +26,11 @@ export const LendController = ({
 			</CardHeader>
 			<CardBody className={"flex flex-row gap-2 p-4"}>
 				<LinkButton
-					route={route}
+					route={unlock_route}
 					label={props.unlock}
 				/>
 				<LinkButton
-					route={route}
+					route={return_route}
 					label={props.return}
 				/>
 			</CardBody>

@@ -3,15 +3,9 @@ import {
 	Language
 } from "@/conf/dictionary.conf";
 import {
-	Unlock
-} from "./Unlock";
-import { redirect, RedirectType } from "next/navigation";
+	Unlock, refetchToken, GiveInteraction
+} from "../../../../../Unlock";
 import { headers } from "next/headers";
-
-async function lendedRedirect(data: any) {
-	"use server";
-	redirect("/");
-}
 
 export default async function Page({
 	params: { lang, id, duration }
@@ -23,12 +17,17 @@ export default async function Page({
 	const user_id = headers_list.get("x-user-id");
 	if (!user_id) throw new Error("No user id");
 
+	const interaction: GiveInteraction = {
+		message: "give",
+		bicycle_id: id,
+		duration: duration,
+	}
+
 	return (
 		<Unlock
 			user_id={user_id}
-			bicycle_id={id}
-			duration={duration}
-			lendedRedirect={lendedRedirect}
+			interaction={interaction}
+			outcomeCallback={refetchToken}
 		/>
 	);
 }
