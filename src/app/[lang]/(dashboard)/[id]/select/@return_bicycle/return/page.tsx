@@ -26,7 +26,7 @@ export default function Page({
 	return (
 		<>
 			<Unlock
-				user_id={id}
+				user_id={user_id}
 				interaction={interaction}
 			/>
 		</>

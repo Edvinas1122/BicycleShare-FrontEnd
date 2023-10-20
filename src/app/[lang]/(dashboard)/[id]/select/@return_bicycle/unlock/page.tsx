@@ -7,6 +7,11 @@ import {
 } from "../../../Unlock";
 import { headers } from "next/headers";
 
+async function unlockButtonPressed() {
+	"use server";
+	console.log("unlock button pressed");
+}
+
 export default function Page({
 	params: { lang, id }
 }: {
@@ -26,8 +31,9 @@ export default function Page({
 	return (
 		<>
 			<Unlock
-				user_id={id}
+				user_id={user_id}
 				interaction={interaction}
+				outcomeCallback={unlockButtonPressed}
 			/>
 		</>
 	);

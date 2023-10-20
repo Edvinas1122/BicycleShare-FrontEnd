@@ -49,11 +49,6 @@ export const Unlock = ({
 
 	const setEventDriver = () => {
 		if (!channel || !subscribed) return;
-		// const interaction: GiveInteraction = {
-		// 	message: "give",
-		// 	bicycle_id: bicycle_id,
-		// 	duration: duration,
-		// }
 		const cleanup = lockerInteractSequence(
 			channel,
 			interaction,

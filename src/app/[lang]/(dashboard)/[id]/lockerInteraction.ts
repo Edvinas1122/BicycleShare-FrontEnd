@@ -42,6 +42,7 @@ const lockerInteractSequence = (
 		Implamented approval waiting time exploit resolution. See:
 		https://spangled-hall-d99.notion.site/Implementing-unlock-sync-c7802ada30eb4d70ab89346510981a69
 	*/
+	console.log("binding to client-open-seq-" + user_id + "...");
 	channel.bind(`client-open-seq-${user_id}`,
 		function(data: any) {
 			if (data === "begin") {
@@ -69,7 +70,11 @@ const lockerInteractSequence = (
 	channel.trigger('client-open-locker', interaction);
 
 	return () => {
-		channel.trigger(`client-sequence-abort`, {}); // empty event data
+		/*
+			mircrocontroller handles abort
+			by identitying the user_id
+		*/
+		channel.trigger(`client-sequence-abort`, {});
 		channel.unbind('client-locker');
 		channel.unbind('client-locker-button-press');
 		channel.unbind('client-open-seq-begin');
