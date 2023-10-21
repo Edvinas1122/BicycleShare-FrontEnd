@@ -3,7 +3,7 @@ import {
 	Language
 } from "@/conf/dictionary.conf";
 import {
-	Unlock, ReturnInteraction
+	Unlock, ReturnInteraction, refetchToken
 } from "../../../Unlock";
 import { headers } from "next/headers";
 
@@ -26,6 +26,7 @@ export default function Page({
 			<Unlock
 				user_id={user_id}
 				interaction={interaction}
+				outcomeCallback={refetchToken}
 			/>
 		</>
 	);

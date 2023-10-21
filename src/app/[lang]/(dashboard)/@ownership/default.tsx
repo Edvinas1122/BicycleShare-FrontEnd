@@ -22,18 +22,6 @@ export default async function Page({params: {lang}}: {params: {lang: Language}})
 
 	return (
 		<>
-			{/* <BicycleCard
-				props={{
-					lockerId: bicycle_owned.bicycle_id,
-					name: bicycle_owned.bicycle_name,
-					available: true,
-				}}
-				header={
-					<ImageSuspense fallback={<ImageSkeleton />}>
-						<UserAvatar />
-					</ImageSuspense>
-				}
-			/> */}
 			<LendController 
 				props={{
 					unlock: "Unlock",
