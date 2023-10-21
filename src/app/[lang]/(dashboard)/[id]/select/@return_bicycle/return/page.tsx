@@ -12,7 +12,6 @@ export default function Page({
 }: {
 	params: { lang: Language, id: string }
 }) {
-
 	const headers_list = headers();
 	const user_id = headers_list.get("x-user-id");
 	if (!user_id) throw new Error("No user id");
@@ -21,7 +20,6 @@ export default function Page({
 		message: "open",
 		bicycle_id: id,
 	}
-
 
 	return (
 		<>

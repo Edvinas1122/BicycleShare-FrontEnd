@@ -25,6 +25,21 @@ type ValidatedServiceConfig = {
 	// DEV: string | undefined;
 };
 
+type BorrowUpdate = {
+	purpose: "borrow";
+	user_id: number;
+	bicycle_id: number;
+	duration: string;
+};
+
+type ReturnUpdate = {
+	purpose: "return";
+	user_id: number;
+	bicycle_id: number;
+};
+
+type Update = BorrowUpdate | ReturnUpdate;
+
 export default class BicycleShareContentService {
 	private config: ValidatedServiceConfig;
 	constructor(
@@ -45,7 +60,25 @@ export default class BicycleShareContentService {
 		);
 	}
 
-	async registerBicycleBorrow(
+
+
+	async update(update: Update) {
+		const { purpose, user_id, bicycle_id } = update;
+		if (purpose === "borrow") {
+			const { duration } = update;
+			return await this.registerBicycleBorrow(
+				user_id,
+				bicycle_id,
+				duration
+			);
+		} else if (purpose === "return") {
+			return await this.registerBicycleReturn(user_id, bicycle_id);
+		} else {
+			throw new BadRequestException("Invalid purpose");
+		}
+	}
+
+	private async registerBicycleBorrow(
 		userId: number,
 		bicycleId: number,
 		duration: string,
@@ -62,7 +95,7 @@ export default class BicycleShareContentService {
 			.byIntraID(userId)
 			.then((entry: any) => entry.id());
 		const response = await this.databaseTool
-			.getTable("Share Timestamps")
+			.getTable("Share TimeStamps")
 			.newEntrySlot()
 			.insert({
 				Holder: [user_entry_id],
@@ -73,6 +106,36 @@ export default class BicycleShareContentService {
 			})
 		return response;
 	}
+
+	private async registerBicycleReturn(userId: number, bicycleId: number) {
+		const unixTimestamp = new Date().getTime();
+		const bicycle_entry_id = await this.databaseTool
+			.getTable("Bicycles")
+			.getEntry("equals")
+			.byLocker(bicycleId)
+			.then((entry: any) => entry.id());
+		const user_entry_id = await this.databaseTool
+			.getTable("SignedUp")
+			.getEntry("equals")
+			.byIntraID(userId)
+			.then((entry: any) => entry.id());
+		console.log("return: ",bicycle_entry_id);
+		const items = await this.databaseTool
+			.getTable("Share TimeStamps")
+			.query()
+			.and()
+			.filter("Holder", "relation", "contains", user_entry_id)
+			.filter("Bicycles", "relation", "contains", bicycle_entry_id)
+			.filter("Returned On (UNIX)", "number", "equals", 0)
+			.sort("Share Started (UNIX)", "descending")
+			.limit(1)
+			.get()
+		const response = await items.update("Returned On (UNIX)", "number", unixTimestamp);
+		console.log("items update: ", response);
+		return response;
+	}
+
+
 
 	async getBicycles(): Promise<BicycleInfo[] | null> {
 		const properties = await this.databaseTool

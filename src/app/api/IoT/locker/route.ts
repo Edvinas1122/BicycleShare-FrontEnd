@@ -12,24 +12,27 @@ import * as PusherServer from "pusher";
 import { revalidateTag } from 'next/cache'
 
 type BorrowUpdate = {
+	purpose: "borrow";
 	user_id: number;
 	bicycle_id: number;
 	duration: string;
 };
 
+type ReturnUpdate = {
+	purpose: "return";
+	user_id: number;
+	bicycle_id: number;
+};
+
+type Update = BorrowUpdate | ReturnUpdate;
+
 async function routeHandler(params: any) {
 	console.log("api/locker, message received:");
 	console.log(params);
-	const {user_id, bicycle_id, duration} = params;
+	const {purpose, bicycle_id} = params;
 	const service
 		= constructBicycleService({cache: "no-store"});
-	const response
-		= await service
-			.registerBicycleBorrow(
-				user_id,
-				bicycle_id,
-				duration
-			);
+	const response = await service.update(params);
 	revalidateTag(`bicycle-use-${bicycle_id}`);
 	revalidateTag(`bicycle`);
 	const pusher
@@ -40,9 +43,6 @@ async function routeHandler(params: any) {
 		"lend-status",
 		{
 			registred: true,
-			user_id,
-			bicycle_id,
-			duration
 	});
 	console.log("response", response);
 	// console.log("data", timestamp);
