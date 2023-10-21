@@ -3,7 +3,7 @@ import {
 	Language
 } from "@/conf/dictionary.conf";
 import {
-	Unlock, OpenInteraction
+	Unlock, ReturnInteraction
 } from "../../../Unlock";
 import { headers } from "next/headers";
 
@@ -16,8 +16,8 @@ export default function Page({
 	const user_id = headers_list.get("x-user-id");
 	if (!user_id) throw new Error("No user id");
 
-	const interaction: OpenInteraction = {
-		message: "open",
+	const interaction: ReturnInteraction = {
+		message: "return",
 		bicycle_id: id,
 	}
 

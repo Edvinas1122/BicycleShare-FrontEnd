@@ -51,6 +51,6 @@ async function routeHandler(params: any) {
 	return Respond({message: 'delivered'}, 200);
 }
 
-export const POST = BodyParameters<BorrowUpdate>([
-	"user_id", "bicycle_id", "duration"
+export const POST = BodyParameters<Update>([
+	"user_id", "bicycle_id", "purpose"
 ], routeHandler);

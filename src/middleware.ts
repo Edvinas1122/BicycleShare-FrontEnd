@@ -258,7 +258,7 @@ export const middleware
 export const config = {
 	matcher: [
 		'/((?!api|_next/static|_next/image|favicon.ico|.*\\.jpg$|.*\\.png$|.*\\.svg$|.*\\.ico$).*)',
-		// '/((?!_next|.*\\.(?:[sj]vg|jpg|png|ico)$|/api).*)',
 		'/'
+		// '/((?!_next|.*\\.(?:[sj]vg|jpg|png|ico)$|/api).*)',
 	],
 }
