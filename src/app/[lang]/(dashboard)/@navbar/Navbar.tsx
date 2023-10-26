@@ -14,7 +14,7 @@ import {Navbar as NextNavbar,
 	Image
 } from "@nextui-org/react";
 import {useScrollContext} from "../components/NavbarRef";
-import {useRouter} from "next/router";
+import {useRouter} from "next/navigation";
 
 export default function Navbar({
 	children,
