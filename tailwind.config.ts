@@ -18,6 +18,7 @@ const config: Config = {
     },
   },
   darkMode: "class",
+  //@ts-ignore
   plugins: [nextui({
     prefix: "nextui", // prefix for themes variables
     addCommonColors: false, // override common colors (e.g. "blue", "green", "pink").
