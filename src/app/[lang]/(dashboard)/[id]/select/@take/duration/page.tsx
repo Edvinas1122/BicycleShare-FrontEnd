@@ -5,6 +5,9 @@ import {
 import 
 	DurrationSelect
 from "./durrationSelect";
+import {
+	Suspense
+} from "react";
 
 export default async function Page({params: {lang}}: {params: {lang: Language}}) {
 
@@ -17,9 +20,11 @@ export default async function Page({params: {lang}}: {params: {lang: Language}})
 				{dictionaries[lang].question_length}
 			</p>
 			<div className={"flex flex-col w-full justify-center"}>
+			<Suspense fallback={null}>
 				<DurrationSelect 
 					language={lang}
 				/>
+			</Suspense>
 			</div>
 		</div>
 	);
