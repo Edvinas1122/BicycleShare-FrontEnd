@@ -70,7 +70,7 @@ export default function Layout({
 	params: {lang: Language};
 }) {
 
-	const cardClass = "min-w-[350px] max-w-[30vw] mx-auto loading min-h-[300px] max-h-[80vh]";
+	const cardClass = "min-w-[350px] w-[520px] mx-auto loading min-h-[300px] max-h-[80vh] mx-2";
 	return (
 		<>
 			<LoginCard

@@ -3,10 +3,13 @@
 @tailwind utilities;
 
 body {
-  @apply bg-gradient-to-r from-orange-200 to-purple-200;
-  @apply flex flex-col justify-center items-center;
+  /* @apply flex flex-col justify-center items-center;
   height: 100vh;
-  width: 100vw;
+  width: 100vw; */
+}
+
+main {
+  @apply bg-gradient-to-r from-orange-200 to-purple-200;
 }
 
 .log_button {
@@ -24,21 +27,29 @@ body {
   }
 } */
 
-.term h1 {
+h1 {
   @apply text-2xl font-bold mb-2;
 }
 
-.term h2 {
+h2 {
   @apply text-xl font-bold mb-2 mt-4 text-center;
   font-size: large;
 }
 
-.term h3 {
+h3 {
   @apply text-lg font-bold mb-2;
 }
 
-.terms ol {
-  @apply list-decimal pl-4;
+ol {
+  @apply list-decimal pl-4 p-2 mb-2;
+}
+
+p {
+  @apply text-base mb-2;
+}
+
+ol ol {
+  @apply list-decimal pl-8 text-sm;
 }
 
 @keyframes fade-in {

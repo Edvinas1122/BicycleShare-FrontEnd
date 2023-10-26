@@ -221,6 +221,11 @@ export function setHeadersWithToken(handle: Function) {
 */
 export function authHandler() {
 	return async (request: NextRequest) => {
+		// console.log("authHandler");
+		const { pathname, href, origin } = request.nextUrl;
+		// console.log(pathname);
+		// console.log(href);
+		// console.log(origin);
 		const auth = getNextAuthMiddleware(getLocale(request));
 		return (auth as any)(request);
 	}

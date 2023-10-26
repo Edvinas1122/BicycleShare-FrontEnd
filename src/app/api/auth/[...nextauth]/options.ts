@@ -11,7 +11,6 @@ async function checkDatabase(user: any) {
 		userService.getUserByIntraID(user.id),
 		userService.userOwnsBicycle(user.id)
 	]);
-	console.log("ownership", ownership);
 	const userWithInfo = {
 		...user,
 		termsAccepted: userOnNotion ? true : false,
@@ -54,7 +53,7 @@ export const options: NextAuthOptions = {
 			return session;
 		},
 		async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
-			// console.log("redirect callback", url, baseUrl);
+			console.log("redirect callback", url, baseUrl);
 			return baseUrl;
 		}
 	}

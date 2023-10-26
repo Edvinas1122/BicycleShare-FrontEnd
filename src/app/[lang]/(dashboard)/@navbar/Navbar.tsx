@@ -12,12 +12,12 @@ export default function Navbar({
 	icon: string,
 	title: string,
 }) {
-	const { containerRef } = useScrollContext();
+	// const { containerRef } = useScrollContext();
 
 	return (
 		<NextNavbar
 			shouldHideOnScroll={true}
-			parentRef={containerRef}
+			// parentRef={containerRef}
 			// onMenuOpenChange={setIsMenuOpen}
 		>
 			<NavbarBrand>
