@@ -183,6 +183,7 @@ type User = {
 	name: string;
 	fullName: string;
 	image: string;
+	role?: string;
 }
 
 type TokenUser = {
@@ -268,6 +269,7 @@ export class UserService {
 			name: userData.Name,
 			fullName: userData.IntraName,
 			image: userData.ProfileImage,
+			role: userData.Role,
 		}
 	}
 

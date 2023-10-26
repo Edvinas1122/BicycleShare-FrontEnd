@@ -24,9 +24,12 @@ export default async function Page({params: {lang}}: {params: {lang: Language}})
 		<>
 			<LendController 
 				props={{
-					unlock: "Unlock",
-					return: "Return",
 					bicycle_id: bicycle_id,
+				}}
+				terms={{
+					lend_controller: dictionaries[lang].lend_controller,
+					unlock: dictionaries[lang].unlock,
+					return: dictionaries[lang].return,
 				}}
 			/>
 		</>

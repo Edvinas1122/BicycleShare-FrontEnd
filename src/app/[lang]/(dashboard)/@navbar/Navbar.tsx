@@ -1,7 +1,20 @@
 "use client"
-import React, {use, Suspense} from "react";
-import {Navbar as NextNavbar, NavbarBrand, NavbarContent, NavbarItem, Link, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Image} from "@nextui-org/react";
+import React from "react";
+import {Navbar as NextNavbar,
+	NavbarBrand,
+	NavbarContent,
+	NavbarItem,
+	Link,
+	DropdownItem,
+	DropdownTrigger,
+	DropdownSection,
+	Dropdown,
+	DropdownMenu,
+	Avatar,
+	Image
+} from "@nextui-org/react";
 import {useScrollContext} from "../components/NavbarRef";
+import {useRouter} from "next/router";
 
 export default function Navbar({
 	children,
@@ -12,12 +25,11 @@ export default function Navbar({
 	icon: string,
 	title: string,
 }) {
-	// const { containerRef } = useScrollContext();
+
 
 	return (
 		<NextNavbar
 			shouldHideOnScroll={true}
-			// parentRef={containerRef}
 			// onMenuOpenChange={setIsMenuOpen}
 		>
 			<NavbarBrand>
@@ -43,40 +55,160 @@ export default function Navbar({
 	);
 }
 
+import { signOut } from "next-auth/react"
+
 export function UserMenu({
 	user,
-	children,
-	menuItems,
+	terms,
+	methods,
+	options
 }: {
 	user: User
-	children: React.ReactNode
-	menuItems: React.ReactNode[]
+	terms: {
+		language: string,
+		logout: string,
+		admin: string,
+		open: string,
+	}
+	methods: {
+		[methodName: string]: (data: any) => void
+	}
+	options: {
+		languages: {code: string, label: string}[],
+		selectedLanguage: string,
+		showAdmin: boolean,
+		link_prefix: string,
+	}
 }) {
-
+	const router = useRouter();
 	const compensateStyle =
 		`absolute h-8 w-8 rounded-full
 		`;
+	const logOut = () => {
+		signOut();
+	};
+
+	const show_admin = () => {
+		if (options.showAdmin) {
+			return "";
+		} else {
+			return "hidden";
+		}
+	}
+
+	const open_admin = () => {
+		if (options.showAdmin) {
+			router.push(`${options.link_prefix}/admin`);
+		}
+	}
+
 	return (
 		<>
 		<DisplayAvatar user={user} />
-		<Dropdown placement="bottom-end">
+		<Dropdown placement="bottom-end" backdrop={"blur"}>
 			<DropdownTrigger className={"display-none"}>
 				<div className={compensateStyle} style={{
 					transform: "translateY(-32px)",
 				}}></div>
 			</DropdownTrigger>
 			<DropdownMenu aria-label="Profile Actions" variant="flat">
-			{
-				menuItems.map((item, index) => {
-					return (
-						<DropdownItem key={index} className="h-14 gap-2">
-							{item}
-						</DropdownItem>
-					);
-				})
-			}
+			<DropdownSection aria-label="Profile">
+				<DropdownItem
+					isReadOnly
+					key={"user"}
+					className="cursor-default"
+				>
+					{user.name}
+				</DropdownItem>
+				<DropdownItem
+					isReadOnly
+					key={terms.admin}
+					className={`cursor-default ${show_admin()}`}
+					onClick={open_admin}
+				>
+					{terms.admin}
+				</DropdownItem>
+			</DropdownSection>
+			<DropdownSection aria-label="Preferences" showDivider>
+				<DropdownItem
+					isReadOnly
+					key={terms.language}
+					className="cursor-default"
+					endContent={
+						<LanguageSelectMenuItem
+							method={methods.changeLanguage}
+							languages={options.languages}
+							selectedLanguage={options.selectedLanguage}
+						/>
+					}
+				>
+					{terms.language}
+				</DropdownItem>
+				</DropdownSection> 
+				<DropdownSection aria-label="Help & Feedback">
+				<DropdownItem
+					key="logout"
+					onClick={logOut}
+					>
+					{terms.logout}
+				</DropdownItem>
+				</DropdownSection>
 			</DropdownMenu>
 		</Dropdown>
+		</>
+	);
+}
+
+export const AdminSection = ({}: {}) => {
+	return (
+		<DropdownSection aria-label="Admin" showDivider>
+			<DropdownItem
+				key="admin"
+				endContent={
+					<Link href="/admin">
+						Admin
+					</Link>
+				}
+			>
+				Admin
+			</DropdownItem>
+		</DropdownSection>
+	);
+}
+
+const LanguageSelectMenuItem = ({
+	method,
+	languages,
+	selectedLanguage,
+}: {
+	method: (data: any) => void,
+	languages: {code: string, label: string}[],
+	selectedLanguage: string,
+}) => {
+
+	const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const language = event.target.value;
+		method(language);
+	};
+
+	return (
+		<>
+			<select
+				className="z-10 outline-none w-16 py-0.5 rounded-md text-tiny group-data-[hover=true]:border-default-500 border-small border-default-300 dark:border-default-200 bg-transparent text-default-500"
+				id="language"
+				name="language"
+				onChange={handleLanguageChange}
+				>
+				{languages.map((language) => (
+					<option 
+						key={language.code}
+						value={language.code}
+						selected={selectedLanguage === language.code}
+					>
+						{language.label}
+					</option>
+				))}
+			</select>
 		</>
 	);
 }
@@ -117,22 +249,5 @@ export function UserMenuItem({
 				{children}
 			</DropdownItem>
 		</>
-	);
-}
-
-import { signOut } from "next-auth/react"
-import { StatefulButton } from "@/app/components/buttons";
-
-export function LogoutButton({
-	children,
-}: {
-	children: React.ReactNode
-}) {
-	return (
-		<StatefulButton
-			action={() => signOut()}
-		>
-			{children}
-		</StatefulButton>
 	);
 }

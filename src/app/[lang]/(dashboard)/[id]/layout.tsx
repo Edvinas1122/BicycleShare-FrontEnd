@@ -8,7 +8,6 @@ import {
 } from "@/app/components/modal";
 import { DeviceControllerContextProvider } from "./context";
 import { PusherChannelProvider } from "../ChannelProvider";
-import { headers } from "next/headers";
 
 export default async function Layout({
 	children,

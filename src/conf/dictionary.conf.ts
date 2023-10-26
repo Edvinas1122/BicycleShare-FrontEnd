@@ -38,6 +38,11 @@ type Dictionary = Readonly<{
 	returned: string;
 	logout: string;
 	question_key_in_locker: string;
+	lend_controller: string;
+	return: string;
+	unlock: string;
+	admin: string;
+	open: string;
 }>
 
 export type Term = keyof Dictionary;
@@ -88,6 +93,11 @@ const dictionary: Dictionary = {
 	returned: "returned",
 	logout: "Logout",
 	question_key_in_locker: "Do you hearby affirm that you have put the key into the locker 🔑?",
+	lend_controller: "Lend controller",
+	return: "Return",
+	unlock: "Unlock",
+	admin: "Admin",
+	open: "Open",
 };
 
 const german_dictionary: Dictionary = {
@@ -136,6 +146,11 @@ const german_dictionary: Dictionary = {
 	returned: "zurückgegeben",
 	logout: "Ausloggen",
 	question_key_in_locker: "Bestätigen Sie hiermit, dass Sie den Schlüssel in das Schließfach gelegt haben 🔑?",
+	lend_controller: "Controller verleihen",
+	return: "Zurückgeben",
+	unlock: "Entsperren",
+	admin: "Admin",
+	open: "Öffnen",
 };
 
 const dictionaryUA: Dictionary = {
@@ -184,12 +199,17 @@ const dictionaryUA: Dictionary = {
     returned: "повернув",
 	logout: "Вийти",
 	question_key_in_locker: "Ви підтверджуєте, що поклали ключ у шафку 🔑?",
+	lend_controller: "Видати контролер",
+	return: "Повернути",
+	unlock: "Розблокувати",
+	admin: "Адмін",
+	open: "Відкрити",
 };
 
 type Dictionaries = Readonly<{
 	en: Dictionary;
 	de: Dictionary;
-	ue: Dictionary;
+	ua: Dictionary;
 }>
 
 export type Language = keyof Dictionaries;
@@ -197,13 +217,13 @@ export type Language = keyof Dictionaries;
 export const dictionaries: Dictionaries = {
 	en: dictionary,
 	de: german_dictionary,
-	ue: dictionaryUA,
+	ua: dictionaryUA,
 }
 
 type ClientDictionaries = Readonly<{
 	en: ClientDictionary;
 	de: ClientDictionary;
-	ue: ClientDictionary;
+	ua: ClientDictionary;
 }>
 
 export type ClientDictionary = {
@@ -229,7 +249,7 @@ export const ue_client_dictionary: ClientDictionary = {
 export const clientDictionaries: ClientDictionaries = {
 	en: clientDictionary,
 	de: german_client_dictionary,
-	ue: ue_client_dictionary,
+	ua: ue_client_dictionary,
 }
 
 type ClLanguages = keyof ClientDictionaries;

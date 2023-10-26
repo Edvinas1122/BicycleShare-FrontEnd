@@ -9,7 +9,7 @@ const localesToPaths: {[key:string]: Language} = {
 	// 'nl-NL': 'nl',
 	// 'nl': 'nl',
 	'de-DE': 'de',
-	'ue-UE': 'ue',
+	'ua-UA': 'ua',
 }
 
 function getLocale(request: NextRequest): Language { 
@@ -206,6 +206,7 @@ export function setHeadersWithToken(handle: Function) {
 			headers.set('x-user-login', token.login as string);
 			headers.set('x-user-name', token.name as string);
 			headers.set('x-user-image', token.image as string);
+			headers.set('x-user-admin', token?.role === "admin" ? "true" : "false");
 			headers.set('x-terms_accepted', token.termsAccepted as string);
 			headers.set('x-bicycle_owned', JSON.stringify(token.ownership as string));
 			return handleConditionalRedirects(token, headers, request);

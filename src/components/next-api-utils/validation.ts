@@ -135,7 +135,8 @@ export function getUserFromHeaders(){
 		id: headersList.get('x-user-id'),
 		image: headersList.get('x-user-image'),
 		name: headersList.get('x-user-name'),
-		username: headersList.get('x-user-username')
+		username: headersList.get('x-user-username'),
+		admin: headersList.get('x-user-admin')
 	};
 	if (user.name === "error") throw new Error("Missing token");
 	return user;

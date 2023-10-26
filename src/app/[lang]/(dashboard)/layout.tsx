@@ -78,25 +78,25 @@ export default function Layout({
 	const headers_list = headers();
 	const bicycle_owned = headers_list.get("x-bicycle_owned");
 	const display_ownership = bicycle_owned === "null" ? false : true;
-	const className = `
+	const dashBoard = `
 		flex flex-col gap-4 items-center justify-center my-4`;
-	const dashBoardFrameStyle = "w-full h-full items-center justify-start h-[100vh] w-[100vw] flex flex-col gap-4";
+	// const dashBoardFrameStyle = "w-full h-full items-center justify-start h-[100vh] w-[100vw] flex flex-col gap-4";
 
 	return (
-		<>
+		<div className={`w-[100%] min-h-[100vh] h-[100%]`}>
 			{navbar}
 			<PusherProvider
 				pusherKey={getPusherConfig().key}
 				>
 				{children}
-			<PusherChannelProvider
-				channelName={"private-live-events"}
+				<section className={dashBoard}>
+				<PusherChannelProvider
+					channelName={"private-live-events"}
 				>
-				<section className={className}>
-				{display_ownership ? ownership : bicycles}
+					{display_ownership ? ownership : bicycles}
+				</PusherChannelProvider>
 				</section>
-			</PusherChannelProvider>
 			</PusherProvider>
-		</>
+		</div>
 	);
 }

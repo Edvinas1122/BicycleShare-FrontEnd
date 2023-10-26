@@ -15,6 +15,7 @@ async function checkDatabase(user: any) {
 		...user,
 		termsAccepted: userOnNotion ? true : false,
 		ownership: ownership,
+		role: userOnNotion?.role,
 	}
 	return userWithInfo;
 }
