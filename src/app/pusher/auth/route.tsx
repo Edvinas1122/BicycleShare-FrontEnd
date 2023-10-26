@@ -1,4 +1,7 @@
-import { BodyParameters, Respond } from "@/components/next-api-utils/endpoints";
+import {
+	BodyParameters,
+	Respond
+} from "@/components/next-api-utils/endpoints";
 import * as PusherServer from "pusher";
 import {
 	getPusherConfig
@@ -29,9 +32,11 @@ async function routeHandler(params: any) {
 	const socketId = params.socket_id;
 	const channelName = params.channel_name;
 	const pusher = new PusherServer.default(getPusherConfig());
-	const authResponse = pusher.authorizeChannel(socketId, channelName, presenceData);
-	console.log("API, pusher authorization response:");
-	console.log(authResponse);
+	const authResponse = pusher.authorizeChannel(
+		socketId,
+		channelName,
+		presenceData
+	);
 	return new Response(JSON.stringify(authResponse), {
 		status: 200,
 		headers: {

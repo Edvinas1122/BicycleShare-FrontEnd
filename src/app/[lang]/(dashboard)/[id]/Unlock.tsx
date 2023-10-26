@@ -4,42 +4,48 @@ import {
 	usePusherChannel
 } from "@/app/[lang]/(dashboard)/ChannelProvider";
 import
-	lockerInteractSequence, {
-		GiveInteraction,
-		Interaction,
-		OpenInteraction,
-		ReturnInteraction
-} from "./lockerInteraction";
-import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
+	lockerInteractSequence
+from "./lockerInteraction";
+import { signIn} from "next-auth/react"
+import { useRouter, usePathname } from "next/navigation"
+import { SignedLockerPress } from "./select/layout";
+import {
+	dictionaries,
+	Language
+} from "@/conf/dictionary.conf";
 
 export const Unlock = ({
 	user_id,
-	interaction,
-	outcomeCallback,
+	locker_id,
+	serverAction,
+	children
 }: {
 	user_id: string;
-	interaction: Interaction;
-	outcomeCallback?: (data: any) => void;
+	locker_id: string;
+	serverAction: (request: any) => Promise<any>;
+	children: React.ReactNode;
 }) => {
 
 	const router = useRouter();
 	const { channel, subscribed } = usePusherChannel();
 	const [awaiting, setAwaiting] = React.useState(true);
 	const [pleaseWait, setPleaseWait] = React.useState(false);
+	const [timedout, setTimedout] = React.useState(false);
+	const [open_outcome, setOpenOutcome] = React.useState(false);
 
 	const processStarted = () => {
+		console.log("process started");
 		setAwaiting(false);
 	}
 
 	const outcome = async (data: any) => {
-		outcomeCallback && outcomeCallback(data);
-		router.replace("/");
+		setOpenOutcome(true);
 	}
 
-	const processing = (data: any) => {
-		console.log("processing", data);
+	const serverActionHanlde = (data: SignedLockerPress) => {
+		console.log("serverActionHanlde", data);
 		setPleaseWait(true);
+		serverAction(data).then(outcome);
 	}
 
 	const processRefused = (data: any) => {
@@ -49,16 +55,23 @@ export const Unlock = ({
 
 	const setEventDriver = () => {
 		if (!channel || !subscribed) return;
+		console.log("channel", channel);
 		const cleanup = lockerInteractSequence(
 			channel,
-			interaction,
 			user_id,
-			outcome,
+			locker_id,
 			processStarted,
-			processing,
-			processRefused,
+			serverActionHanlde,
+			processRefused
 		);
 		return cleanup;
+	}
+
+	const timeoutBehavior = () => {
+		setTimedout(true);
+		setTimeout(() => {
+			router.back();
+		}, 1600);
 	}
 
 	React.useEffect(setEventDriver, [channel, subscribed]);
@@ -66,7 +79,26 @@ export const Unlock = ({
 	return (
 		<>
 			{
-				awaiting ? <Awaiting /> : pleaseWait ? <TellToWait/> : <Started />
+				open_outcome ?
+					children
+					:
+				timedout ? 
+					<InformOf
+						instruction="Timeout"
+						description="You took too long to press the button"
+					/>
+					:
+				awaiting ? 
+					<Awaiting /> 
+					:
+				pleaseWait ? 
+					<TellToWait/> 
+					: 
+				<Started  
+					timedoutCallback={
+						timeoutBehavior
+					}
+				/>
 			}
 		</>
 	)
@@ -80,12 +112,20 @@ const Awaiting = () => {
 	)
 }
 
-const Started = () => {
+const Started = ({
+	timedoutCallback,
+}: {
+	timedoutCallback: () => void;
+}) => {
 	const [timeRemaining, setTimeRemaining] = React.useState(10);
 
 	React.useEffect(() => {
 		const interval = setInterval(() => {
-			setTimeRemaining(timeRemaining - 1);
+			if (timeRemaining  >  0) {
+				setTimeRemaining(timeRemaining - 1);
+			} else {
+				timedoutCallback();
+			}
 		}, 1000);
 		return () => clearInterval(interval);
 	}, [timeRemaining]);
@@ -100,15 +140,96 @@ const Started = () => {
 
 const TellToWait = () => {
 	return (
-		<div>
-			<h2>Please wait</h2>
+		<>
+			<h1>Please wait</h1>
 			<p>Button was pressed, please await for rent registration</p>
-		</div>
+		</>
 	)
 }
 
-export const refetchToken = () => {
-	signIn("42-school");
+const InformOf = ( {
+	instruction,
+	description,
+} : {
+	instruction: string,
+	description: string,
+}) => {
+	return (
+		<>
+			<h1>{instruction}</h1>
+			<p>{description}</p>
+		</>
+	);
 }
 
-export type {Interaction, GiveInteraction, OpenInteraction, ReturnInteraction};
+export const RefetchToken = ({
+	children
+}: {
+	children: React.ReactNode;
+}) => {
+	const router = useRouter();
+
+	React.useEffect(() => {
+		signIn("42-school");
+		router.replace("/");
+	}, []);
+
+	return (
+		<>
+			{children}
+		</>
+	);
+}
+
+import {
+	StatefulButton
+} from "@/app/components/buttons";
+
+export const RefreshMethod = ({
+	children,
+	method,
+	button_text
+}: {
+	children: React.ReactNode;
+	method: () => Promise<any>;
+	button_text: string;
+}) => {
+	const [success, setSuccess] = React.useState(false);
+
+	const onClick = () => {
+		method().then((data: any) => {
+			setSuccess(true);
+			console.log("data", data);
+			signIn("42-school");
+		});
+	}
+
+	return (
+		<>
+			{!success ? (
+				<>
+					{children}
+					<StatefulButton
+						action={onClick}
+						>
+						{button_text}
+					</StatefulButton>
+				</>)
+				: (
+					<>
+						<p>please stand by</p>
+					</>
+				)
+			}
+
+		</>
+	);
+}
+
+export const ToMain = () => {
+	const router = useRouter();
+	React.useEffect(() => {
+		router.replace("/");
+	}, []);
+	return null;
+}

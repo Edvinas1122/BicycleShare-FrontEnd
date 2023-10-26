@@ -3,9 +3,12 @@ import {
 	Language
 } from "@/conf/dictionary.conf";
 import {
-	Unlock, OpenInteraction
+	Unlock, ToMain
 } from "../../../Unlock";
 import { headers } from "next/headers";
+import {
+	unlock_locker, SignedLockerPress, UnlockDemand
+} from "../../layout";
 
 async function unlockButtonPressed() {
 	"use server";
@@ -21,18 +24,25 @@ export default function Page({
 	const user_id = headers_list.get("x-user-id");
 	if (!user_id) throw new Error("No user id");
 
-	const interaction: OpenInteraction = {
-		message: "open",
-		bicycle_id: id,
+	async function open_locker(data: SignedLockerPress) {
+		"use server";
+		const request: UnlockDemand = {
+			purpose: "unlock",
+			signed_locker_press: data,
+		}
+		const response = await unlock_locker(request);
+		return response;
 	}
 
 	return (
 		<>
 			<Unlock
 				user_id={user_id}
-				interaction={interaction}
-				outcomeCallback={unlockButtonPressed}
-			/>
+				locker_id={id}
+				serverAction={open_locker}
+			>
+				<ToMain/>
+			</Unlock>
 		</>
 	);
 }

@@ -38,11 +38,9 @@ export const options: NextAuthOptions = {
 			user: any; 
 			account: any; 
 			profile?: any; 
-			isNewUser?: boolean; 
+			isNewUser?: boolean;
 		}) {
 			const foutryTwoProfile = profile as any;
-			// console.log("jwt callback");
-			// console.log("jwt callback", token, user, account, profile, isNewUser);
 			token = consumeToToken(foutryTwoProfile, token);
 			token = await checkDatabase(token);
 			return token;

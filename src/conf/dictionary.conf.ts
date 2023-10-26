@@ -37,6 +37,7 @@ type Dictionary = Readonly<{
 	took: string;
 	returned: string;
 	logout: string;
+	question_key_in_locker: string;
 }>
 
 export type Term = keyof Dictionary;
@@ -86,6 +87,7 @@ const dictionary: Dictionary = {
 	took: "took",
 	returned: "returned",
 	logout: "Logout",
+	question_key_in_locker: "Do you hearby affirm that you have put the key into the locker 🔑?",
 };
 
 const german_dictionary: Dictionary = {
@@ -133,6 +135,7 @@ const german_dictionary: Dictionary = {
 	took: "nahm",
 	returned: "zurückgegeben",
 	logout: "Ausloggen",
+	question_key_in_locker: "Bestätigen Sie hiermit, dass Sie den Schlüssel in das Schließfach gelegt haben 🔑?",
 };
 
 const dictionaryUA: Dictionary = {
@@ -180,6 +183,7 @@ const dictionaryUA: Dictionary = {
     took: "взяв",
     returned: "повернув",
 	logout: "Вийти",
+	question_key_in_locker: "Ви підтверджуєте, що поклали ключ у шафку 🔑?",
 };
 
 type Dictionaries = Readonly<{

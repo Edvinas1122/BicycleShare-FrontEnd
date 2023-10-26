@@ -60,8 +60,6 @@ export default class BicycleShareContentService {
 		);
 	}
 
-
-
 	async update(update: Update) {
 		const { purpose, user_id, bicycle_id } = update;
 		if (purpose === "borrow") {

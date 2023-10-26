@@ -7,7 +7,7 @@ export function StatefulButton({
 	action,
 }: {
 	children: React.ReactNode;
-	action: () => Promise<void>;
+	action: () => void;
 }) {
 	const [loading, setLoading] = React.useState(false);
 

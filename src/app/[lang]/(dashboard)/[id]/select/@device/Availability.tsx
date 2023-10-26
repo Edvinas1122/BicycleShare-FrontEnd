@@ -38,9 +38,7 @@ export default function AvailabilityInfo({
 		});
 		const device = channel.members.get("0");
 		if (!device) { setResponse("offline"); return; }
-		channel.trigger('client-ping', {
-			message: 'ping',
-		});					
+		channel.trigger('client-ping', {});					
 		return () => {
 			channel.unbind('client-pong');
 		}

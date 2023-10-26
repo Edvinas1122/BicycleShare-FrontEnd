@@ -8,6 +8,7 @@ import {
 } from "@/app/components/modal";
 import { DeviceControllerContextProvider } from "./context";
 import { PusherChannelProvider } from "../ChannelProvider";
+import { headers } from "next/headers";
 
 export default async function Layout({
 	children,
@@ -20,6 +21,10 @@ export default async function Layout({
 	modalInterface: React.ReactNode;
 	params: {lang: Language};
 }){
+
+	// const headers_list = headers();
+	// const user_id = headers_list.get("x-user-id");
+	// console.log("user_id", user_id);
 
 	return (
 		<>
@@ -36,7 +41,7 @@ export default async function Layout({
 				>
 			<>
 			<PusherChannelProvider
-				channelName={"presence-locker-device"}
+				channelName={`presence-locker-device`}
 			>
 			{children}
 			</PusherChannelProvider>
