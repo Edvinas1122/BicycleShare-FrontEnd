@@ -6,7 +6,7 @@ import {
 export default async function Page({
 	params: { lang }
 }: {
-	params: { lang: Language, duration: string }
+	params: { lang: Language }
 }) {
 	return (
 		<div>

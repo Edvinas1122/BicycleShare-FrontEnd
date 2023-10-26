@@ -10,6 +10,13 @@ import {
 	unlock_locker, SignedLockerPress, BorrowDemand
 } from "../../../../layout";
 
+export async function generateStaticParams() {
+	return [{ duration: 'short' }, { duration: 'hours' }, { duration: 'long' }, { duration: 'night' }]
+}
+
+export const dynamicParams = false;
+
+
 export default async function Page({
 	params: { lang, id, duration }
 }: {

@@ -29,9 +29,9 @@ const nextConfig = {
 		config.resolve.alias['@'] = path.resolve(__dirname, './src');
 		return config;
 	},
-	experimental: {
-		serverActions: true,
-	},
+	// experimental: {
+	// 	serverActions: true,
+	// },
 	headers: async () => [
 		{
 			source: '/:all*(svg)',
