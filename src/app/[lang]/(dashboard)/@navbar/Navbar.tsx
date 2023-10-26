@@ -121,7 +121,8 @@ export function UserMenu({
 					{user.name}
 				</DropdownItem>
 				<DropdownItem
-					isReadOnly
+					// isReadOnly
+					closeOnSelect={true}
 					key={terms.admin}
 					className={`cursor-default ${show_admin()}`}
 					onClick={open_admin}
