@@ -21,9 +21,10 @@ export default function Page({
 
 	async function open_locker_admin(locker_id: string) {
 		"use server";
+		const numericId = parseInt(locker_id, 10) + 1;
 		const request: UnlockAdminDemand = {
 			purpose: "unlock_admin",
-			locker_id,
+			locker_id: numericId.toString(),
 		}
 		const response = await unlock_locker(request);
 		return response;

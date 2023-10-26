@@ -199,12 +199,12 @@ const LanguageSelectMenuItem = ({
 				id="language"
 				name="language"
 				onChange={handleLanguageChange}
+				defaultValue={selectedLanguage}
 				>
 				{languages.map((language) => (
 					<option 
 						key={language.code}
 						value={language.code}
-						selected={selectedLanguage === language.code}
 					>
 						{language.label}
 					</option>
