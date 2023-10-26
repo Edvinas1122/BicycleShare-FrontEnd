@@ -18,10 +18,11 @@ export function AdminController({
 		admin_controller: string,
 	},
 	methods: {
-		[key: string]: (data: any) => void;
+		[key: string]: (data: any) => Promise<any>;
 	}
 }) {
 	const [selected, setSelected] = React.useState<string>("0");
+	const [loading, setLoading] = React.useState<boolean>(false);
 
 	const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		setSelected(e.target.value);
@@ -32,7 +33,14 @@ export function AdminController({
 	};
 
 	const openLocker = () => {
-		methods.open_locker_admin(selected);
+		methods.open_locker_admin(selected).then(() => {
+			setLoading(false);
+		}
+		).catch((error: any) => {
+			console.log(error);
+			setLoading(false);
+		});
+		setLoading(true);
 	};
 
 	return (
@@ -74,6 +82,7 @@ export function AdminController({
 					</Select>
 					<Button
 						onClick={openLocker}
+						isLoading={loading}
 						// className={`h-[100%]`}
 						>
 						Open
