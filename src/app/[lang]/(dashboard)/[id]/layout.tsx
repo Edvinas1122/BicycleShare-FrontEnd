@@ -8,6 +8,8 @@ import {
 } from "@/app/components/modal";
 import { DeviceControllerContextProvider } from "./context";
 import { PusherChannelProvider } from "../ChannelProvider";
+import { Suspense } from "react";
+import { LoadingPulsar } from "@/app/components/LoadingPulsar";
 
 export default async function Layout({
 	children,
@@ -20,13 +22,13 @@ export default async function Layout({
 	modalInterface: React.ReactNode;
 	params: {lang: Language};
 }){
-
-	// const headers_list = headers();
-	// const user_id = headers_list.get("x-user-id");
-	// console.log("user_id", user_id);
-
 	return (
 		<>
+			<Suspense
+				fallback={
+					<LoadingPulsar/>
+				}
+			>
 			<DeviceControllerContextProvider>
 			<DisplayModal
 				modalInterface={modalInterface}
@@ -41,13 +43,14 @@ export default async function Layout({
 			<>
 			<PusherChannelProvider
 				channelName={`presence-locker-device`}
-			>
+				>
 			{children}
 			</PusherChannelProvider>
 			</>
 			</ModalContentWrapper>
 			</DisplayModal>
 			</DeviceControllerContextProvider>
+			</Suspense>
 		</>
 	);
 }

@@ -99,7 +99,7 @@ export default function DisplayModal({
 
 	const Close = () => {
 		onOpenChange();
-		setTimeout( () => {router.replace(closeButton.route);}, 200);
+		setTimeout( () => {router.replace(closeButton.route, {scroll: false});}, 200);
 	};
 
 	return (

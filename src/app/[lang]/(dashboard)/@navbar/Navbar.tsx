@@ -1,5 +1,4 @@
 "use client"
-import React from "react";
 import {Navbar as NextNavbar,
 	NavbarBrand,
 	NavbarContent,
@@ -26,12 +25,13 @@ export default function Navbar({
 	title: string,
 }) {
 
-
 	return (
+		<>
 		<NextNavbar
 			shouldHideOnScroll={true}
 			// onMenuOpenChange={setIsMenuOpen}
-		>
+			// onScrollPositionChange={positionChange}
+			>
 			<NavbarBrand>
 				<div>
 				<Image
@@ -52,6 +52,7 @@ export default function Navbar({
 				</NavbarItem>
 			</NavbarContent>
 		</NextNavbar>
+		</>
 	);
 }
 

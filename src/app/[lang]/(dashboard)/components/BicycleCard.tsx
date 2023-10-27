@@ -68,7 +68,12 @@ export function LinkButton({
 
 	return (
 		<>
-			<Button as={Link} href={route} replace={true}>
+			<Button 
+				as={Link}
+				href={route}
+				replace={true}
+				scroll={false}
+			>
 				{label}
 			</Button>
 		</>

@@ -92,7 +92,7 @@ export default function Layout({
 				<section className={dashBoard}>
 				<PusherChannelProvider
 					channelName={"private-live-events"}
-				>
+					>
 					{display_ownership ? ownership : bicycles}
 				</PusherChannelProvider>
 				</section>
